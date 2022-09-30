@@ -5,15 +5,14 @@ using UnityEngine;
 
 public class playerScript : MonoBehaviour
 {
-    private Rigidbody rb;
+    [SerializeField] private Rigidbody rb;
     public LayerMask ignore;
-    private Camera cam;
-    public CharacterController player;
+    [SerializeField] private Camera cam;
     // Start is called before the first frame update
     void Start()
     {
-        rb = GameObject.Find("Player_1").GetComponent<Rigidbody>();
-        cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        rb = gameObject.GetComponentInChildren<Rigidbody>();
+        cam = GetComponent<Camera>();
     }
 
     // Update is called once per frame
