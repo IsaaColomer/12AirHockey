@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ball
   - DiskRestart
+  - PI_Player1
+  - PI_Player2
   layers:
   - Default
   - TransparentFX
