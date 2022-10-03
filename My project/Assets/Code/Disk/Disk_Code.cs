@@ -33,7 +33,8 @@ public class Disk_Code : MonoBehaviour
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
             rb.angularDrag = 0f;
-            pi_p2.GetComponent<Renderer>().material.color = Color.green;
+            //pi_p2.GetComponent<Renderer>().material.color = Color.green;
+            pi_p1.GetComponent<Renderer>().material.color = Color.yellow;
             StartCoroutine(WaitToRestartDisk());
         }
         if(other.gameObject.name == "Goal_p1")
@@ -42,7 +43,8 @@ public class Disk_Code : MonoBehaviour
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
             rb.angularDrag = 0f;
-            pi_p1.GetComponent<Renderer>().material.color = Color.green;
+            //pi_p1.GetComponent<Renderer>().material.color = Color.green;
+            pi_p2.GetComponent<Renderer>().material.color = Color.yellow;
             StartCoroutine(WaitToRestartDisk());
         }
     }
