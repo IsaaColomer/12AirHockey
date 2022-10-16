@@ -15,8 +15,10 @@ public class Server : MonoBehaviour
     Socket newsock;
     EndPoint remote;
     // Start is called before the first frame update
-    void Start()
+    void CreateServer()
     {
+        Thread myThread = new Thread(Connection);
+
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsock.Bind(ipep);
@@ -24,7 +26,12 @@ public class Server : MonoBehaviour
 
         sender = new IPEndPoint(IPAddress.Any, 0);
         remote = (EndPoint)(sender);
-
+        
+        myThread.Start();
+        
+    }
+    public void Connection()
+    {
         recv = newsock.ReceiveFrom(data, ref remote);
 
         Debug.Log("Message received from " + remote.ToString() + ":");
@@ -32,15 +39,14 @@ public class Server : MonoBehaviour
         string welcome = "Welcome to my test server";
         data = Encoding.ASCII.GetBytes(welcome);
         newsock.SendTo(data, data.Length, SocketFlags.None, remote);
-                        
-    }
-    public void Connection()
-    {
-        data = new byte[1024];
-        recv = newsock.ReceiveFrom(data, ref remote);
 
-        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-        newsock.SendTo(data, recv, SocketFlags.None, remote);
-        
+        while (true)
+        {
+            data = new byte[1024];
+            recv = newsock.ReceiveFrom(data, ref remote);
+
+            Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+            newsock.SendTo(data, recv, SocketFlags.None, remote);
+        }
     }
 }
