@@ -36,10 +36,10 @@ public class Server : MonoBehaviour
 
         Debug.Log("Message received from " + remote.ToString() + ":");
 
+        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
         string welcome = "Welcome to my test server";
         data = Encoding.ASCII.GetBytes(welcome);
         newsock.SendTo(data, data.Length, SocketFlags.None, remote);
-
         while (true)
         {
             data = new byte[1024];

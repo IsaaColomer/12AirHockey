@@ -46,6 +46,11 @@ public class Client : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            newSocket.Close();
+            Application.Quit();
+        }
     }
     public void Connection()
     {
