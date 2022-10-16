@@ -20,7 +20,7 @@ public class Client : MonoBehaviour
     string input, stringData;
     public TMP_InputField inputName, inputIp;
 
-    void StartUDP(string ip, string name)
+    void StartUDP(string name, string ip)
     {
         //Thread myThread = new Thread(Connection);
         // myThread.Start();

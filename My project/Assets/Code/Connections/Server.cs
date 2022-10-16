@@ -15,7 +15,7 @@ public class Server : MonoBehaviour
     Socket newsock;
     EndPoint remote;
     // Start is called before the first frame update
-    void CreateServer()
+    void Start()
     {
         Thread myThread = new Thread(Connection);
 
