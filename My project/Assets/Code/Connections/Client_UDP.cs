@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using TMPro;
 
-public class Client : MonoBehaviour
+public class Client_UDP : MonoBehaviour
 {
     // Start is called before the first frame update
     Socket newSocket;
