@@ -18,12 +18,20 @@ public class Client_UDP : MonoBehaviour
     IPEndPoint ipep;
     bool connected;
     string input, stringData;
+    public string nameUDP;
     public TMP_InputField inputName, inputIp;
+    public GameObject buttonLogin, buttonSend;
+    public TMP_InputField message;
 
+    [SerializeField] TMP_Text chatBox;
+    private void Start()
+    {
+        chatBox = GameObject.Find("ChatBox").GetComponent<TMP_Text>();
+    }
     void StartUDP(string name, string ip)
     {
-        //Thread myThread = new Thread(Connection);
-        // myThread.Start();
+        Thread myThread = new Thread(Connection);
+        myThread.Start();
         data = new byte[1024];
         ipep = new IPEndPoint(IPAddress.Parse(ip), 9050);
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -34,6 +42,12 @@ public class Client_UDP : MonoBehaviour
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(name);
         newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
+
+        inputName.gameObject.SetActive(false);
+        inputIp.gameObject.SetActive(false);
+        buttonLogin.SetActive(false);
+        message.gameObject.SetActive(true);
+        buttonSend.SetActive(true);
         
     }
     public void ButtonClicked()
@@ -41,6 +55,18 @@ public class Client_UDP : MonoBehaviour
         string name = inputName.text;
         string ip = inputIp.text;
         StartUDP(name,ip);
+    }
+
+    public void SendMessage()
+    {
+        data = new byte[1024];
+        recv = newSocket.ReceiveFrom(data, ref remote);
+        nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+
+        data = new byte[1024];
+        data = Encoding.ASCII.GetBytes(message.text);
+        newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
+        Debug.Log(nameUDP);
     }
 
     // Update is called once per frame
@@ -51,28 +77,29 @@ public class Client_UDP : MonoBehaviour
             newSocket.Close();
             Application.Quit();
         }
+        chatBox.text = nameUDP;
     }
     public void Connection()
     {
-        //data = new byte[1024];
-        //int recv = newSocket.ReceiveFrom(data, ref remote);
+        //recv = newSocket.ReceiveFrom(data, ref remote);
 
-        //Debug.Log("Message received from " + remote.ToString() +":");
-        ////Console.WriteLine(Encoding.ASCII.GetString(data, 0, recv));
+        //Debug.Log("Message received from " + remote.ToString() + ":");
 
+        //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+
+        ////string welcome = "Welcome to my test server";
+        ////data = Encoding.ASCII.GetBytes(welcome);
+        ////newsock.SendTo(data, data.Length, SocketFlags.None, remote);
         //while (true)
         //{
-        //    input = Console.ReadLine();
-        //    if (input == "exit")
-        //        break;
-        //    newSocket.SendTo(Encoding.ASCII.GetBytes(input), remote);
-        //    data = new byte[1024];
-        //    recv = newSocket.ReceiveFrom(data, ref remote);
-        //    stringData = Encoding.ASCII.GetString(data, 0, recv);
-        //    Console.WriteLine(stringData);
-        //}
-        //Console.WriteLine("Stopping client");
-        //newSocket.Close();
+        //    name = Encoding.ASCII.GetString(data, 0, recv);
 
+        //    data = new byte[1024];
+
+        //    recv = newSocket.ReceiveFrom(data, ref remote);
+
+        //    Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+        //    newSocket.SendTo(data, recv, SocketFlags.None, remote);
+        //}
     }
 }

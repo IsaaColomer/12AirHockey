@@ -17,6 +17,11 @@ public class Server_UDP : MonoBehaviour
     IPEndPoint sender;
     Socket newsock;
     EndPoint remote;
+
+    //Chat
+    string nameUDP = "";
+    public GameObject buttonSend;
+    public TMP_InputField message;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,10 +41,17 @@ public class Server_UDP : MonoBehaviour
     }
     private void Update()
     {
-        Connection();
+        chatBox.text = nameUDP;
+    }
+    public void SendMessage()
+    {
+        data = new byte[1024];
+        data = Encoding.ASCII.GetBytes(message.text);
+        newsock.SendTo(data, recv, SocketFlags.None, remote);
     }
     public void Connection()
     {
+        Debug.Log("adasdasdasdadasdsadsadasdasd");
         recv = newsock.ReceiveFrom(data, ref remote);
 
         Debug.Log("Message received from " + remote.ToString() + ":");
@@ -51,13 +63,18 @@ public class Server_UDP : MonoBehaviour
         //newsock.SendTo(data, data.Length, SocketFlags.None, remote);
         while (true)
         {
-            Debug.Log("aaaa");
+            nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+
             data = new byte[1024];
+
             recv = newsock.ReceiveFrom(data, ref remote);
 
             Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-            chatBox.text = Encoding.ASCII.GetString(data, 0, recv);
             newsock.SendTo(data, recv, SocketFlags.None, remote);
         }
+    }
+    public void SetName()
+    {
+        chatBox.text = Encoding.ASCII.GetString(data, 0, recv);
     }
 }
