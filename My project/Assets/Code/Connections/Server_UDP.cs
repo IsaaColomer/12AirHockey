@@ -20,13 +20,14 @@ public class Server_UDP : MonoBehaviour
     [SerializeField] private List<string> allTexts = new List<string>();
     //Chat
     string nameUDP = "";
-    public GameObject buttonSend;
+    [SerializeField] private GameObject buttonSend;
     public TMP_InputField message;
     // Start is called before the first frame update
     void Start()
     {
         Thread myThread = new Thread(Connection);
         chatBox = GameObject.Find("ChatBox").GetComponent<TMP_Text>();
+        buttonSend = GameObject.Find("ChatBox");
 
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -36,35 +37,29 @@ public class Server_UDP : MonoBehaviour
         sender = new IPEndPoint(IPAddress.Any, 0);
         remote = (EndPoint)(sender);      
 
-
         myThread.Start();        
     }
     private void Update()
     {
         chatBox.text = nameUDP;
-        for(int i = 0; i < allTexts.Count; i++)
-        {
-            Debug.Log(allTexts[i]);
-        }
     }
     public void SendMessage()
     {
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
         newsock.SendTo(data, recv, SocketFlags.None, remote);
+        if (message.text != "")
+            allTexts.Add(message.text);
     }
     public void Connection()
     {
-        Debug.Log("adasdasdasdadasdsadsadasdasd");
         recv = newsock.ReceiveFrom(data, ref remote);
 
         Debug.Log("Message received from " + remote.ToString() + ":");
 
         Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
         
-        //string welcome = "Welcome to my test server";
-        //data = Encoding.ASCII.GetBytes(welcome);
-        //newsock.SendTo(data, data.Length, SocketFlags.None, remote);
+        newsock.SendTo(data, data.Length, SocketFlags.None, remote);
         while (true)
         {
             nameUDP = Encoding.ASCII.GetString(data, 0, recv);
@@ -76,7 +71,6 @@ public class Server_UDP : MonoBehaviour
             Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
             newsock.SendTo(data, recv, SocketFlags.None, remote);
         }
-        allTexts.Add(nameUDP);
     }
     public void SetName()
     {
