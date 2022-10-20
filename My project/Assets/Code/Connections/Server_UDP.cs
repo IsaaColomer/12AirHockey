@@ -47,7 +47,8 @@ public class Server_UDP : MonoBehaviour
     {
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
-        newsock.SendTo(data, recv, SocketFlags.None, remote);
+        newsock.SendTo(data, data.Length, SocketFlags.None, remote);
+        nameUDP = Encoding.ASCII.GetString(data, 0, data.Length);
     }
     public void Connection()
     {
