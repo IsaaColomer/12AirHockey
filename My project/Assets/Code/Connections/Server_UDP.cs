@@ -17,7 +17,7 @@ public class Server_UDP : MonoBehaviour
     IPEndPoint sender;
     Socket newsock;
     EndPoint remote;
-    [SerializeField] private List<string> allTexts = new List<string>();
+    [SerializeField] public List<string> allTexts = new List<string>();
     //Chat
     string nameUDP = "";
     [SerializeField] private GameObject buttonSend;
@@ -48,8 +48,6 @@ public class Server_UDP : MonoBehaviour
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
         newsock.SendTo(data, recv, SocketFlags.None, remote);
-        if (message.text != "")
-            allTexts.Add(message.text);
     }
     public void Connection()
     {

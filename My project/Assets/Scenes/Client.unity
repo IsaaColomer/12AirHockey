@@ -656,6 +656,7 @@ MonoBehaviour:
   buttonLogin: {fileID: 484044992}
   buttonSend: {fileID: 94958457}
   message: {fileID: 1869808015}
+  textList: {fileID: 0}
   chatBox: {fileID: 0}
 --- !u!4 &385112402
 Transform:

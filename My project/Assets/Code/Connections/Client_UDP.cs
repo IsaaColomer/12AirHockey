@@ -22,11 +22,13 @@ public class Client_UDP : MonoBehaviour
     public TMP_InputField inputName, inputIp;
     public GameObject buttonLogin, buttonSend;
     public TMP_InputField message;
-
+    public Server_UDP textList;
     [SerializeField] private TMP_Text chatBox;
+    Thread myThread;
     private void Start()
     {
         chatBox = GameObject.Find("ChatBox").GetComponent<TMP_Text>();
+        myThread = new Thread(Receive);
     }
     void StartUDP(string name, string ip)
     {
@@ -40,6 +42,7 @@ public class Client_UDP : MonoBehaviour
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(name);
         newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
+        myThread.Start();
 
         inputName.gameObject.SetActive(false);
         inputIp.gameObject.SetActive(false);
@@ -51,16 +54,22 @@ public class Client_UDP : MonoBehaviour
     {
         StartUDP(inputName.text, inputIp.text);
     }
-
+    public void Receive()
+    {
+        while(true)
+        {
+            data = new byte[1024];
+            recv = newSocket.ReceiveFrom(data, ref remote);
+            nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+            Debug.Log(nameUDP.ToString());
+        }        
+    }
     public void SendMessage()
     {
         data = new byte[1024];
-        recv = newSocket.ReceiveFrom(data, ref remote);
-        nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-
-        data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
         newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
+        textList.allTexts.Add(message.text);
     }
 
     // Update is called once per frame
