@@ -69,7 +69,6 @@ public class Client_UDP : MonoBehaviour
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
         newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
-        textList.allTexts.Add(message.text);
     }
 
     // Update is called once per frame
