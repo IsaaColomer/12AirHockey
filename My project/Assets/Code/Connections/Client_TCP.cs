@@ -83,7 +83,8 @@ public class Client_TCP : MonoBehaviour
     public void SendMessage()
     {
         data = new byte[1024];
-        data = Encoding.ASCII.GetBytes(message.text);
+        string mess = "[" + inputName.text + "]:" +  message.text;
+        data = Encoding.ASCII.GetBytes(mess);
         newSocket.Send(data);
         //textList.allTexts.Add(message.text);
     }
