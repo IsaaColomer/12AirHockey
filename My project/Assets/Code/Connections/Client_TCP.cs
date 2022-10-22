@@ -34,25 +34,28 @@ public class Client_TCP : MonoBehaviour
     {
         Debug.Log("Starting");
         data = new byte[1024];
+        Debug.Log("1");
+        Debug.Log(ip);
         ipep = new IPEndPoint(IPAddress.Parse(ip), 9050);
+        Debug.Log("2");
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        Debug.Log("3");
 
         try
         {
             newSocket.Connect(ipep);
+            Debug.Log("Connected");
         }
         catch (SocketException e)
         {
             Debug.Log(e.ToString());
+            Debug.Log("Not Connected");
             return;
         }
 
-        Debug.Log("Connected");
-
-        //data = new byte[1024];
-        //data = Encoding.ASCII.GetBytes(name);
-        //newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
-        //myThread.Start();
+        data = Encoding.ASCII.GetBytes(name);
+        newSocket.Send(data, data.Length, SocketFlags.None);
+        myThread.Start();
 
         inputName.gameObject.SetActive(false);
         inputIp.gameObject.SetActive(false);
@@ -66,6 +69,7 @@ public class Client_TCP : MonoBehaviour
     }
     public void Receive()
     {
+        Debug.Log("Receiving");
         int recv = newSocket.Receive(data);
         stringData = Encoding.ASCII.GetString(data, 0, recv);
         while (true)

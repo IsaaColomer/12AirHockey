@@ -46,13 +46,13 @@ public class Server_TCP : MonoBehaviour
     {
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
-        newsock.SendTo(data, data.Length, SocketFlags.None, remote);
+        client.Send(data);
+
         nameUDP = Encoding.ASCII.GetString(data, 0, data.Length);
     }
     public void Connection()
     {
         newsock.Listen(10);
-
         client = newsock.Accept();
 
         sender = (IPEndPoint)client.RemoteEndPoint;
@@ -61,15 +61,23 @@ public class Server_TCP : MonoBehaviour
         Debug.Log("Message received from " + remote.ToString() + ":");
 
         Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-        
-        newsock.SendTo(data, data.Length, SocketFlags.None, remote);
+
+        data = Encoding.ASCII.GetBytes("Welcome to my test server");
+        client.Send(data, data.Length, SocketFlags.None);
+        Debug.Log("1");
         while (true)
         {
             data = new byte[1024];
 
+            Debug.Log("2");
             recv = client.Receive(data);
+            nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+            Debug.Log("3");
             if (recv == 0)
+            {
+                Debug.Log("Exit");
                 break;
+            }
 
             Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
             client.Send(data, recv, SocketFlags.None);
@@ -77,9 +85,5 @@ public class Server_TCP : MonoBehaviour
 
         client.Close();
         newsock.Close();
-    }
-    public void SetName()
-    {
-        chatBox.text = Encoding.ASCII.GetString(data, 0, recv);
     }
 }
