@@ -72,14 +72,6 @@ public class Server_TCP : MonoBehaviour
         newsock.Listen(10);
         client = newsock.Accept();
 
-        //Old script //DELETE
-        //sender = (IPEndPoint)client.RemoteEndPoint;
-        //remote = (EndPoint)(sender);
-
-        //Debug.Log("Message received from " + remote.ToString() + ":");
-
-        //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-
         nameUDP = Encoding.ASCII.GetString(data, 0, recv);
         string newMessage1 = "";
         for (int i = 0; i < nameUDP.Length; i++)
@@ -117,30 +109,5 @@ public class Server_TCP : MonoBehaviour
             //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
             client.Send(data, recv, SocketFlags.None);
         }
-
-        //OLD Script //DELETE
-        //data = Encoding.ASCII.GetBytes("Welcome to my test server");
-        //client.Send(data, data.Length, SocketFlags.None);
-        //Debug.Log("1");
-        //while (true)
-        //{
-        //    data = new byte[1024];
-
-        //    Debug.Log("2");
-        //    recv = client.Receive(data);
-        //    nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-        //    Debug.Log("3");
-        //    if (recv == 0)
-        //    {
-        //        Debug.Log("Exit");
-        //        break;
-        //    }
-
-        //    Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-        //    client.Send(data, recv, SocketFlags.None);
-        //}
-
-        //client.Close();
-        //newsock.Close();
     }
 }
