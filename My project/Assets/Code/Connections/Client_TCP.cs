@@ -23,23 +23,20 @@ public class Client_TCP : MonoBehaviour
     public GameObject buttonLogin, buttonSend;
     public TMP_InputField message;
     public Server_UDP textList;
+    public GameObject chatImage;
     [SerializeField] private TMP_Text chatBox;
+    [SerializeField] private bool canUpdateChatLog = false;
     Thread myThread;
+    [SerializeField] private List<string> allMessages = new List<string>();
     private void Start()
     {
-        chatBox = GameObject.Find("ChatBox").GetComponent<TMP_Text>();
         myThread = new Thread(Receive);
     }
     void StartTCP(string name, string ip)
     {
-        Debug.Log("Starting");
         data = new byte[1024];
-        Debug.Log("1");
-        Debug.Log(ip);
         ipep = new IPEndPoint(IPAddress.Parse(ip), 9050);
-        Debug.Log("2");
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        Debug.Log("3");
 
         try
         {
@@ -53,6 +50,7 @@ public class Client_TCP : MonoBehaviour
             return;
         }
 
+        data = new byte[1024];
         data = Encoding.ASCII.GetBytes(name);
         newSocket.Send(data, data.Length, SocketFlags.None);
         myThread.Start();
@@ -61,7 +59,9 @@ public class Client_TCP : MonoBehaviour
         inputIp.gameObject.SetActive(false);
         buttonLogin.SetActive(false);
         message.gameObject.SetActive(true);
-        buttonSend.SetActive(true);        
+        buttonSend.SetActive(true);
+        chatImage.SetActive(true);
+
     }
     public void ButtonClicked()
     {
@@ -69,34 +69,47 @@ public class Client_TCP : MonoBehaviour
     }
     public void Receive()
     {
-        Debug.Log("Receiving");
-        int recv = newSocket.Receive(data);
-        stringData = Encoding.ASCII.GetString(data, 0, recv);
         while (true)
         {
             data = new byte[1024];
             recv = newSocket.Receive(data);
+            nameUDP = "";
             nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-            Debug.Log(nameUDP);
-        }        
+            string newMessage = "";
+            for (int i = 0; i < nameUDP.Length; i++)
+            {
+                if (nameUDP[i] != 0)
+                {
+                    newMessage += nameUDP[i];
+                }
+            }
+            if (nameUDP != "")
+            {
+                allMessages.Add("[Foreign] ->" + newMessage);
+                canUpdateChatLog = true;
+            }
+        }
     }
     public void SendMessage()
     {
         data = new byte[1024];
-        string mess = "[" + inputName.text + "]:" +  message.text;
-        data = Encoding.ASCII.GetBytes(mess);
-        newSocket.Send(data);
+        data = Encoding.ASCII.GetBytes(message.text);
+        newSocket.Send(data, data.Length, SocketFlags.None);
         //textList.allTexts.Add(message.text);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             newSocket.Close();
             Application.Quit();
         }
-        chatBox.text = nameUDP;
+        if (canUpdateChatLog)
+        {
+            chatBox.text += allMessages[allMessages.Count - 1] + "\n";
+            canUpdateChatLog = false;
+        }
     }
 }
