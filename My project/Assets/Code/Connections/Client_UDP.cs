@@ -23,13 +23,13 @@ public class Client_UDP : MonoBehaviour
     public GameObject buttonLogin, buttonSend;
     public TMP_InputField message;
     public Server_UDP textList;
-    [SerializeField] private TMP_Text chatBox;
+    public GameObject chatImage;
+    [SerializeField] public TMP_Text chatBox;
     [SerializeField] private bool canUpdateChatLog = false;
     Thread myThread;
     [SerializeField] private List<string> allMessages = new List<string>();
     private void Start()
     {
-        chatBox = GameObject.Find("ChatBox").GetComponent<TMP_Text>();
         myThread = new Thread(Receive);
     }
     void StartUDP(string name, string ip)
@@ -51,6 +51,8 @@ public class Client_UDP : MonoBehaviour
         buttonLogin.SetActive(false);
         message.gameObject.SetActive(true);
         buttonSend.SetActive(true);        
+        chatImage.SetActive(true);        
+
     }
     public void ButtonClicked()
     {

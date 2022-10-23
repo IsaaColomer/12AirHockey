@@ -719,6 +719,7 @@ MonoBehaviour:
   buttonSend: {fileID: 94958457}
   message: {fileID: 1100017022}
   textList: {fileID: 0}
+  chatImage: {fileID: 6319254951161575383}
   chatBox: {fileID: 6319254951284851311}
   canUpdateChatLog: 0
   allMessages: []
@@ -3364,8 +3365,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -16.299927, y: 64.39996}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 5.2057, y: -9.4473}
+  m_SizeDelta: {x: 111.3561, y: 54.5356}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6319254951161575377
 MonoBehaviour:
