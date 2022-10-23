@@ -18,11 +18,12 @@ public class Server_TCP : MonoBehaviour
     EndPoint remote;
     Socket newsock;
     Socket client;
-    [SerializeField] public List<string> allTexts = new List<string>();
+   [SerializeField] bool canUpdateChatLog = false;
     //Chat
     string nameUDP = "";
     [SerializeField] private GameObject buttonSend;
     public TMP_InputField message;
+    [SerializeField] private List<string> allMessages = new List<string>();
     // Start is called before the first frame update
     void Start()
     {
@@ -33,57 +34,113 @@ public class Server_TCP : MonoBehaviour
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         newsock.Bind(ipep);
-        
         Debug.Log("Waiting for a client...");     
 
         myThread.Start();        
     }
     private void Update()
     {
-        chatBox.text = nameUDP;
+        if (canUpdateChatLog)
+        {
+            chatBox.text += allMessages[allMessages.Count - 1] + "\n";
+            canUpdateChatLog = false;
+        }
     }
     public void SendMessage()
     {
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
-        client.Send(data);
+        client.Send(data, data.Length, SocketFlags.None);
 
         nameUDP = Encoding.ASCII.GetString(data, 0, data.Length);
+        string newMessage = "";
+        for (int i = 0; i < nameUDP.Length; i++)
+        {
+            if (nameUDP[i] != 0)
+            {
+                newMessage += nameUDP[i];
+            }
+        }
+        if (nameUDP != "")
+        {
+            allMessages.Add("[You] ->" + newMessage);
+            canUpdateChatLog = true;
+        }
     }
     public void Connection()
     {
         newsock.Listen(10);
         client = newsock.Accept();
 
-        sender = (IPEndPoint)client.RemoteEndPoint;
-        remote = (EndPoint)(sender);
+        //Old script //DELETE
+        //sender = (IPEndPoint)client.RemoteEndPoint;
+        //remote = (EndPoint)(sender);
 
-        Debug.Log("Message received from " + remote.ToString() + ":");
+        //Debug.Log("Message received from " + remote.ToString() + ":");
 
-        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+        //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
 
-        data = Encoding.ASCII.GetBytes("Welcome to my test server");
+        nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+        string newMessage1 = "";
+        for (int i = 0; i < nameUDP.Length; i++)
+        {
+            if (nameUDP[i] != 0)
+            {
+                newMessage1 += nameUDP[i];
+            }
+        }
+        if (nameUDP != "")
+        {
+            allMessages.Add("[Foreign] ->" + newMessage1);
+            canUpdateChatLog = true;
+        }
         client.Send(data, data.Length, SocketFlags.None);
-        Debug.Log("1");
         while (true)
         {
             data = new byte[1024];
-
-            Debug.Log("2");
             recv = client.Receive(data);
             nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-            Debug.Log("3");
-            if (recv == 0)
+            string newMessage = "";
+            for (int i = 0; i < nameUDP.Length; i++)
             {
-                Debug.Log("Exit");
-                break;
+                if (nameUDP[i] != 0)
+                {
+                    newMessage += nameUDP[i];
+                }
+            }
+            if (nameUDP != "")
+            {
+                allMessages.Add("[Foreign] ->" + newMessage);
+                canUpdateChatLog = true;
             }
 
-            Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-            client.Send(data, recv, SocketFlags.None);
+            //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+            client.Send(data, recv, SocketFlags.None);
         }
 
-        client.Close();
-        newsock.Close();
+        //OLD Script //DELETE
+        //data = Encoding.ASCII.GetBytes("Welcome to my test server");
+        //client.Send(data, data.Length, SocketFlags.None);
+        //Debug.Log("1");
+        //while (true)
+        //{
+        //    data = new byte[1024];
+
+        //    Debug.Log("2");
+        //    recv = client.Receive(data);
+        //    nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+        //    Debug.Log("3");
+        //    if (recv == 0)
+        //    {
+        //        Debug.Log("Exit");
+        //        break;
+        //    }
+
+        //    Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+        //    client.Send(data, recv, SocketFlags.None);
+        //}
+
+        //client.Close();
+        //newsock.Close();
     }
 }
