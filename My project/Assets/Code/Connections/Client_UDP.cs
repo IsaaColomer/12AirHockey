@@ -60,7 +60,9 @@ public class Client_UDP : MonoBehaviour
     {
         while(true)
         {
-            
+            data = new byte[1024];
+            recv = newSocket.ReceiveFrom(data, ref remote);
+            nameUDP = "";
             nameUDP = Encoding.ASCII.GetString(data, 0, recv);
             string newMessage = "";
             for (int i = 0; i < nameUDP.Length; i++)
@@ -75,9 +77,6 @@ public class Client_UDP : MonoBehaviour
                 allMessages.Add("[Foreign] ->" + newMessage);
                 canUpdateChatLog = true;
             }
-            data = new byte[1024];
-            recv = newSocket.ReceiveFrom(data, ref remote);
-            Debug.Log(nameUDP.ToString());
         }        
     }
     public void SendMessage()
@@ -85,20 +84,20 @@ public class Client_UDP : MonoBehaviour
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
         newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
-
-        string newMessage = "";
-        for (int i = 0; i < nameUDP.Length; i++)
-        {
-            if (nameUDP[i] != 0)
-            {
-                newMessage += nameUDP[i];
-            }
-        }
-        if (nameUDP != "")
-        {
-            allMessages.Add("[You] ->" + newMessage);
-            canUpdateChatLog = true;
-        }
+        //nameUDP = message.text;
+        //string newMessage = "";
+        //for (int i = 0; i < nameUDP.Length; i++)
+        //{
+        //    if (nameUDP[i] != 0)
+        //    {
+        //        newMessage += nameUDP[i];
+        //    }
+        //}
+        //if (nameUDP != "")
+        //{
+        //    allMessages.Add("[You] ->" + newMessage);
+        //    canUpdateChatLog = true;
+        //}
     }
 
     // Update is called once per frame

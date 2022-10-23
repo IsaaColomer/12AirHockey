@@ -70,14 +70,27 @@ public class Server_UDP : MonoBehaviour
     }
     public void Connection()
     {
+        data = new byte[1024];
         recv = newsock.ReceiveFrom(data, ref remote);
-
-        Debug.Log("Message received from " + remote.ToString() + ":");
-
-        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+        nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+        string newMessage1 = "";
+        for (int i = 0; i < nameUDP.Length; i++)
+        {
+            if (nameUDP[i] != 0)
+            {
+                newMessage1 += nameUDP[i];
+            }
+        }
+        if (nameUDP != "")
+        {
+            allMessages.Add("[Foreign] ->" + newMessage1);
+            canUpdateChatLog = true;
+        }
         newsock.SendTo(data, data.Length, SocketFlags.None, remote);
         while (true)
         {
+            data = new byte[1024];
+            recv = newsock.ReceiveFrom(data, ref remote);
             nameUDP = Encoding.ASCII.GetString(data, 0, recv);
             string newMessage = "";
             for(int i = 0; i < nameUDP.Length; i++)
@@ -93,16 +106,8 @@ public class Server_UDP : MonoBehaviour
                 canUpdateChatLog = true;
             }
 
-            data = new byte[1024];
-
-            recv = newsock.ReceiveFrom(data, ref remote);            
-
-            Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+            //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
             newsock.SendTo(data, recv, SocketFlags.None, remote);
         }        
-    }
-    public void SetName()
-    {
-        chatBox.text += allMessages[allMessages.Count-1];
     }
 }
