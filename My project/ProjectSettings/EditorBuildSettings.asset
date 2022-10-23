@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainScreen.unity
     guid: 1888ddb05551909468ba73d065fc432c
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/ClientTCP.unity
     guid: fb2efd6b69e440148a44a5e4b5078884
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/ServerTCP.unity
     guid: 703655e80d3033a46abf8d4e7c3c036d
   - enabled: 0

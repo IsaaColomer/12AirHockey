@@ -20,7 +20,7 @@ public class Client_TCP : MonoBehaviour
     string input, stringData;
     public string nameUDP;
     public TMP_InputField inputName, inputIp;
-    public GameObject buttonLogin, buttonSend;
+    public GameObject buttonLogin, buttonSend, logo;
     public TMP_InputField message;
     public Server_UDP textList;
     public GameObject chatImage;
@@ -41,12 +41,9 @@ public class Client_TCP : MonoBehaviour
         try
         {
             newSocket.Connect(ipep);
-            Debug.Log("Connected");
         }
         catch (SocketException e)
         {
-            Debug.Log(e.ToString());
-            Debug.Log("Not Connected");
             return;
         }
 
@@ -58,10 +55,10 @@ public class Client_TCP : MonoBehaviour
         inputName.gameObject.SetActive(false);
         inputIp.gameObject.SetActive(false);
         buttonLogin.SetActive(false);
-        message.gameObject.SetActive(true);
+        chatImage.gameObject.SetActive(true);
         buttonSend.SetActive(true);
-        chatImage.SetActive(true);
-
+        message.gameObject.SetActive(true);
+        logo.SetActive(false);
     }
     public void ButtonClicked()
     {
@@ -95,7 +92,6 @@ public class Client_TCP : MonoBehaviour
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(message.text);
         newSocket.Send(data, data.Length, SocketFlags.None);
-        //textList.allTexts.Add(message.text);
     }
 
     // Update is called once per frame
