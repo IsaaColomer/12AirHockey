@@ -8,6 +8,7 @@ TagManager:
   - DiskRestart
   - PI_Player1
   - PI_Player2
+  - Players
   layers:
   - Default
   - TransparentFX
