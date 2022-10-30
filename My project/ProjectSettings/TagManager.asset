@@ -9,6 +9,7 @@ TagManager:
   - PI_Player1
   - PI_Player2
   - Players
+  - PowerUps
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Triggers
   - Player_1_field
   - Player_2_field
-  - 
+  - PowerUps
   - 
   - 
   - 

@@ -9,6 +9,7 @@ public class Disk_Code : MonoBehaviour
     [SerializeField] private GameObject pi_p1;
     [SerializeField] private GameObject pi_p2;
     [SerializeField] private Color startColor;
+    public string lastPlayerName;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,13 +19,6 @@ public class Disk_Code : MonoBehaviour
         pi_p2 = GameObject.FindGameObjectWithTag("PI_Player2");
         startColor = pi_p1.GetComponent<Renderer>().material.color;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.name == "Goal_p2")
@@ -33,7 +27,6 @@ public class Disk_Code : MonoBehaviour
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
             rb.angularDrag = 0f;
-            //pi_p2.GetComponent<Renderer>().material.color = Color.green;
             pi_p1.GetComponent<Renderer>().material.color = Color.yellow;
             StartCoroutine(WaitToRestartDisk());
         }
@@ -43,16 +36,24 @@ public class Disk_Code : MonoBehaviour
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
             rb.angularDrag = 0f;
-            //pi_p1.GetComponent<Renderer>().material.color = Color.green;
             pi_p2.GetComponent<Renderer>().material.color = Color.yellow;
             StartCoroutine(WaitToRestartDisk());
         }
     }
     IEnumerator WaitToRestartDisk()
     {
+        // Just in case we wait a few moments to restart the disk
         yield return new WaitForSeconds(.7f);
         pi_p1.GetComponent<Renderer>().material.color = startColor;        
         pi_p2.GetComponent<Renderer>().material.color = startColor;        
         transform.position = startPos;
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Players")
+        {
+            // Here we detect which is the last player that has touched the disk
+            lastPlayerName = collision.gameObject.name;
+        }
     }
 }

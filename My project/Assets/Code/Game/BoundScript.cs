@@ -5,12 +5,12 @@ using UnityEngine;
 public class BoundScript : MonoBehaviour
 {
     private Rigidbody rb;
-    [SerializeField] private string name;
+    [SerializeField] private string myName;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        name = this.gameObject.name;
+        myName = this.gameObject.name;
     }
 
     // Update is called once per frame
@@ -20,11 +20,11 @@ public class BoundScript : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if(other.transform.name == "Field_2_bounds" && name == "Player_1")
+        if(other.transform.name == "Field_2_bounds" && myName == "Player_1")
         {
             rb.velocity = UnityEngine.Vector3.zero;
         }
-        if(other.transform.name == "Field_1_bounds" && name == "Player_2")
+        if(other.transform.name == "Field_1_bounds" && myName == "Player_2")
         {
             rb.velocity = UnityEngine.Vector3.zero;
         }

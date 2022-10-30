@@ -8,11 +8,18 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     public LayerMask ignore;
     [SerializeField] private Camera cam;
+    private int powerType;
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponentInChildren<Rigidbody>();
         cam = GetComponent<Camera>();
+    }
+
+    public void GetType(int type)
+    {
+        powerType = type;
+        Debug.Log("Player power: " + powerType);
     }
 
     // Update is called once per frame
