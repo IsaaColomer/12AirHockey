@@ -9,11 +9,13 @@ public class PlayerScript : MonoBehaviour
     public LayerMask ignore;
     [SerializeField] private Camera cam;
     private int powerType;
+    public Client_UDP client;
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponentInChildren<Rigidbody>();
         cam = GetComponent<Camera>();
+        client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
     }
 
     public void GetType(int type)
@@ -25,20 +27,22 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UnityEngine.Vector3 mousePos = Input.mousePosition;
-        mousePos.z = 100f;
-        mousePos = cam.ScreenToWorldPoint(mousePos);
-        Debug.DrawRay(transform.position, mousePos-transform.position, Color.red);
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if(Physics.Raycast(ray, out hit,100f, ~ignore))
-        {
-            if(hit.transform.gameObject.tag == "Respawn")
+       
+            UnityEngine.Vector3 mousePos = Input.mousePosition;
+            mousePos.z = 100f;
+            mousePos = cam.ScreenToWorldPoint(mousePos);
+            Debug.DrawRay(transform.position, mousePos-transform.position, Color.red);
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if(Physics.Raycast(ray, out hit,100f, ~ignore))
             {
-                UnityEngine.Vector3 dir = hit.point-rb.transform.position;
-                rb.velocity = dir * 10f;
-                Debug.DrawRay(transform.position, mousePos-transform.position, Color.green);
-            }
+                if(hit.transform.gameObject.tag == "Respawn")
+                {
+                    UnityEngine.Vector3 dir = hit.point-rb.transform.position;
+                    rb.velocity = dir * 10f;
+                    Debug.DrawRay(transform.position, mousePos-transform.position, Color.green);
+                }
+            
         }
     }
 }

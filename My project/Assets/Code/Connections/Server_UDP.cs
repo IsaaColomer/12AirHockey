@@ -6,29 +6,25 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using TMPro;
-
+using System.IO;
 
 public class Server_UDP : MonoBehaviour
 {
     int recv;
-    [SerializeField] TMP_Text chatBox;
+    private string nameUDP;
     byte[] data = new byte[1024];
     IPEndPoint ipep;
     IPEndPoint sender;
     Socket newsock;
     EndPoint remote;
-    [SerializeField] bool canUpdateChatLog = false;
-    //Chat
-    string nameUDP = "";
-    [SerializeField] private GameObject buttonSend;
-    public TMP_InputField message;
-    [SerializeField] private List<string> allMessages = new List<string>();
+    MemoryStream stream;
+    public GameObject controller;
+    public GameObject disk;
+    public bool connected = false;
     // Start is called before the first frame update
     void Start()
     {
         Thread myThread = new Thread(Connection);
-        chatBox = GameObject.Find("ChatBox").GetComponent<TMP_Text>();
-        buttonSend = GameObject.Find("ChatBox");
 
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -36,78 +32,60 @@ public class Server_UDP : MonoBehaviour
         Debug.Log("Waiting for a client...");
 
         sender = new IPEndPoint(IPAddress.Any, 0);
-        remote = (EndPoint)(sender);      
-
-        myThread.Start();        
+        remote = (EndPoint)(sender);
+        myThread.Start();
     }
     private void Update()
     {
-        if(canUpdateChatLog)
-        {
-            chatBox.text += allMessages[allMessages.Count - 1] + "\n";
-            canUpdateChatLog = false;
-        }
+        if(connected)
+            StartCoroutine(SendInfo());
     }
-    public void SendMessage()
+    IEnumerator SendInfo()
     {
-        data = new byte[1024];
-        data = Encoding.ASCII.GetBytes(message.text);
-        newsock.SendTo(data, data.Length, SocketFlags.None, remote);
-        nameUDP = Encoding.ASCII.GetString(data, 0, data.Length);
-        string newMessage = "";
-        for (int i = 0; i < nameUDP.Length; i++)
-        {
-            if (nameUDP[i] != 0)
-            {
-                newMessage += nameUDP[i];
-            }
-        }
-        if (nameUDP != "")
-        {
-            allMessages.Add("[You] ->" + newMessage);
-            canUpdateChatLog = true;
-        }            
+        yield return new WaitForSeconds(0.16f);
+        Serialize();
+
+    }
+    void Serialize()
+    {
+        Debug.Log("Serializing");
+        stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
+
+        writer.Write(controller.transform.position.x);
+        writer.Write(controller.transform.position.y);
+        writer.Write(controller.transform.position.z);
+        writer.Write(disk.transform.position.x);
+        writer.Write(disk.transform.position.y);
+        writer.Write(disk.transform.position.z);
+
+        Debug.Log("serialized!");
+        Debug.Log(controller.transform.position.x);
+        Debug.Log(controller.transform.position.y);
+        Debug.Log(controller.transform.position.z);
+        Info();
+    }
+    public void Info()
+    {
+        Debug.Log("Sending");
+        newsock.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
+        Debug.Log("Sended");
     }
     public void Connection()
     {
         data = new byte[1024];
         recv = newsock.ReceiveFrom(data, ref remote);
-        nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-        string newMessage1 = "";
-        for (int i = 0; i < nameUDP.Length; i++)
-        {
-            if (nameUDP[i] != 0)
-            {
-                newMessage1 += nameUDP[i];
-            }
-        }
-        if (nameUDP != "")
-        {
-            allMessages.Add("[Foreign] ->" + newMessage1);
-            canUpdateChatLog = true;
-        }
-        newsock.SendTo(data, data.Length, SocketFlags.None, remote);
-        while (true)
-        {
-            data = new byte[1024];
-            recv = newsock.ReceiveFrom(data, ref remote);
-            nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-            string newMessage = "";
-            for(int i = 0; i < nameUDP.Length; i++)
-            {
-                if (nameUDP[i] != 0)
-                {
-                    newMessage += nameUDP[i];
-                }
-            }
-            if (nameUDP != "")
-            {
-                allMessages.Add("[Foreign] ->" + newMessage);
-                canUpdateChatLog = true;
-            }
+        connected = true;
+        //nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+        //Debug.Log("Connected");
+        //while (true)
+        //{
+        //    data = new byte[1024];
+        //    recv = newsock.ReceiveFrom(data, ref remote);
+        //    nameUDP = Encoding.ASCII.GetString(data, 0, recv);
 
-            //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-            newsock.SendTo(data, recv, SocketFlags.None, remote);
-        }        
+        //    //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+        //    newsock.SendTo(data, recv, SocketFlags.None, remote);
+        //}
     }
 }

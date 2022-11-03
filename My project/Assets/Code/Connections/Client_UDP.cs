@@ -6,6 +6,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Threading;
 using TMPro;
+using System.IO;
 
 public class Client_UDP : MonoBehaviour
 {
@@ -20,14 +21,16 @@ public class Client_UDP : MonoBehaviour
     string input, stringData;
     public string nameUDP;
     public TMP_InputField inputName, inputIp;
-    public GameObject buttonLogin, buttonSend;
-    public TMP_InputField message;
-    public Server_UDP textList;
-    public GameObject chatImage;
-    [SerializeField] public TMP_Text chatBox;
-    [SerializeField] private bool canUpdateChatLog = false;
+    public GameObject buttonLogin;
     Thread myThread;
-    [SerializeField] private List<string> allMessages = new List<string>();
+    MemoryStream stream;
+    public GameObject enemyController;
+    private Vector3 newPosEnemy;
+    public GameObject disk;
+    private Vector3 newPosDisk;
+    public bool isLoged = false;
+    public bool posChanged = false;
+
     private void Start()
     {
         myThread = new Thread(Receive);
@@ -37,83 +40,78 @@ public class Client_UDP : MonoBehaviour
         data = new byte[1024];
         ipep = new IPEndPoint(IPAddress.Parse(ip), 9050);
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
+        Debug.Log("Login 1");
         sender = new IPEndPoint(IPAddress.Any, 0);
         remote = (EndPoint)sender;
+        Debug.Log("Login 2");
 
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(name);
         newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
+        Debug.Log("Login 3");
         myThread.Start();
 
+        Debug.Log("Login 4");
         inputName.gameObject.SetActive(false);
         inputIp.gameObject.SetActive(false);
         buttonLogin.SetActive(false);
-        message.gameObject.SetActive(true);
-        buttonSend.SetActive(true);        
-        chatImage.SetActive(true);        
-
+        isLoged = true;
     }
     public void ButtonClicked()
     {
+        Debug.Log("Starting login");
         StartUDP(inputName.text, inputIp.text);
     }
     public void Receive()
     {
-        while(true)
+        while (true)
         {
             data = new byte[1024];
+            Debug.Log("Reciving info");
             recv = newSocket.ReceiveFrom(data, ref remote);
-            nameUDP = "";
-            nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-            string newMessage = "";
-            for (int i = 0; i < nameUDP.Length; i++)
-            {
-                if (nameUDP[i] != 0)
-                {
-                    newMessage += nameUDP[i];
-                }
-            }
-            if (nameUDP != "")
-            {
-                allMessages.Add("[Foreign] ->" + newMessage);
-                canUpdateChatLog = true;
-            }
-        }        
+            Debug.Log("Info recived");
+            stream = new MemoryStream(data);
+            Deserialize();
+
+        }
     }
+    void Deserialize()
+    {
+        BinaryReader reader = new BinaryReader(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+        float x = reader.ReadSingle();
+        float y = reader.ReadSingle();
+        float z = reader.ReadSingle();
+        newPosEnemy = new Vector3((float)x, (float)y, (float)z);
+        x = reader.ReadSingle();
+        y = reader.ReadSingle();
+        z = reader.ReadSingle();
+        newPosDisk = new Vector3((float)x, (float)y, (float)z);
+        posChanged = true;
+    }
+
     public void SendMessage()
     {
-        data = new byte[1024];
-        data = Encoding.ASCII.GetBytes(message.text);
-        newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
-        //nameUDP = message.text;
-        //string newMessage = "";
-        //for (int i = 0; i < nameUDP.Length; i++)
-        //{
-        //    if (nameUDP[i] != 0)
-        //    {
-        //        newMessage += nameUDP[i];
-        //    }
-        //}
-        //if (nameUDP != "")
-        //{
-        //    allMessages.Add("[You] ->" + newMessage);
-        //    canUpdateChatLog = true;
-        //}
+        //    data = new byte[1024];
+        //    data = Encoding.ASCII.GetBytes("dsa");
+        //    newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             newSocket.Close();
             Application.Quit();
         }
-        if (canUpdateChatLog)
+        if(posChanged)
         {
-            chatBox.text += allMessages[allMessages.Count - 1] + "\n";
-            canUpdateChatLog = false;
+            enemyController.transform.position = newPosEnemy;
+            Debug.Log(newPosEnemy);
+            disk.transform.position = newPosDisk;
+            Debug.Log(newPosDisk);
+            posChanged = false;
         }
     }
 }
