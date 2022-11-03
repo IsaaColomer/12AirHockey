@@ -51,8 +51,7 @@ public class Client_UDP : MonoBehaviour
         buttonLogin.SetActive(false);
         message.gameObject.SetActive(true);
         buttonSend.SetActive(true);        
-        chatImage.SetActive(true);        
-
+        chatImage.SetActive(true);
     }
     public void ButtonClicked()
     {

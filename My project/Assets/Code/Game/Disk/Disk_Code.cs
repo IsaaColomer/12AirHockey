@@ -10,6 +10,7 @@ public class Disk_Code : MonoBehaviour
     [SerializeField] private GameObject pi_p2;
     [SerializeField] private Color startColor;
     public string lastPlayerName;
+    public int bounceForce;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,6 +55,7 @@ public class Disk_Code : MonoBehaviour
         {
             // Here we detect which is the last player that has touched the disk
             lastPlayerName = collision.gameObject.name;
+            Debug.Log(lastPlayerName + " has collided with disk!");
         }
     }
 }
