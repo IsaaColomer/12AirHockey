@@ -15,6 +15,11 @@ public class PlayerScript : MonoBehaviour
     private UnityEngine.Vector3 reducedScale;
     private UnityEngine.Vector3 growedScale;
     private bool startApply = false;
+    private GameObject player;
+    private string curName = "MainCamera_";
+    private UnityEngine.Vector3 initDiskVel;
+    private UnityEngine.Vector3 slowedDiskVel;
+    [SerializeField] private Rigidbody disk;
     //gran petit
     //congelar
     //el disc va mes rapid
@@ -22,10 +27,16 @@ public class PlayerScript : MonoBehaviour
     {
         rb = gameObject.GetComponentInChildren<Rigidbody>();
         cam = GetComponent<Camera>();
-        initScale = gameObject.GetComponentInChildren<Transform>().localScale;
         initApplyPowerTime = applyPowerTime;
+        string name = this.gameObject.name.Replace(curName, null);
+        Debug.Log(name);
+        player = GameObject.Find(name).gameObject;
+        initScale = player.GetComponent<Transform>().localScale;
         reducedScale = initScale / 1.5f;
         growedScale = initScale * 1.5f;
+        disk = GameObject.Find("Disk").GetComponent<Rigidbody>();
+        initDiskVel = disk.velocity;
+        slowedDiskVel = initDiskVel/1.8f;
     }
 
     public void GetType(int type)
@@ -42,13 +53,13 @@ public class PlayerScript : MonoBehaviour
                 if(applyPowerTime > 0)
                 {
                     applyPowerTime -= Time.deltaTime;
-                    gameObject.GetComponentInChildren<Transform>().localScale = reducedScale;
+                    player.GetComponent<Transform>().localScale = reducedScale;
                     Debug.Log(applyPowerTime);
                 }
                 else
                 {
                     applyPowerTime = initApplyPowerTime;
-                    gameObject.GetComponentInChildren<Transform>().localScale = initScale;
+                    player.GetComponent<Transform>().localScale = initScale;
                     startApply = false;
                 }
                 break;
@@ -56,13 +67,13 @@ public class PlayerScript : MonoBehaviour
                 if (applyPowerTime > 0)
                 {
                     applyPowerTime -= Time.deltaTime;
-                    gameObject.GetComponentInChildren<Transform>().localScale = growedScale;
+                    player.GetComponent<Transform>().localScale = growedScale;
                     Debug.Log(applyPowerTime);
                 }
                 else
                 {
                     applyPowerTime = initApplyPowerTime;
-                    gameObject.GetComponentInChildren<Transform>().localScale = initScale;
+                    player.GetComponent<Transform>().localScale = initScale;
                     startApply = false;
                 }
                 break;
@@ -70,13 +81,12 @@ public class PlayerScript : MonoBehaviour
                 if (applyPowerTime > 0)
                 {
                     applyPowerTime -= Time.deltaTime;
-                    gameObject.GetComponentInChildren<Transform>().localScale = growedScale;
-                    Debug.Log(applyPowerTime);
+                    disk.velocity = slowedDiskVel;
                 }
                 else
                 {
                     applyPowerTime = initApplyPowerTime;
-                    gameObject.GetComponentInChildren<Transform>().localScale = initScale;
+                    disk.velocity = initDiskVel;
                     startApply = false;
                 }
                 break;
