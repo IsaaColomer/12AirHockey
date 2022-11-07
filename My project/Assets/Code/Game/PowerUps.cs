@@ -12,7 +12,7 @@ public class PowerUps : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        type = Random.Range(0, 3);
+        type = Random.Range(0, 4);
         disk = GameObject.Find("Disk").GetComponent<Disk_Code>();
         Debug.Log(type);
     }

@@ -16,6 +16,7 @@ public class PlayerScript : MonoBehaviour
     private UnityEngine.Vector3 growedScale;
     private bool startApply = false;
     private GameObject player;
+    private GameObject other;
     private string curName = "MainCamera_";
     private UnityEngine.Vector3 initDiskVel;
     private UnityEngine.Vector3 slowedDiskVel;
@@ -37,6 +38,13 @@ public class PlayerScript : MonoBehaviour
         disk = GameObject.Find("Disk").GetComponent<Rigidbody>();
         initDiskVel = disk.velocity;
         slowedDiskVel = initDiskVel/1.8f;
+        for(int i = 0; i < GameObject.FindGameObjectsWithTag("Players").Length; ++i)
+        {
+            if(GameObject.FindGameObjectsWithTag("Players")[i].name != player.name)
+            {
+                other = GameObject.FindGameObjectsWithTag("Players")[i];
+            }
+        }
     }
 
     public void GetType(int type)
@@ -87,6 +95,19 @@ public class PlayerScript : MonoBehaviour
                 {
                     applyPowerTime = initApplyPowerTime;
                     disk.velocity = initDiskVel;
+                    startApply = false;
+                }
+                break;
+            case 3:
+                if (applyPowerTime > 0)
+                {
+                    applyPowerTime -= Time.deltaTime;
+                    other.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+                }
+                else
+                {
+                    applyPowerTime = initApplyPowerTime; 
+                    other.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
                     startApply = false;
                 }
                 break;
