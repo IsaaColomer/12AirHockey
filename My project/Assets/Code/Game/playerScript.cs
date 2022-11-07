@@ -37,7 +37,7 @@ public class PlayerScript : MonoBehaviour
         growedScale = initScale * 1.5f;
         disk = GameObject.Find("Disk").GetComponent<Rigidbody>();
         initDiskVel = disk.velocity;
-        slowedDiskVel = initDiskVel/1.8f;
+        slowedDiskVel = initDiskVel/1.5f;
         for(int i = 0; i < GameObject.FindGameObjectsWithTag("Players").Length; ++i)
         {
             if(GameObject.FindGameObjectsWithTag("Players")[i].name != player.name)
@@ -51,7 +51,6 @@ public class PlayerScript : MonoBehaviour
     {
         powerType = type;
         startApply = true;
-        Debug.Log("Player power: " + powerType);
     }
     void ApplyPowerUp(int type)
     {
@@ -110,6 +109,8 @@ public class PlayerScript : MonoBehaviour
                     other.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
                     startApply = false;
                 }
+                break;
+            default:
                 break;
         }
     }
