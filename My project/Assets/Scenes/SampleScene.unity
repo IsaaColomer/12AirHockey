@@ -2772,7 +2772,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   ignore:
     serializedVersion: 2
-    m_Bits: 3526
+    m_Bits: 2508
   cam: {fileID: 0}
   applyPowerTime: 3
   disk: {fileID: 0}
