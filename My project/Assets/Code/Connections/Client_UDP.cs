@@ -107,9 +107,10 @@ public class Client_UDP : MonoBehaviour
         }
         if(posChanged)
         {
-            enemyController.transform.position = newPosEnemy;
+            enemyController.GetComponent<Rigidbody>().velocity = newPosEnemy;
+            //enemyController.transform.position = newPosEnemy;
             Debug.Log(newPosEnemy);
-            disk.transform.position = newPosDisk;
+            disk.GetComponent<Rigidbody>().velocity = newPosDisk;
             Debug.Log(newPosDisk);
             posChanged = false;
         }

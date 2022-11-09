@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerScript : MonoBehaviour
+public class playerScript : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
     public LayerMask ignore;

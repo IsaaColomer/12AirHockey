@@ -20,7 +20,7 @@ public class PowerUps : MonoBehaviour
     {
         if(other.gameObject.name == "Disk")
         {
-            GameObject.Find(disk.lastPlayerName).GetComponentInParent<PlayerScript>().GetType(type);
+            GameObject.Find(disk.lastPlayerName).GetComponentInParent<playerScript>().GetType(type);
             Destroy(this.gameObject);
         }
     }

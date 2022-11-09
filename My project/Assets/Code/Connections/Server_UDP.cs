@@ -19,7 +19,9 @@ public class Server_UDP : MonoBehaviour
     EndPoint remote;
     MemoryStream stream;
     public GameObject controller;
+    private Rigidbody playerRb;
     public GameObject disk;
+    private Rigidbody diskRb;
     public bool connected = false;
     // Start is called before the first frame update
     void Start()
@@ -29,6 +31,8 @@ public class Server_UDP : MonoBehaviour
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsock.Bind(ipep);
+        playerRb = controller.GetComponent<Rigidbody>();
+        diskRb = disk.GetComponent<Rigidbody>();
         Debug.Log("Waiting for a client...");
 
         sender = new IPEndPoint(IPAddress.Any, 0);
@@ -52,12 +56,15 @@ public class Server_UDP : MonoBehaviour
         stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
 
-        writer.Write(controller.transform.position.x);
-        writer.Write(controller.transform.position.y);
-        writer.Write(controller.transform.position.z);
-        writer.Write(disk.transform.position.x);
-        writer.Write(disk.transform.position.y);
-        writer.Write(disk.transform.position.z);
+        // writer.Write(controller.transform.position.x);
+        // writer.Write(controller.transform.position.y);
+        // writer.Write(controller.transform.position.z);
+        writer.Write(playerRb.velocity.x);
+        writer.Write(playerRb.velocity.y);
+        writer.Write(playerRb.velocity.z);
+        writer.Write(diskRb.velocity.x);
+        writer.Write(diskRb.velocity.y);
+        writer.Write(diskRb.velocity.z);
 
         Debug.Log("serialized!");
         Debug.Log(controller.transform.position.x);
