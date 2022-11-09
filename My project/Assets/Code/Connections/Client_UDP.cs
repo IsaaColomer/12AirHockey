@@ -28,14 +28,18 @@ public class Client_UDP : MonoBehaviour
     public bool isLoged = false;
     public bool posChanged = false;
     private GameObject enemyPlayer;
+    private GameObject player;
     private Rigidbody enemyPlayerRb;
+    private Rigidbody playerRb;
     private Rigidbody diskRb;
 
     private void Start()
     {
         myThread = new Thread(Receive);
         enemyPlayer = GameObject.Find("Player_2");
+        player = GameObject.Find("Player_1");
         enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
+        playerRb = player.GetComponent<Rigidbody>();
         diskRb = disk.GetComponent<Rigidbody>();
     }
     void StartUDP(string name, string ip)
@@ -64,8 +68,6 @@ public class Client_UDP : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(inputName.text);
-        Debug.Log(inputIp.text);
         if (isLoged)
             StartCoroutine(SendInfo());
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -77,9 +79,7 @@ public class Client_UDP : MonoBehaviour
         {
             enemyPlayer.GetComponent<Rigidbody>().velocity = -newPosEnemy;
             //enemyController.transform.position = newPosEnemy;
-            Debug.Log("New Enemy Pos: " + newPosEnemy);
             disk.GetComponent<Rigidbody>().velocity = -newPosDisk;
-            Debug.Log(newPosDisk);
             posChanged = false;
         }
     }
@@ -90,29 +90,21 @@ public class Client_UDP : MonoBehaviour
     }
     void Serialize()
     {
-        Debug.Log("Serializing");
         streamSerialize = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(streamSerialize);
 
-        writer.Write(enemyPlayerRb.velocity.x);
-        writer.Write(enemyPlayerRb.velocity.y);
-        writer.Write(enemyPlayerRb.velocity.z);
-        writer.Write(diskRb.velocity.x);
-        writer.Write(diskRb.velocity.y);
-        writer.Write(diskRb.velocity.z);
-
-        Debug.Log("serialized!");
+        writer.Write(playerRb.velocity.x);
+        writer.Write(playerRb.velocity.y);
+        writer.Write(playerRb.velocity.z);
+        Debug.Log(playerRb.velocity);
         Info();
     }
     public void Info()
     {
-        Debug.Log("Sending");
-        newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, ipep);
-        Debug.Log("Sended");
+        newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, ipep);
     }
     public void ButtonClicked()
     {
-        Debug.Log("Starting login");
         StartUDP(inputName.text, inputIp.text);
     }
     public void Receive()
@@ -120,9 +112,7 @@ public class Client_UDP : MonoBehaviour
         while (true)
         {
             data = new byte[1024];
-            Debug.Log("Reciving info");
             recv = newSocket.ReceiveFrom(data, ref remote);
-            Debug.Log("Info recived");
             stream = new MemoryStream(data);
             Deserialize();
         }
