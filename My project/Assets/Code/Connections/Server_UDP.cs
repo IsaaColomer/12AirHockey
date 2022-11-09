@@ -20,6 +20,8 @@ public class Server_UDP : MonoBehaviour
     MemoryStream stream;
     public GameObject player;
     private Rigidbody playerRb;
+    public GameObject enemyPlayer;
+    private Rigidbody enemyPlayerRb;
     public GameObject disk;
     private Rigidbody diskRb;
     private Vector3 newPosEnemy;
@@ -34,6 +36,7 @@ public class Server_UDP : MonoBehaviour
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsocket.Bind(ipep);
+        enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
         playerRb = player.GetComponent<Rigidbody>();
         diskRb = disk.GetComponent<Rigidbody>();
         Debug.Log("Waiting for a client...");
@@ -48,11 +51,10 @@ public class Server_UDP : MonoBehaviour
             StartCoroutine(SendInfo());
         if (posChanged)
         {
-            player.GetComponent<Rigidbody>().velocity = -newPosEnemy;
+            enemyPlayer.GetComponent<Rigidbody>().velocity = -newPosEnemy;
             //enemyController.transform.position = newPosEnemy;
-            Debug.Log("New Enemy Pos: " + newPosEnemy);
-            disk.GetComponent<Rigidbody>().velocity = -newPosDisk;
-            Debug.Log(newPosDisk);
+            //Debug.Log("New Enemy Pos: " + newPosEnemy);
+            //Debug.Log(newPosDisk);
             posChanged = false;
         }
     }
@@ -77,6 +79,8 @@ public class Server_UDP : MonoBehaviour
         writer.Write(diskRb.velocity.x);
         writer.Write(diskRb.velocity.y);
         writer.Write(diskRb.velocity.z);
+
+        Debug.Log(playerRb.velocity);
 
         Debug.Log("serialized!");
         Info();
@@ -112,10 +116,6 @@ public class Server_UDP : MonoBehaviour
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
         newPosEnemy = new Vector3((float)x, (float)y, (float)z);
-        x = reader.ReadSingle();
-        y = reader.ReadSingle();
-        z = reader.ReadSingle();
-        newPosDisk = new Vector3((float)x, (float)y, (float)z);
         posChanged = true;
     }
 }

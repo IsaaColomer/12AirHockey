@@ -4132,9 +4132,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6bb6e8a7d256784eabe890fd537fae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 1876040331020520973}
+  player: {fileID: 1876040331020520973}
+  enemyPlayer: {fileID: 5621158113882447145}
   disk: {fileID: 2482782428904443630}
   connected: 0
+  posChanged: 0
 --- !u!33 &8551854060813096478
 MeshFilter:
   m_ObjectHideFlags: 0
