@@ -72,7 +72,6 @@ public class Client_UDP : MonoBehaviour
             Debug.Log("Info recived");
             stream = new MemoryStream(data);
             Deserialize();
-
         }
     }
     void Deserialize()
@@ -107,10 +106,10 @@ public class Client_UDP : MonoBehaviour
         }
         if(posChanged)
         {
-            enemyController.GetComponent<Rigidbody>().velocity = newPosEnemy;
+            enemyController.GetComponent<Rigidbody>().velocity = -newPosEnemy;
             //enemyController.transform.position = newPosEnemy;
-            Debug.Log(newPosEnemy);
-            disk.GetComponent<Rigidbody>().velocity = newPosDisk;
+            Debug.Log("New Enemy Pos: " + newPosEnemy);
+            disk.GetComponent<Rigidbody>().velocity = -newPosDisk;
             Debug.Log(newPosDisk);
             posChanged = false;
         }

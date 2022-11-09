@@ -67,9 +67,6 @@ public class Server_UDP : MonoBehaviour
         writer.Write(diskRb.velocity.z);
 
         Debug.Log("serialized!");
-        Debug.Log(controller.transform.position.x);
-        Debug.Log(controller.transform.position.y);
-        Debug.Log(controller.transform.position.z);
         Info();
     }
     public void Info()
