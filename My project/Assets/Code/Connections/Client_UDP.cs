@@ -24,16 +24,22 @@ public class Client_UDP : MonoBehaviour
     public GameObject buttonLogin;
     Thread myThread;
     MemoryStream stream;
+    MemoryStream streamSerialize;
     public GameObject enemyController;
     private Vector3 newPosEnemy;
     public GameObject disk;
     private Vector3 newPosDisk;
     public bool isLoged = false;
     public bool posChanged = false;
+    public GameObject player;
+    private Rigidbody playerRb;
+    private Rigidbody diskRb;
 
     private void Start()
     {
         myThread = new Thread(Receive);
+        playerRb = player.GetComponent<Rigidbody>();
+        diskRb = disk.GetComponent<Rigidbody>();
     }
     void StartUDP(string name, string ip)
     {
@@ -99,6 +105,8 @@ public class Client_UDP : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (connected)
+            StartCoroutine(SendInfo());
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             newSocket.Close();
@@ -113,5 +121,35 @@ public class Client_UDP : MonoBehaviour
             Debug.Log(newPosDisk);
             posChanged = false;
         }
+    }
+    IEnumerator SendInfo()
+    {
+        yield return new WaitForSeconds(0.16f);
+        Serialize();
+    }
+    void Serialize()
+    {
+        Debug.Log("Serializing");
+        streamSerialize = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(streamSerialize);
+
+        // writer.Write(controller.transform.position.x);
+        // writer.Write(controller.transform.position.y);
+        // writer.Write(controller.transform.position.z);
+        writer.Write(playerRb.velocity.x);
+        writer.Write(playerRb.velocity.y);
+        writer.Write(playerRb.velocity.z);
+        writer.Write(diskRb.velocity.x);
+        writer.Write(diskRb.velocity.y);
+        writer.Write(diskRb.velocity.z);
+
+        Debug.Log("serialized!");
+        Info();
+    }
+    public void Info()
+    {
+        Debug.Log("Sending");
+        newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
+        Debug.Log("Sended");
     }
 }

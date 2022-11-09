@@ -15,23 +15,26 @@ public class Server_UDP : MonoBehaviour
     byte[] data = new byte[1024];
     IPEndPoint ipep;
     IPEndPoint sender;
-    Socket newsock;
+    Socket newsocket;
     EndPoint remote;
     MemoryStream stream;
-    public GameObject controller;
+    public GameObject player;
     private Rigidbody playerRb;
     public GameObject disk;
     private Rigidbody diskRb;
+    private Vector3 newPosEnemy;
+    private Vector3 newPosDisk;
     public bool connected = false;
+    public bool posChanged = false;
     // Start is called before the first frame update
     void Start()
     {
         Thread myThread = new Thread(Connection);
 
         ipep = new IPEndPoint(IPAddress.Any, 9050);
-        newsock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        newsock.Bind(ipep);
-        playerRb = controller.GetComponent<Rigidbody>();
+        newsocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        newsocket.Bind(ipep);
+        playerRb = player.GetComponent<Rigidbody>();
         diskRb = disk.GetComponent<Rigidbody>();
         Debug.Log("Waiting for a client...");
 
@@ -43,6 +46,15 @@ public class Server_UDP : MonoBehaviour
     {
         if(connected)
             StartCoroutine(SendInfo());
+        if (posChanged)
+        {
+            player.GetComponent<Rigidbody>().velocity = -newPosEnemy;
+            //enemyController.transform.position = newPosEnemy;
+            Debug.Log("New Enemy Pos: " + newPosEnemy);
+            disk.GetComponent<Rigidbody>().velocity = -newPosDisk;
+            Debug.Log(newPosDisk);
+            posChanged = false;
+        }
     }
     IEnumerator SendInfo()
     {
@@ -72,24 +84,38 @@ public class Server_UDP : MonoBehaviour
     public void Info()
     {
         Debug.Log("Sending");
-        newsock.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
+        newsocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
         Debug.Log("Sended");
     }
     public void Connection()
     {
         data = new byte[1024];
-        recv = newsock.ReceiveFrom(data, ref remote);
+        recv = newsocket.ReceiveFrom(data, ref remote);
         connected = true;
-        //nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-        //Debug.Log("Connected");
-        //while (true)
-        //{
-        //    data = new byte[1024];
-        //    recv = newsock.ReceiveFrom(data, ref remote);
-        //    nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-
-        //    //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-        //    newsock.SendTo(data, recv, SocketFlags.None, remote);
-        //}
+        nameUDP = Encoding.ASCII.GetString(data, 0, recv);
+        Debug.Log("Connected");
+        while (true)
+        {
+            data = new byte[1024];
+            Debug.Log("Reciving info");
+            recv = newsocket.ReceiveFrom(data, ref remote);
+            Debug.Log("Info recived");
+            stream = new MemoryStream(data);
+            Deserialize();
+        }
+    }
+    void Deserialize()
+    {
+        BinaryReader reader = new BinaryReader(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+        float x = reader.ReadSingle();
+        float y = reader.ReadSingle();
+        float z = reader.ReadSingle();
+        newPosEnemy = new Vector3((float)x, (float)y, (float)z);
+        x = reader.ReadSingle();
+        y = reader.ReadSingle();
+        z = reader.ReadSingle();
+        newPosDisk = new Vector3((float)x, (float)y, (float)z);
+        posChanged = true;
     }
 }
