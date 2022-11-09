@@ -5546,11 +5546,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a27800046e2aac94083b6b95b896a547, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameUDP: 
   inputName: {fileID: 945904745}
   inputIp: {fileID: 1922604223}
   buttonLogin: {fileID: 3014343246904940143}
-  enemyController: {fileID: 1876040331020520973}
   disk: {fileID: 2482782428904443630}
   isLoged: 0
   posChanged: 0

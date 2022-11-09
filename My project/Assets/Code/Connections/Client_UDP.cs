@@ -11,34 +11,31 @@ using System.IO;
 public class Client_UDP : MonoBehaviour
 {
     // Start is called before the first frame update
-    Socket newSocket;
     int recv;
+    Socket newSocket;
     byte[] data;
     EndPoint remote;
     IPEndPoint sender;
     IPEndPoint ipep;
-    bool connected;
-    string input, stringData;
-    public string nameUDP;
     public TMP_InputField inputName, inputIp;
     public GameObject buttonLogin;
     Thread myThread;
     MemoryStream stream;
     MemoryStream streamSerialize;
-    public GameObject enemyController;
     private Vector3 newPosEnemy;
     public GameObject disk;
     private Vector3 newPosDisk;
     public bool isLoged = false;
     public bool posChanged = false;
-    public GameObject player;
-    private Rigidbody playerRb;
+    private GameObject enemyPlayer;
+    private Rigidbody enemyPlayerRb;
     private Rigidbody diskRb;
 
     private void Start()
     {
         myThread = new Thread(Receive);
-        playerRb = player.GetComponent<Rigidbody>();
+        enemyPlayer = GameObject.Find("Player_2");
+        enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
         diskRb = disk.GetComponent<Rigidbody>();
     }
     void StartUDP(string name, string ip)
@@ -62,6 +59,56 @@ public class Client_UDP : MonoBehaviour
         inputIp.gameObject.SetActive(false);
         buttonLogin.SetActive(false);
         isLoged = true;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Debug.Log(inputName.text);
+        Debug.Log(inputIp.text);
+        if (isLoged)
+            StartCoroutine(SendInfo());
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            newSocket.Close();
+            Application.Quit();
+        }
+        if (posChanged)
+        {
+            enemyPlayer.GetComponent<Rigidbody>().velocity = -newPosEnemy;
+            //enemyController.transform.position = newPosEnemy;
+            Debug.Log("New Enemy Pos: " + newPosEnemy);
+            disk.GetComponent<Rigidbody>().velocity = -newPosDisk;
+            Debug.Log(newPosDisk);
+            posChanged = false;
+        }
+    }
+    IEnumerator SendInfo()
+    {
+        yield return new WaitForSeconds(0.16f);
+        Serialize();
+    }
+    void Serialize()
+    {
+        Debug.Log("Serializing");
+        streamSerialize = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(streamSerialize);
+
+        writer.Write(enemyPlayerRb.velocity.x);
+        writer.Write(enemyPlayerRb.velocity.y);
+        writer.Write(enemyPlayerRb.velocity.z);
+        writer.Write(diskRb.velocity.x);
+        writer.Write(diskRb.velocity.y);
+        writer.Write(diskRb.velocity.z);
+
+        Debug.Log("serialized!");
+        Info();
+    }
+    public void Info()
+    {
+        Debug.Log("Sending");
+        newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, ipep);
+        Debug.Log("Sended");
     }
     public void ButtonClicked()
     {
@@ -100,56 +147,5 @@ public class Client_UDP : MonoBehaviour
         //    data = new byte[1024];
         //    data = Encoding.ASCII.GetBytes("dsa");
         //    newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (connected)
-            StartCoroutine(SendInfo());
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            newSocket.Close();
-            Application.Quit();
-        }
-        if(posChanged)
-        {
-            enemyController.GetComponent<Rigidbody>().velocity = -newPosEnemy;
-            //enemyController.transform.position = newPosEnemy;
-            Debug.Log("New Enemy Pos: " + newPosEnemy);
-            disk.GetComponent<Rigidbody>().velocity = -newPosDisk;
-            Debug.Log(newPosDisk);
-            posChanged = false;
-        }
-    }
-    IEnumerator SendInfo()
-    {
-        yield return new WaitForSeconds(0.16f);
-        Serialize();
-    }
-    void Serialize()
-    {
-        Debug.Log("Serializing");
-        streamSerialize = new MemoryStream();
-        BinaryWriter writer = new BinaryWriter(streamSerialize);
-
-        // writer.Write(controller.transform.position.x);
-        // writer.Write(controller.transform.position.y);
-        // writer.Write(controller.transform.position.z);
-        writer.Write(playerRb.velocity.x);
-        writer.Write(playerRb.velocity.y);
-        writer.Write(playerRb.velocity.z);
-        writer.Write(diskRb.velocity.x);
-        writer.Write(diskRb.velocity.y);
-        writer.Write(diskRb.velocity.z);
-
-        Debug.Log("serialized!");
-        Info();
-    }
-    public void Info()
-    {
-        Debug.Log("Sending");
-        newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
-        Debug.Log("Sended");
     }
 }
