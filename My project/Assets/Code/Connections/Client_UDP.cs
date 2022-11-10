@@ -81,7 +81,7 @@ public class Client_UDP : MonoBehaviour
         {
             enemyPlayer.GetComponent<Rigidbody>().velocity = -newPosEnemy;
             //enemyController.transform.position = newPosEnemy;
-            disk.GetComponent<Rigidbody>().velocity = -newPosDisk;
+            disk.GetComponent<Transform>().position = new UnityEngine.Vector3(-newPosDisk.x, 0.8529103f, -newPosDisk.z);
             posChanged = false;
         }
     }
@@ -138,10 +138,11 @@ public class Client_UDP : MonoBehaviour
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
         newPosEnemy = new Vector3((float)x, (float)y, (float)z);
-        x = reader.ReadSingle();
-        y = reader.ReadSingle();
-        z = reader.ReadSingle();
-        newPosDisk = new Vector3((float)x, (float)y, (float)z);
+
+        float dx = reader.ReadSingle();
+        float dy = reader.ReadSingle();
+        float dz = reader.ReadSingle();
+        newPosDisk = new Vector3((float)dx, (float)dy, (float)dz);
         posChanged = true;
     }
 
