@@ -124,7 +124,7 @@ public class Server_UDP : MonoBehaviour
         float dx = reader.ReadSingle();
         float dy = reader.ReadSingle();
         float dz = reader.ReadSingle();
-        newPosEnemy = new Vector3((float)x, (float)y, (float)z);
+        newPosEnemy = new Vector3((float)dx, (float)dy, (float)dz);
         posChanged = true;
     }
 }
