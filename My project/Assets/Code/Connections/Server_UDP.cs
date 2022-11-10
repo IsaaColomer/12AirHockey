@@ -55,7 +55,8 @@ public class Server_UDP : MonoBehaviour
         {
             enemyDir = newEnemyHit - newPosEnemy;
             enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir*10);
-            Debug.Log("Enemy Dir: " + enemyDir);
+            Debug.Log("Enemy Hit: " + newEnemyHit);
+            Debug.Log("Enemy Pos: " + newPosEnemy);
             //enemyController.transform.position = newPosEnemy;
             //Debug.Log("New Enemy Pos: " + newPosEnemy);
             //Debug.Log(newPosDisk);
