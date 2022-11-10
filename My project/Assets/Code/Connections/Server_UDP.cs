@@ -23,7 +23,7 @@ public class Server_UDP : MonoBehaviour
     public GameObject enemyPlayer;
     private Rigidbody enemyPlayerRb;
     public GameObject disk;
-    private Rigidbody diskRb;
+    private Transform diskTransform;
     private Vector3 newPosEnemy;
     private Vector3 newEnemyHit;
     private Vector3 newPosDisk;
@@ -40,7 +40,7 @@ public class Server_UDP : MonoBehaviour
         newsocket.Bind(ipep);
         enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
         playerRb = player.GetComponent<Rigidbody>();
-        diskRb = disk.GetComponent<Rigidbody>();
+        diskTransform = disk.GetComponent<Transform>().transform;
         Debug.Log("Waiting for a client...");
 
         sender = new IPEndPoint(IPAddress.Any, 0);
@@ -81,9 +81,9 @@ public class Server_UDP : MonoBehaviour
         writer.Write(playerRb.velocity.x);
         writer.Write(playerRb.velocity.y);
         writer.Write(playerRb.velocity.z);
-        writer.Write(diskRb.velocity.x);
-        writer.Write(diskRb.velocity.y);
-        writer.Write(diskRb.velocity.z);
+        writer.Write(diskTransform.transform.position.x);
+        writer.Write(diskTransform.transform.position.y);
+        writer.Write(diskTransform.transform.position.z);
 
         Debug.Log(playerRb.velocity);
 
