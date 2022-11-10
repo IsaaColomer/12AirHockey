@@ -5,8 +5,8 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/MainScreen.unity
+  - enabled: 1
+    path: Assets/Scenes/ClientServerInOne/MainScreen.unity
     guid: 1888ddb05551909468ba73d065fc432c
   - enabled: 0
     path: Assets/Scenes/ClientTCP.unity
@@ -20,10 +20,16 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/ServerUDP.unity
     guid: ccebfbf46eff47f4bba1ad4597ceaa17
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GameScenes/GameServerUDP.unity
     guid: 82283e2de66b3b54ca4733dd68f17dbf
   - enabled: 0
     path: Assets/Scenes/GameScenes/GameClientUDP.unity
     guid: 2c828c28653804a41bbcaf5230c0999d
+  - enabled: 0
+    path: Assets/Scenes/MainScreen.unity
+    guid: 899b0d4791eeeae44b0bcd6a8e4e6954
+  - enabled: 1
+    path: Assets/Scenes/ClientServerInOne/GameClientServer.unity
+    guid: ec5d99e117070d7489c57ca848043b23
   m_configObjects: {}
