@@ -10,7 +10,7 @@ using System.IO;
 
 public class Client_UDP : MonoBehaviour
 {
-    private playerScript clientPlayer;
+    public playerScript clientPlayer;
     // Start is called before the first frame update
     int recv;
     Socket newSocket;
@@ -43,7 +43,6 @@ public class Client_UDP : MonoBehaviour
         enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
         playerRb = player.GetComponent<Rigidbody>();
         diskRb = disk.GetComponent<Rigidbody>();
-        clientPlayer = player.GetComponent<playerScript>();
     }
     void StartUDP(string name, string ip)
     {

@@ -38,10 +38,10 @@ public class playerScript : MonoBehaviour
             if(Physics.Raycast(ray, out hit,100f, ~ignore))
             {
                 if(hit.transform.gameObject.tag == "Respawn")
-                {
-                    dir = hit.point-rb.transform.position;
+                {                    
                     if(this.gameObject.name != "Player_1")
                     {
+                        dir = hit.point - rb.transform.position;
                         rb.velocity = dir * 10f;
                     }
                     
