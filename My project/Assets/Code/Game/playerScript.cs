@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class playerScript : MonoBehaviour
 {
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] public Rigidbody rb;
     public LayerMask ignore;
     [SerializeField] private Camera cam;
     private int powerType;
     public Client_UDP client;
+    public UnityEngine.Vector3 dir;
+    public RaycastHit hit;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,17 +34,19 @@ public class playerScript : MonoBehaviour
             mousePos.z = 100f;
             mousePos = cam.ScreenToWorldPoint(mousePos);
             Debug.DrawRay(transform.position, mousePos-transform.position, Color.red);
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);            
             if(Physics.Raycast(ray, out hit,100f, ~ignore))
             {
                 if(hit.transform.gameObject.tag == "Respawn")
                 {
-                    UnityEngine.Vector3 dir = hit.point-rb.transform.position;
-                    rb.velocity = dir * 10f;
+                    dir = hit.point-rb.transform.position;
+                    if(this.gameObject.name != "Player_1")
+                    {
+                        rb.velocity = dir * 10f;
+                    }
+                    
                     Debug.DrawRay(transform.position, mousePos-transform.position, Color.green);
-                }
-            
-        }
+                }            
+            }
     }
 }

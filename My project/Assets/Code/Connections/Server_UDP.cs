@@ -25,9 +25,11 @@ public class Server_UDP : MonoBehaviour
     public GameObject disk;
     private Rigidbody diskRb;
     private Vector3 newPosEnemy;
+    private Vector3 newEnemyHit;
     private Vector3 newPosDisk;
     public bool connected = false;
     public bool posChanged = false;
+    UnityEngine.Vector3 enemyDir;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,7 +53,8 @@ public class Server_UDP : MonoBehaviour
             StartCoroutine(SendInfo());
         if (posChanged)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -newPosEnemy;
+            enemyDir = newEnemyHit - newPosEnemy;
+            enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir*10);
             //enemyController.transform.position = newPosEnemy;
             //Debug.Log("New Enemy Pos: " + newPosEnemy);
             //Debug.Log(newPosDisk);
@@ -115,6 +118,10 @@ public class Server_UDP : MonoBehaviour
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
+        newEnemyHit = new Vector3((float)x, (float)y, (float)z);
+        float dx = reader.ReadSingle();
+        float dy = reader.ReadSingle();
+        float dz = reader.ReadSingle();
         newPosEnemy = new Vector3((float)x, (float)y, (float)z);
         posChanged = true;
     }

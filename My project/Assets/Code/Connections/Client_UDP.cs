@@ -10,6 +10,7 @@ using System.IO;
 
 public class Client_UDP : MonoBehaviour
 {
+    private playerScript clientPlayer;
     // Start is called before the first frame update
     int recv;
     Socket newSocket;
@@ -32,6 +33,7 @@ public class Client_UDP : MonoBehaviour
     private Rigidbody enemyPlayerRb;
     private Rigidbody playerRb;
     private Rigidbody diskRb;
+    private UnityEngine.Vector3 dir;
 
     private void Start()
     {
@@ -41,6 +43,7 @@ public class Client_UDP : MonoBehaviour
         enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
         playerRb = player.GetComponent<Rigidbody>();
         diskRb = disk.GetComponent<Rigidbody>();
+        clientPlayer = player.GetComponent<playerScript>();
     }
     void StartUDP(string name, string ip)
     {
@@ -93,9 +96,20 @@ public class Client_UDP : MonoBehaviour
         streamSerialize = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(streamSerialize);
 
-        writer.Write(playerRb.velocity.x);
-        writer.Write(playerRb.velocity.y);
-        writer.Write(playerRb.velocity.z);
+        writer.Write(clientPlayer.hit.point.x);
+        writer.Write(clientPlayer.hit.point.y);
+        writer.Write(clientPlayer.hit.point.z);
+
+        //
+
+        writer.Write(clientPlayer.rb.transform.position.x);
+        writer.Write(clientPlayer.rb.transform.position.y);
+        writer.Write(clientPlayer.rb.transform.position.z);
+
+
+        //writer.Write(playerRb.velocity.x);
+        //writer.Write(playerRb.velocity.y);
+        //writer.Write(playerRb.velocity.z);
         Debug.Log(playerRb.velocity);
         Info();
     }
