@@ -132,6 +132,7 @@ public class ServerClient_UDP : MonoBehaviour
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
+        Debug.Log(new Vector3(x,y,z));
         vector1 = new Vector3((float)x, (float)y, (float)z);
         float dx = reader.ReadSingle();
         float dy = reader.ReadSingle();
@@ -183,6 +184,7 @@ public class ServerClient_UDP : MonoBehaviour
         writer.Write(firstInfo.x);
         writer.Write(firstInfo.y);
         writer.Write(firstInfo.z);
+        Debug.Log(firstInfo);
 
         //Server: diskTransform.transform.position
         //Client: clientPlayer.rb.transform.position
