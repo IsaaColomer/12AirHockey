@@ -168,12 +168,12 @@ public class ServerClient_UDP : MonoBehaviour
     {
         yield return new WaitForSeconds(0.16f);
         if(scenesManager.type == ScenesManager.UserType.HOST)
-            Serialize(playerRb.velocity, diskTransform.transform.position,remote);
+            Serialize(playerRb.velocity, diskTransform.transform.position);
         else
-            Serialize(clientPlayer.hit.point, clientPlayer.rb.transform.position,ipep);
+            Serialize(clientPlayer.hit.point, clientPlayer.rb.transform.position);
 
     }
-    void Serialize(Vector3 firstInfo, Vector3 secondInfo, EndPoint remote)
+    void Serialize(Vector3 firstInfo, Vector3 secondInfo)
     {
         Debug.Log("Serializing");
         stream = new MemoryStream();
@@ -195,12 +195,15 @@ public class ServerClient_UDP : MonoBehaviour
         Debug.Log(playerRb.velocity);
 
         Debug.Log("serialized!");
-        Info(remote);
+        Info();
     }
-    public void Info(EndPoint remote)
+    public void Info()
     {
         Debug.Log("Sending");
-        newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
+        if (scenesManager.type == ScenesManager.UserType.HOST)
+            newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
+        else if (scenesManager.type == ScenesManager.UserType.CLIENT)
+            newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, ipep);
         Debug.Log("Sended");
     }
 }
