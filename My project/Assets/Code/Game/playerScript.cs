@@ -48,5 +48,9 @@ public class playerScript : MonoBehaviour
                     Debug.DrawRay(transform.position, mousePos-transform.position, Color.green);
                 }            
             }
+            else
+            {
+            rb.velocity = dir * 10f;
+            }
     }
 }

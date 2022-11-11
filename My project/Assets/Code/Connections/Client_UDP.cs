@@ -105,10 +105,6 @@ public class Client_UDP : MonoBehaviour
         writer.Write(clientPlayer.rb.transform.position.y);
         writer.Write(clientPlayer.rb.transform.position.z);
 
-
-        //writer.Write(playerRb.velocity.x);
-        //writer.Write(playerRb.velocity.y);
-        //writer.Write(playerRb.velocity.z);
         Debug.Log(playerRb.velocity);
         Info();
     }
