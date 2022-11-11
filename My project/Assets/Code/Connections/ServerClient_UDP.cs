@@ -153,16 +153,15 @@ public class ServerClient_UDP : MonoBehaviour
         {
             enemyDir = vector1 - vector2;
             enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir * 10);
-            //Debug.Log("Enemy Hit: " + vector1);
-            //Debug.Log("Enemy Pos: " + vector2);
             posChanged = false;
         }
         else if(posChanged && scenesManager.type == ScenesManager.UserType.CLIENT)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -vector2;
-            disk.GetComponent<Transform>().position = new UnityEngine.Vector3(-newPosDisk.x, 0.8529103f, -newPosDisk.z);
+            enemyPlayer.GetComponent<Rigidbody>().velocity = -vector2;            
             posChanged = false;
         }
+        if(scenesManager.type == ScenesManager.UserType.CLIENT)
+            disk.GetComponent<Transform>().position = new UnityEngine.Vector3(-newPosDisk.x, 0.8529103f, -newPosDisk.z);
     }
     IEnumerator SendInfo()
     {
