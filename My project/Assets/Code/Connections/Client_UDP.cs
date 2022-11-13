@@ -33,6 +33,7 @@ public class Client_UDP : MonoBehaviour
     private Rigidbody enemyPlayerRb;
     private Rigidbody playerRb;
     private Rigidbody diskRb;
+    private Vector3 diskRbVel;
     private UnityEngine.Vector3 dir;
 
     private void Start()
@@ -79,11 +80,13 @@ public class Client_UDP : MonoBehaviour
         }
         if (posChanged)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -newPosEnemy;
+            
             //enemyController.transform.position = newPosEnemy;
-            disk.GetComponent<Transform>().position = new UnityEngine.Vector3(-newPosDisk.x, 0.8529103f, -newPosDisk.z);
             posChanged = false;
         }
+        enemyPlayer.GetComponent<Rigidbody>().velocity = -newPosEnemy;
+        disk.GetComponent<Rigidbody>().velocity = -diskRbVel;
+        disk.transform.position = new Vector3(-newPosDisk.x, 0.8529103f, -newPosDisk.z);
     }
     IEnumerator SendInfo()
     {
@@ -101,11 +104,9 @@ public class Client_UDP : MonoBehaviour
 
         //
 
-        writer.Write(clientPlayer.rb.transform.position.x);
-        writer.Write(clientPlayer.rb.transform.position.y);
-        writer.Write(clientPlayer.rb.transform.position.z);
-
-        Debug.Log(playerRb.velocity);
+        writer.Write(player.transform.position.x);
+        writer.Write(player.transform.position.y);
+        writer.Write(player.transform.position.z);
         Info();
     }
     public void Info()
@@ -138,7 +139,12 @@ public class Client_UDP : MonoBehaviour
         float dx = reader.ReadSingle();
         float dy = reader.ReadSingle();
         float dz = reader.ReadSingle();
-        newPosDisk = new Vector3((float)dx, (float)dy, (float)dz);
+        diskRbVel = new Vector3((float)dx, (float)dy, (float)dz);
+
+        float rx = reader.ReadSingle();
+        float ry = reader.ReadSingle();
+        float rz = reader.ReadSingle();
+        newPosDisk = new Vector3((float)rx, (float)ry, (float)rz);
         posChanged = true;
     }
 

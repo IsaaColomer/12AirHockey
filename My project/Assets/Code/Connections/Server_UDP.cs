@@ -20,6 +20,7 @@ public class Server_UDP : MonoBehaviour
     MemoryStream stream;
     public GameObject player;
     private Rigidbody playerRb;
+    private Rigidbody diskRb;
     public GameObject enemyPlayer;
     private Rigidbody enemyPlayerRb;
     public GameObject disk;
@@ -33,6 +34,7 @@ public class Server_UDP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Screen.SetResolution(720, 360, false);
         Thread myThread = new Thread(Connection);
 
         ipep = new IPEndPoint(IPAddress.Any, 9050);
@@ -40,6 +42,7 @@ public class Server_UDP : MonoBehaviour
         newsocket.Bind(ipep);
         enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
         playerRb = player.GetComponent<Rigidbody>();
+        diskRb = disk.GetComponent<Rigidbody>();
         diskTransform = disk.GetComponent<Transform>().transform;
         Debug.Log("Waiting for a client...");
 
@@ -49,19 +52,19 @@ public class Server_UDP : MonoBehaviour
     }
     private void Update()
     {
-        if(connected)
+        enemyDir = newEnemyHit - newPosEnemy;
+        if (connected)
             StartCoroutine(SendInfo());
         if (posChanged)
         {
-            enemyDir = newEnemyHit - newPosEnemy;
+            
             enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir*10);
-            Debug.Log("Enemy Hit: " + newEnemyHit);
-            Debug.Log("Enemy Pos: " + newPosEnemy);
-            //enemyController.transform.position = newPosEnemy;
+            enemyPlayer.transform.position = new Vector3(-newPosEnemy.x, 0.85f, -newPosEnemy.z);
+           
             //Debug.Log("New Enemy Pos: " + newPosEnemy);
             //Debug.Log(newPosDisk);
             posChanged = false;
-        }
+        }       
     }
     IEnumerator SendInfo()
     {
@@ -75,16 +78,15 @@ public class Server_UDP : MonoBehaviour
         stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
 
-        // writer.Write(controller.transform.position.x);
-        // writer.Write(controller.transform.position.y);
-        // writer.Write(controller.transform.position.z);
         writer.Write(playerRb.velocity.x);
         writer.Write(playerRb.velocity.y);
         writer.Write(playerRb.velocity.z);
-        writer.Write(diskTransform.transform.position.x);
-        writer.Write(diskTransform.transform.position.y);
-        writer.Write(diskTransform.transform.position.z);
-
+        writer.Write(diskRb.velocity.x);
+        writer.Write(diskRb.velocity.y);
+        writer.Write(diskRb.velocity.z);
+        writer.Write(diskRb.transform.position.x);
+        writer.Write(diskRb.transform.position.y);
+        writer.Write(diskRb.transform.position.z);
         Debug.Log(playerRb.velocity);
 
         Debug.Log("serialized!");
