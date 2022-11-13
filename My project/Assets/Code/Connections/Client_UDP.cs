@@ -80,13 +80,20 @@ public class Client_UDP : MonoBehaviour
         }
         if (posChanged)
         {
-            
-            //enemyController.transform.position = newPosEnemy;
+            enemyPlayer.GetComponent<Rigidbody>().velocity = -dir;
             posChanged = false;
         }
-        enemyPlayer.GetComponent<Rigidbody>().velocity = -newPosEnemy;
+        
         disk.GetComponent<Rigidbody>().velocity = -diskRbVel;
-        disk.transform.position = new Vector3(-newPosDisk.x, 0.8529103f, -newPosDisk.z);
+        StartCoroutine(UpdateDisAndEnemykPos());
+    }
+    IEnumerator UpdateDisAndEnemykPos()
+    {
+        yield return new WaitForSeconds(0.16f);
+        UnityEngine.Vector3 newnewPos = new Vector3(-newPosDisk.x, 0.8529103f, -newPosDisk.z);
+        Vector3.Lerp(disk.transform.position, newnewPos, 0.16f);
+        UnityEngine.Vector3 newnewPos2 = new Vector3(-newPosEnemy.x, 0.85f, -newPosEnemy.z);
+        Vector3.Lerp(disk.transform.position, newnewPos2, 0.16f);
     }
     IEnumerator SendInfo()
     {
@@ -134,7 +141,7 @@ public class Client_UDP : MonoBehaviour
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
-        newPosEnemy = new Vector3((float)x, (float)y, (float)z);
+        dir = new Vector3((float)x, (float)y, (float)z);
 
         float dx = reader.ReadSingle();
         float dy = reader.ReadSingle();
@@ -145,6 +152,10 @@ public class Client_UDP : MonoBehaviour
         float ry = reader.ReadSingle();
         float rz = reader.ReadSingle();
         newPosDisk = new Vector3((float)rx, (float)ry, (float)rz);
+        float px = reader.ReadSingle();
+        float py = reader.ReadSingle();
+        float pz = reader.ReadSingle();
+        newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
         posChanged = true;
     }
 

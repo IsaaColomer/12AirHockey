@@ -66,6 +66,7 @@ public class Server_UDP : MonoBehaviour
             posChanged = false;
         }       
     }
+    
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
@@ -87,6 +88,10 @@ public class Server_UDP : MonoBehaviour
         writer.Write(diskRb.transform.position.x);
         writer.Write(diskRb.transform.position.y);
         writer.Write(diskRb.transform.position.z);
+
+        writer.Write(player.transform.position.x);
+        writer.Write(player.transform.position.y);
+        writer.Write(player.transform.position.z);
         Debug.Log(playerRb.velocity);
 
         Debug.Log("serialized!");
