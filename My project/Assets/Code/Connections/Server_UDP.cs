@@ -36,6 +36,11 @@ public class Server_UDP : MonoBehaviour
     {
         Thread myThread = new Thread(Connection);
 
+        CreatingServer();
+        myThread.Start();
+    }
+    void CreatingServer()
+    {
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsocket.Bind(ipep);
@@ -47,7 +52,6 @@ public class Server_UDP : MonoBehaviour
 
         sender = new IPEndPoint(IPAddress.Any, 0);
         remote = (EndPoint)(sender);
-        myThread.Start();
     }
     private void Update()
     {
