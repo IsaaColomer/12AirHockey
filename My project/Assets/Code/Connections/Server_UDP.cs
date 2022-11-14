@@ -85,7 +85,7 @@ public class Server_UDP : MonoBehaviour
         stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
 
-        writer.Write(connected.ToString());
+        //writer.Write(connected.ToString());
         writer.Write(playerRb.velocity.x);
         writer.Write(playerRb.velocity.y);
         writer.Write(playerRb.velocity.z);
