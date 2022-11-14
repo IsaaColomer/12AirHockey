@@ -54,6 +54,13 @@ public class Server_UDP : MonoBehaviour
         enemyDir = newEnemyHit - newPosEnemy;
         if (connected)
             StartCoroutine(SendInfo());
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            connected = false;
+            Serialize();
+            newsocket.Close();
+            Application.Quit();
+        }
         if (posChanged)
         {
             
