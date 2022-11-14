@@ -85,15 +85,15 @@ public class Client_UDP : MonoBehaviour
         }
         
         disk.GetComponent<Rigidbody>().velocity = diskRbVel;
-        StartCoroutine(UpdateDisAndEnemykPos());
+        UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
+        Vector3.Lerp(disk.transform.position, newnewPos, 0.16f);
+        UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
+        Vector3.Lerp(disk.transform.position, newnewPos2, 0.16f);
     }
     IEnumerator UpdateDisAndEnemykPos()
     {
-        yield return new WaitForSeconds(0.16f);
-        UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
-        Vector3.Lerp(disk.transform.position, newnewPos, 0f);
-        UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
-        Vector3.Lerp(disk.transform.position, newnewPos2, 0f);
+        yield return new WaitForSeconds(0f);
+        
     }
     IEnumerator SendInfo()
     {
