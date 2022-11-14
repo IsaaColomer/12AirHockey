@@ -138,6 +138,8 @@ public class Client_UDP : MonoBehaviour
     {
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
+
+        string conn = reader.ReadString();
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
@@ -156,6 +158,11 @@ public class Client_UDP : MonoBehaviour
         float py = reader.ReadSingle();
         float pz = reader.ReadSingle();
         newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
+        Debug.Log(conn);
+        if (conn == "false")
+        {
+            //cositas
+        }
         posChanged = true;
     }
 
