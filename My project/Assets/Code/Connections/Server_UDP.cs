@@ -57,8 +57,8 @@ public class Server_UDP : MonoBehaviour
         if (posChanged)
         {
             
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir*10);
-            enemyPlayer.transform.position = new Vector3(-newPosEnemy.x, 0.85f, -newPosEnemy.z);
+            enemyPlayer.GetComponent<Rigidbody>().velocity = (enemyDir*10);
+            enemyPlayer.transform.position = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
            
             //Debug.Log("New Enemy Pos: " + newPosEnemy);
             //Debug.Log(newPosDisk);
