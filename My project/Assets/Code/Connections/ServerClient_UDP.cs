@@ -152,11 +152,17 @@ public class ServerClient_UDP : MonoBehaviour
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
-        if(scenesManager.type == ScenesManager.UserType.HOST)
+        if (scenesManager.type == ScenesManager.UserType.HOST)
+        {
+            Debug.Log(1);
             Serialize(playerRb.velocity, diskTransform.transform.position);
-        else
-            Serialize(clientPlayer.hit.point, clientPlayer.rb.transform.position);
+        }
 
+        else
+        {
+            Debug.Log(2);
+            Serialize(clientPlayer.hit.point, clientPlayer.rb.transform.position);
+        }
     }
     void Serialize(Vector3 firstInfo, Vector3 secondInfo)
     {
@@ -178,7 +184,7 @@ public class ServerClient_UDP : MonoBehaviour
         writer.Write(secondInfo.y);
         writer.Write(secondInfo.z);
 
-        Debug.Log(playerRb.velocity);
+        //Debug.Log(playerRb.velocity);
 
         Debug.Log("serialized!");
         Info();
