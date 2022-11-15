@@ -26,9 +26,15 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/GameScenes/GameClientUDP.unity
     guid: 2c828c28653804a41bbcaf5230c0999d
+  - enabled: 1
+    path: Assets/Scenes/ClientServerInOne/GameClient.unity
+    guid: 91fe26c003dd8fb4399e9f8f1e86be03
   - enabled: 0
     path: Assets/Scenes/MainScreen.unity
     guid: 899b0d4791eeeae44b0bcd6a8e4e6954
+  - enabled: 1
+    path: Assets/Scenes/ClientServerInOne/GameServer.unity
+    guid: 1ba8ab460ba9c5047a346232f58ca3d9
   - enabled: 1
     path: Assets/Scenes/ClientServerInOne/GameClientServer.unity
     guid: ec5d99e117070d7489c57ca848043b23
