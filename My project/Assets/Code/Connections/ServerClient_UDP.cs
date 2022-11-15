@@ -33,7 +33,8 @@ public class ServerClient_UDP : MonoBehaviour
     private Rigidbody diskRb;
     private Transform diskTransform;
 
-    MemoryStream stream;
+    MemoryStream streamSerialize;
+    MemoryStream streamDeserilize;
     private Vector3 vector1;
     private Vector3 vector2;//newPosEnemy//newPosDisk
     private Vector3 newPosDisk;
@@ -99,7 +100,7 @@ public class ServerClient_UDP : MonoBehaviour
             recv = newSocket.ReceiveFrom(data, ref remote);
             connected = true;
             Debug.Log("Info recived");
-            stream = new MemoryStream(data);
+            streamDeserilize = new MemoryStream(data);
             Deserialize();
         }
     }
@@ -127,8 +128,8 @@ public class ServerClient_UDP : MonoBehaviour
     }
     void Deserialize()
     {
-        BinaryReader reader = new BinaryReader(stream);
-        stream.Seek(0, SeekOrigin.Begin);
+        BinaryReader reader = new BinaryReader(streamDeserilize);
+        streamDeserilize.Seek(0, SeekOrigin.Begin);
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
@@ -176,8 +177,8 @@ public class ServerClient_UDP : MonoBehaviour
     void Serialize(Vector3 firstInfo, Vector3 secondInfo)
     {
         Debug.Log("Serializing");
-        stream = new MemoryStream();
-        BinaryWriter writer = new BinaryWriter(stream);
+        streamSerialize = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(streamSerialize);
 
         //Server: playerRb.Velocity
         //Client: clientPlayer.hit.point
@@ -201,9 +202,9 @@ public class ServerClient_UDP : MonoBehaviour
     {
         Debug.Log("Sending");
         if (scenesManager.type == ScenesManager.UserType.HOST)
-            newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
+            newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, remote);
         else if (scenesManager.type == ScenesManager.UserType.CLIENT)
-            newSocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, ipep);
+            newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, ipep);
         Debug.Log("Sended");
     }
 }
