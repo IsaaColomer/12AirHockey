@@ -96,10 +96,10 @@ public class ServerClient_UDP : MonoBehaviour
         while (true)
         {
             data = new byte[1024];
-            Debug.Log("Reciving info");
+            //Debug.Log("Reciving info");
             recv = newSocket.ReceiveFrom(data, ref remote);
             connected = true;
-            Debug.Log("Info recived");
+            //Debug.Log("Info recived");
             streamDeserilize = new MemoryStream(data);
             Deserialize();
         }
@@ -126,22 +126,6 @@ public class ServerClient_UDP : MonoBehaviour
         buttonLogin.SetActive(false);
         connected = true;
     }
-    void Deserialize()
-    {
-        BinaryReader reader = new BinaryReader(streamDeserilize);
-        streamDeserilize.Seek(0, SeekOrigin.Begin);
-        float x = reader.ReadSingle();
-        float y = reader.ReadSingle();
-        float z = reader.ReadSingle();
-        Debug.Log(new Vector3(x,y,z));
-        vector1 = new Vector3((float)x, (float)y, (float)z);
-        float dx = reader.ReadSingle();
-        float dy = reader.ReadSingle();
-        float dz = reader.ReadSingle();
-        vector2 = new Vector3((float)dx, (float)dy, (float)dz);
-        posChanged = true;
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -182,6 +166,7 @@ public class ServerClient_UDP : MonoBehaviour
 
         //Server: playerRb.Velocity
         //Client: clientPlayer.hit.point
+        writer.Write("Hola");
         writer.Write(firstInfo.x);
         writer.Write(firstInfo.y);
         writer.Write(firstInfo.z);
@@ -198,13 +183,31 @@ public class ServerClient_UDP : MonoBehaviour
         Debug.Log("serialized!");
         Info();
     }
+    void Deserialize()
+    {
+        BinaryReader reader = new BinaryReader(streamDeserilize);
+        streamDeserilize.Seek(0, SeekOrigin.Begin);
+        string a = reader.ReadString();
+        Debug.Log(a);
+        float x = reader.ReadSingle();
+        float y = reader.ReadSingle();
+        float z = reader.ReadSingle();
+        //Debug.Log(new Vector3(x, y, z));
+        vector1 = new Vector3((float)x, (float)y, (float)z);
+        float dx = reader.ReadSingle();
+        float dy = reader.ReadSingle();
+        float dz = reader.ReadSingle();
+        vector2 = new Vector3((float)dx, (float)dy, (float)dz);
+        posChanged = true;
+    }
+
     public void Info()
     {
-        Debug.Log("Sending");
+        //Debug.Log("Sending");
         if (scenesManager.type == ScenesManager.UserType.HOST)
             newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, remote);
         else if (scenesManager.type == ScenesManager.UserType.CLIENT)
             newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, ipep);
-        Debug.Log("Sended");
+        //Debug.Log("Sended");
     }
 }
