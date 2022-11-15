@@ -21,8 +21,8 @@ public class Client_UDP : MonoBehaviour
     public TMP_InputField inputName, inputIp;
     public GameObject buttonLogin;
     Thread myThread;
-    MemoryStream stream;
     MemoryStream streamSerialize;
+    MemoryStream streamDeserialize;
     private Vector3 newPosEnemy;
     public GameObject disk;
     private Vector3 newPosDisk;
@@ -130,14 +130,14 @@ public class Client_UDP : MonoBehaviour
         {
             data = new byte[1024];
             recv = newSocket.ReceiveFrom(data, ref remote);
-            stream = new MemoryStream(data);
+            streamDeserialize = new MemoryStream(data);
             Deserialize();
         }
     }
     void Deserialize()
     {
-        BinaryReader reader = new BinaryReader(stream);
-        stream.Seek(0, SeekOrigin.Begin);
+        BinaryReader reader = new BinaryReader(streamDeserialize);
+        streamDeserialize.Seek(0, SeekOrigin.Begin);
 
         string conn = reader.ReadString();
         float x = reader.ReadSingle();

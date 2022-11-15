@@ -17,7 +17,8 @@ public class Server_UDP : MonoBehaviour
     IPEndPoint sender;
     Socket newsocket;
     EndPoint remote;
-    MemoryStream stream;
+    MemoryStream streamSerialize;
+    MemoryStream streamDeserialize;
     public GameObject player;
     private Rigidbody playerRb;
     private Rigidbody diskRb;
@@ -86,8 +87,8 @@ public class Server_UDP : MonoBehaviour
     void Serialize()
     {
         Debug.Log("Serializing");
-        stream = new MemoryStream();
-        BinaryWriter writer = new BinaryWriter(stream);
+        streamSerialize = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(streamSerialize);
 
         //writer.Write(connected.ToString());
         writer.Write(playerRb.velocity.x);
@@ -111,7 +112,7 @@ public class Server_UDP : MonoBehaviour
     public void Info()
     {
         Debug.Log("Sending");
-        newsocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
+        newsocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, remote);
         Debug.Log("Sended");
     }
     public void Connection()
@@ -127,14 +128,14 @@ public class Server_UDP : MonoBehaviour
             Debug.Log("Reciving info");
             recv = newsocket.ReceiveFrom(data, ref remote);
             Debug.Log("Info recived");
-            stream = new MemoryStream(data);
+            streamDeserialize = new MemoryStream(data);
             Deserialize();
         }
     }
     void Deserialize()
     {
-        BinaryReader reader = new BinaryReader(stream);
-        stream.Seek(0, SeekOrigin.Begin);
+        BinaryReader reader = new BinaryReader(streamDeserialize);
+        streamDeserialize.Seek(0, SeekOrigin.Begin);
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
