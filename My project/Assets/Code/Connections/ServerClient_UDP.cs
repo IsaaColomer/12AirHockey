@@ -88,25 +88,10 @@ public class ServerClient_UDP : MonoBehaviour
     {
         StartUDP(inputName.text, inputIp.text);
     }
-    void Connection()
-    {
-        //data = new byte[1024];
-        //recv = newSocket.ReceiveFrom(data, ref remote);
-        //Debug.Log("Connected");
-        while (true)
-        {
-            data = new byte[1024];
-            //Debug.Log("Reciving info");
-            recv = newSocket.ReceiveFrom(data, ref remote);
-            connected = true;
-            //Debug.Log("Info recived");
-            streamDeserilize = new MemoryStream(data);
-            Deserialize();
-        }
-    }
     public void StartUDP(string name, string ip)
     {
         data = new byte[1024];
+        Debug.Log(0);
         ipep = new IPEndPoint(IPAddress.Parse(ip), 9050);
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         Debug.Log("Login 1");
@@ -125,6 +110,22 @@ public class ServerClient_UDP : MonoBehaviour
         inputIp.gameObject.SetActive(false);
         buttonLogin.SetActive(false);
         connected = true;
+    }
+    void Connection()
+    {
+        //data = new byte[1024];
+        //recv = newSocket.ReceiveFrom(data, ref remote);
+        //Debug.Log("Connected");
+        while (true)
+        {
+            data = new byte[1024];
+            //Debug.Log("Reciving info");
+            recv = newSocket.ReceiveFrom(data, ref remote);
+            connected = true;
+            //Debug.Log("Info recived");
+            streamDeserilize = new MemoryStream(data);
+            Deserialize();
+        }
     }
     private void Update()
     {
