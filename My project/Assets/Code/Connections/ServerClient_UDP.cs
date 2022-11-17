@@ -138,11 +138,13 @@ public class ServerClient_UDP : MonoBehaviour
             StartCoroutine(SendInfo());
         if(posChanged && scenesManager.type == ScenesManager.UserType.CLIENT)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -vector2;            
+            enemyPlayer.GetComponent<Rigidbody>().velocity = -vector1;            
             posChanged = false;
+            Debug.Log("velocity change client");
         }
         if(posChanged && scenesManager.type == ScenesManager.UserType.HOST)
         {
+                        Debug.Log("velocity change host");
             enemyDir = vector1 - vector2;
             enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir * 10);
             posChanged = false;
@@ -177,7 +179,7 @@ public class ServerClient_UDP : MonoBehaviour
         writer.Write(firstInfo.x);
         writer.Write(firstInfo.y);
         writer.Write(firstInfo.z);
-        Debug.Log(firstInfo);
+        //Debug.Log(firstInfo);
 
         //Server: diskTransform.transform.position
         //Client: clientPlayer.rb.transform.position
@@ -199,7 +201,7 @@ public class ServerClient_UDP : MonoBehaviour
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
-        //Debug.Log(new Vector3(x, y, z));
+        Debug.Log(new Vector3(x, y, z));
         vector1 = new Vector3((float)x, (float)y, (float)z);
         float dx = reader.ReadSingle();
         float dy = reader.ReadSingle();
