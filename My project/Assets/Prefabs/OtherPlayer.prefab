@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1993762797012280301}
   - component: {fileID: 5497983717601238520}
   - component: {fileID: 1993762797012280274}
-  - component: {fileID: 1993762797012280275}
   - component: {fileID: 1993762797012280300}
   m_Layer: 6
   m_Name: OtherPlayer
@@ -102,20 +101,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 2
---- !u!64 &1993762797012280275
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8578237969875975166}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 1989874302858966134, guid: eda6cecd26a44574db3216c7abfffee4, type: 3}
 --- !u!114 &1993762797012280300
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ public class playerScript : MonoBehaviour
 {
     [SerializeField] public Rigidbody rb;
     public LayerMask ignore;
+    private ServerClient_UDP serverClient;
     [SerializeField] private Camera cam;
     private int powerType;
     public Client_UDP client;
@@ -17,7 +18,7 @@ public class playerScript : MonoBehaviour
     {
         rb = gameObject.GetComponentInChildren<Rigidbody>();
         cam = GetComponent<Camera>();
-        client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
+        serverClient = GameObject.Find("OnlineGameObject").GetComponent<ServerClient_UDP>();
     }
 
     public void GetType(int type)
@@ -29,24 +30,28 @@ public class playerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
-            UnityEngine.Vector3 mousePos = Input.mousePosition;
-            mousePos.z = 100f;
-            mousePos = cam.ScreenToWorldPoint(mousePos);
-            Debug.DrawRay(transform.position, mousePos-transform.position, Color.red);
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);            
-            if(Physics.Raycast(ray, out hit,100f, ~ignore))
+
+        UnityEngine.Vector3 mousePos = Input.mousePosition;
+        mousePos.z = 100f;
+        mousePos = cam.ScreenToWorldPoint(mousePos);
+        Debug.DrawRay(transform.position, mousePos - transform.position, Color.red);
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, 100f, ~ignore))
+        {
+            if (hit.transform.gameObject.tag == "Respawn")
             {
-                if(hit.transform.gameObject.tag == "Respawn")
-                {                    
-                    if(this.gameObject.name != "Player_1")
-                    {
-                        dir = hit.point - rb.transform.position;
-                        rb.velocity = dir * 10f;
-                    }
-                    
-                    Debug.DrawRay(transform.position, mousePos-transform.position, Color.green);
-                }            
+                if (this.gameObject.name != "Player_1")
+                {
+                    dir = hit.point - rb.transform.position;
+                    rb.velocity = dir * 10f;
+                }
+
+                Debug.DrawRay(transform.position, mousePos - transform.position, Color.green);
             }
+        }
+        else
+        {
+            rb.velocity = dir * 10f;
+        }
     }
 }

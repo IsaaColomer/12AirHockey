@@ -33,6 +33,8 @@ public class ServerClient_UDP : MonoBehaviour
     private Rigidbody diskRb;
     private Transform diskTransform;
 
+    //ISAAC STUFFFF
+
     MemoryStream streamSerialize;
     MemoryStream streamDeserilize;
     private Vector3 vector1;
@@ -144,9 +146,9 @@ public class ServerClient_UDP : MonoBehaviour
         }
         if(posChanged && scenesManager.type == ScenesManager.UserType.HOST)
         {
-                        Debug.Log("velocity change host");
+            Debug.Log("velocity change host");
             enemyDir = vector1 - vector2;
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir * 10);
+            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(-enemyDir.x, 0.85f, -enemyDir.z)
             posChanged = false;
         }
         if(scenesManager.type == ScenesManager.UserType.CLIENT)
