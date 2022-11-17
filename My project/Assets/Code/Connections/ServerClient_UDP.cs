@@ -65,7 +65,7 @@ public class ServerClient_UDP : MonoBehaviour
             playerRb = player.GetComponentInChildren<Rigidbody>();
             diskTransform = disk.GetComponent<Transform>().transform;
             Debug.Log("Waiting for a client...");
-
+            diskRb = disk.GetComponent<Rigidbody>();
             sender = new IPEndPoint(IPAddress.Any, 0);
             remote = (EndPoint)(sender);
             myThread.Start();
