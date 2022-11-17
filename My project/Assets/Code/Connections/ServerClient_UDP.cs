@@ -141,7 +141,7 @@ public class ServerClient_UDP : MonoBehaviour
             enemyPlayer.GetComponent<Rigidbody>().velocity = -vector2;            
             posChanged = false;
         }
-        else if(posChanged && scenesManager.type == ScenesManager.UserType.HOST)
+        if(posChanged && scenesManager.type == ScenesManager.UserType.HOST)
         {
             enemyDir = vector1 - vector2;
             enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir * 10);
