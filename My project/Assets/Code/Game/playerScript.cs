@@ -40,7 +40,7 @@ public class playerScript : MonoBehaviour
                     if (this.gameObject.name != "Player_1")
                     {
                         dir = hit.point - rb.transform.position;
-                        rb.velocity = dir * 10f;
+                        rb.velocity = dir * 10f * Time.deltaTime;
                     }
 
                     Debug.DrawRay(transform.position, mousePos - transform.position, Color.green);
