@@ -9,6 +9,7 @@ public class playerScript : MonoBehaviour
     public LayerMask ignore;
     [SerializeField] private Camera cam;
     private int powerType;
+    public Client_UDP client;
     public UnityEngine.Vector3 dir;
     public RaycastHit hit;
     // Start is called before the first frame update
@@ -16,6 +17,7 @@ public class playerScript : MonoBehaviour
     {
         rb = gameObject.GetComponentInChildren<Rigidbody>();
         cam = GetComponent<Camera>();
+        client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
     }
 
     public void GetType(int type)
@@ -27,29 +29,28 @@ public class playerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+       
             UnityEngine.Vector3 mousePos = Input.mousePosition;
             mousePos.z = 100f;
             mousePos = cam.ScreenToWorldPoint(mousePos);
-            Debug.DrawRay(transform.position, mousePos - transform.position, Color.red);
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100f, ~ignore))
+            Debug.DrawRay(transform.position, mousePos-transform.position, Color.red);
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);            
+            if(Physics.Raycast(ray, out hit,100f, ~ignore))
             {
-                if (hit.transform.gameObject.tag == "Respawn")
-                {
-                    if (this.gameObject.name != "Player_1")
+                if(hit.transform.gameObject.tag == "Respawn")
+                {                    
+                    if(this.gameObject.name != "Player_1")
                     {
                         dir = hit.point - rb.transform.position;
-                        rb.velocity = dir * 100f * Time.deltaTime;
+                        rb.velocity = dir * 10f;
                     }
-
-                    Debug.DrawRay(transform.position, mousePos - transform.position, Color.green);
-                }
+                    
+                    Debug.DrawRay(transform.position, mousePos-transform.position, Color.green);
+                }            
             }
             else
             {
-                rb.velocity = dir * 10f;
+            rb.velocity = dir * 10f;
             }
-                    
     }
 }
