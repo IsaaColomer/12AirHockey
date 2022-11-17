@@ -30,7 +30,8 @@ public class playerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(client.isLoged)
+        {
             UnityEngine.Vector3 mousePos = Input.mousePosition;
             mousePos.z = 100f;
             mousePos = cam.ScreenToWorldPoint(mousePos);
@@ -53,6 +54,6 @@ public class playerScript : MonoBehaviour
             {
                 rb.velocity = dir * 10f;
             }
-                    
+        }            
     }
 }

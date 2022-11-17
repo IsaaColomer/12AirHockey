@@ -18,7 +18,6 @@ public class Disk_Code : MonoBehaviour
         pi_p1 = GameObject.FindGameObjectWithTag("PI_Player1");
         pi_p2 = GameObject.FindGameObjectWithTag("PI_Player2");
         startColor = pi_p1.GetComponent<Renderer>().material.color;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
     private void OnTriggerEnter(Collider other)
     {
