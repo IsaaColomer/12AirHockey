@@ -16,7 +16,6 @@ public class playerScript : MonoBehaviour
     {
         rb = gameObject.GetComponentInChildren<Rigidbody>();
         cam = GetComponent<Camera>();
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
     public void GetType(int type)
