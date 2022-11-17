@@ -17,8 +17,7 @@ public class Server_UDP : MonoBehaviour
     IPEndPoint sender;
     Socket newsocket;
     EndPoint remote;
-    MemoryStream streamSerialize;
-    MemoryStream streamDeserialize;
+    MemoryStream stream;
     public GameObject player;
     private Rigidbody playerRb;
     private Rigidbody diskRb;
@@ -37,11 +36,6 @@ public class Server_UDP : MonoBehaviour
     {
         Thread myThread = new Thread(Connection);
 
-        CreatingServer();
-        myThread.Start();
-    }
-    void CreatingServer()
-    {
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsocket.Bind(ipep);
@@ -53,19 +47,13 @@ public class Server_UDP : MonoBehaviour
 
         sender = new IPEndPoint(IPAddress.Any, 0);
         remote = (EndPoint)(sender);
+        myThread.Start();
     }
     private void Update()
     {
         enemyDir = newEnemyHit - newPosEnemy;
         if (connected)
             StartCoroutine(SendInfo());
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            connected = false;
-            Serialize();
-            newsocket.Close();
-            Application.Quit();
-        }
         if (posChanged)
         {
             
@@ -87,10 +75,9 @@ public class Server_UDP : MonoBehaviour
     void Serialize()
     {
         Debug.Log("Serializing");
-        streamSerialize = new MemoryStream();
-        BinaryWriter writer = new BinaryWriter(streamSerialize);
+        stream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(stream);
 
-        //writer.Write(connected.ToString());
         writer.Write(playerRb.velocity.x);
         writer.Write(playerRb.velocity.y);
         writer.Write(playerRb.velocity.z);
@@ -112,7 +99,7 @@ public class Server_UDP : MonoBehaviour
     public void Info()
     {
         Debug.Log("Sending");
-        newsocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, remote);
+        newsocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
         Debug.Log("Sended");
     }
     public void Connection()
@@ -128,14 +115,14 @@ public class Server_UDP : MonoBehaviour
             Debug.Log("Reciving info");
             recv = newsocket.ReceiveFrom(data, ref remote);
             Debug.Log("Info recived");
-            streamDeserialize = new MemoryStream(data);
+            stream = new MemoryStream(data);
             Deserialize();
         }
     }
     void Deserialize()
     {
-        BinaryReader reader = new BinaryReader(streamDeserialize);
-        streamDeserialize.Seek(0, SeekOrigin.Begin);
+        BinaryReader reader = new BinaryReader(stream);
+        stream.Seek(0, SeekOrigin.Begin);
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();

@@ -21,8 +21,8 @@ public class Client_UDP : MonoBehaviour
     public TMP_InputField inputName, inputIp;
     public GameObject buttonLogin;
     Thread myThread;
+    MemoryStream stream;
     MemoryStream streamSerialize;
-    MemoryStream streamDeserialize;
     private Vector3 newPosEnemy;
     public GameObject disk;
     private Vector3 newPosDisk;
@@ -85,15 +85,15 @@ public class Client_UDP : MonoBehaviour
         }
         
         disk.GetComponent<Rigidbody>().velocity = diskRbVel;
-        StartCoroutine(UpdateDisAndEnemykPos());
+        UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
+        Vector3.Lerp(disk.transform.position, newnewPos, 0.16f);
+        UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
+        Vector3.Lerp(disk.transform.position, newnewPos2, 0.16f);
     }
     IEnumerator UpdateDisAndEnemykPos()
     {
-        yield return new WaitForSeconds(0.16f);
-        UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
-        Vector3.Lerp(disk.transform.position, newnewPos, 0f);
-        UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
-        Vector3.Lerp(disk.transform.position, newnewPos2, 0f);
+        yield return new WaitForSeconds(0f);
+        
     }
     IEnumerator SendInfo()
     {
@@ -130,16 +130,14 @@ public class Client_UDP : MonoBehaviour
         {
             data = new byte[1024];
             recv = newSocket.ReceiveFrom(data, ref remote);
-            streamDeserialize = new MemoryStream(data);
+            stream = new MemoryStream(data);
             Deserialize();
         }
     }
     void Deserialize()
     {
-        BinaryReader reader = new BinaryReader(streamDeserialize);
-        streamDeserialize.Seek(0, SeekOrigin.Begin);
-
-        string conn = reader.ReadString();
+        BinaryReader reader = new BinaryReader(stream);
+        stream.Seek(0, SeekOrigin.Begin);
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
@@ -158,11 +156,6 @@ public class Client_UDP : MonoBehaviour
         float py = reader.ReadSingle();
         float pz = reader.ReadSingle();
         newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
-        Debug.Log(conn);
-        if (conn == "false")
-        {
-            //cositas
-        }
         posChanged = true;
     }
 
