@@ -101,7 +101,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   ignore:
     serializedVersion: 2
-    m_Bits: 716
+    m_Bits: 460
   cam: {fileID: 0}
   client: {fileID: 0}
   dir: {x: 0, y: 0, z: 0}
