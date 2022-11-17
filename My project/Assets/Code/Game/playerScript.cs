@@ -9,7 +9,6 @@ public class playerScript : MonoBehaviour
     public LayerMask ignore;
     [SerializeField] private Camera cam;
     private int powerType;
-    public Client_UDP client;
     public UnityEngine.Vector3 dir;
     public RaycastHit hit;
     // Start is called before the first frame update
@@ -30,8 +29,7 @@ public class playerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(client.isLoged)
-        {
+        
             UnityEngine.Vector3 mousePos = Input.mousePosition;
             mousePos.z = 100f;
             mousePos = cam.ScreenToWorldPoint(mousePos);
@@ -54,6 +52,6 @@ public class playerScript : MonoBehaviour
             {
                 rb.velocity = dir * 10f;
             }
-        }            
+                    
     }
 }
