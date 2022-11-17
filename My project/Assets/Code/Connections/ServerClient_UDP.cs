@@ -40,6 +40,7 @@ public class ServerClient_UDP : MonoBehaviour
     private Vector3 vector1;
     private Vector3 vector2;//newPosEnemy//newPosDisk
     private Vector3 newPosDisk;
+    private Vector3 newPosEnemy;
     private Vector3 enemyDir;
 
     //Cliente
@@ -140,19 +141,26 @@ public class ServerClient_UDP : MonoBehaviour
             StartCoroutine(SendInfo());
         if(posChanged && scenesManager.type == ScenesManager.UserType.CLIENT)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(vector1.x, 0.8529103f, vector1.z);            
+            enemyPlayer.GetComponent<Rigidbody>().velocity = vector1;
             posChanged = false;
             Debug.Log("velocity change client");
+
+        }
+        if (scenesManager.type == ScenesManager.UserType.CLIENT)
+        {
+            disk.GetComponent<Rigidbody>().velocity = vector2;
+            UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
+            Vector3.Lerp(disk.transform.position, newnewPos, 0.16f);
+            UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
+            Vector3.Lerp(disk.transform.position, newnewPos2, 0.16f);
         }
         if(posChanged && scenesManager.type == ScenesManager.UserType.HOST)
         {
             Debug.Log("velocity change host");
-            enemyDir = vector1 - vector2;
-            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(-enemyDir.x, 0.8529103f, -enemyDir.z);
+            enemyPlayer.GetComponent<Rigidbody>().velocity = (enemyDir * 10);
+            enemyPlayer.transform.position = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
             posChanged = false;
         }
-        if (scenesManager.type == ScenesManager.UserType.CLIENT)
-            disk.GetComponent<Rigidbody>().velocity = vector2;
     }
     IEnumerator SendInfo()
     {
@@ -160,16 +168,16 @@ public class ServerClient_UDP : MonoBehaviour
         if (scenesManager.type == ScenesManager.UserType.HOST)
         {
             // SERVER
-            Serialize(playerRb.velocity, diskRb.velocity);
+            Serialize(playerRb.velocity, diskRb.velocity, diskRb.transform.position, player.transform.position);
         }
 
         else
         {
             // CLIENT 
-            Serialize(clientPlayer.hit.point, clientPlayer.transform.position);
+            Serialize(clientPlayer.hit.point, clientPlayer.transform.position, Vector3.zero, Vector3.zero);
         }
     }
-    void Serialize(Vector3 firstInfo, Vector3 secondInfo)
+    void Serialize(Vector3 firstInfo, Vector3 secondInfo, Vector3 thirdInfo, Vector3 fourthInfo)
     {
         Debug.Log("Serializing");
         streamSerialize = new MemoryStream();
@@ -189,7 +197,16 @@ public class ServerClient_UDP : MonoBehaviour
         writer.Write(secondInfo.y);
         writer.Write(secondInfo.z);
 
-        //Debug.Log(playerRb.velocity);
+        if(scenesManager.type == ScenesManager.UserType.HOST)
+        {
+            writer.Write(thirdInfo.x);
+            writer.Write(thirdInfo.y);
+            writer.Write(thirdInfo.z);
+
+            writer.Write(fourthInfo.x);
+            writer.Write(fourthInfo.y);
+            writer.Write(fourthInfo.z);
+        }
 
         Debug.Log("serialized!");
         Info();
@@ -209,6 +226,17 @@ public class ServerClient_UDP : MonoBehaviour
         float dy = reader.ReadSingle();
         float dz = reader.ReadSingle();
         vector2 = new Vector3((float)dx, (float)dy, (float)dz);
+        if (scenesManager.type == ScenesManager.UserType.HOST)
+        {
+            float rx = reader.ReadSingle();
+            float ry = reader.ReadSingle();
+            float rz = reader.ReadSingle();
+            newPosDisk = new Vector3((float)rx, (float)ry, (float)rz);
+            float px = reader.ReadSingle();
+            float py = reader.ReadSingle();
+            float pz = reader.ReadSingle();
+            newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
+        }
         posChanged = true;
     }
 
