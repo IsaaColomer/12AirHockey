@@ -140,7 +140,7 @@ public class ServerClient_UDP : MonoBehaviour
             StartCoroutine(SendInfo());
         if(posChanged && scenesManager.type == ScenesManager.UserType.CLIENT)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -vector1;            
+            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(vector1.x, 0.8529103f, vector1.z);            
             posChanged = false;
             Debug.Log("velocity change client");
         }
@@ -148,25 +148,25 @@ public class ServerClient_UDP : MonoBehaviour
         {
             Debug.Log("velocity change host");
             enemyDir = vector1 - vector2;
-            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(-enemyDir.x, 0.85f, -enemyDir.z)
+            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(-enemyDir.x, 0.8529103f, -enemyDir.z);
             posChanged = false;
         }
-        if(scenesManager.type == ScenesManager.UserType.CLIENT)
-            disk.GetComponent<Transform>().position = new UnityEngine.Vector3(-newPosDisk.x, 0.8529103f, -newPosDisk.z);
+        if (scenesManager.type == ScenesManager.UserType.CLIENT)
+            disk.GetComponent<Rigidbody>().velocity = vector2;
     }
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
         if (scenesManager.type == ScenesManager.UserType.HOST)
         {
-            Debug.Log(1);
-            Serialize(playerRb.velocity, diskTransform.transform.position);
+            // SERVER
+            Serialize(playerRb.velocity, diskRb.velocity);
         }
 
         else
         {
-            Debug.Log(2);
-            Serialize(clientPlayer.hit.point, clientPlayer.rb.transform.position);
+            // CLIENT 
+            Serialize(clientPlayer.hit.point, clientPlayer.transform.position);
         }
     }
     void Serialize(Vector3 firstInfo, Vector3 secondInfo)
@@ -183,8 +183,8 @@ public class ServerClient_UDP : MonoBehaviour
         writer.Write(firstInfo.z);
         //Debug.Log(firstInfo);
 
-        //Server: diskTransform.transform.position
-        //Client: clientPlayer.rb.transform.position
+        //Server: diskRb
+        //Client: clientPlayer.transform.position
         writer.Write(secondInfo.x);
         writer.Write(secondInfo.y);
         writer.Write(secondInfo.z);
