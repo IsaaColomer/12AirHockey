@@ -16,6 +16,7 @@ public class playerScript : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponentInChildren<Rigidbody>();
+        //rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         cam = GetComponent<Camera>();
         client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
     }

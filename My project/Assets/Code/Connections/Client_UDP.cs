@@ -80,20 +80,27 @@ public class Client_UDP : MonoBehaviour
         }
         if (posChanged)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = dir;
+            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(dir.x, 0.85f, dir.z);
+            UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
+            disk.transform.position = newnewPos;
+            UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
+            enemyPlayer.transform.position = newnewPos2;
+            //StartCoroutine(UpdateDisAndEnemykPos());
             posChanged = false;
         }
         
         disk.GetComponent<Rigidbody>().velocity = diskRbVel;
-        UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
-        Vector3.Lerp(disk.transform.position, newnewPos, 0.16f);
-        UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
-        Vector3.Lerp(disk.transform.position, newnewPos2, 0.16f);
+
     }
     IEnumerator UpdateDisAndEnemykPos()
     {
-        yield return new WaitForSeconds(0f);
-        
+        Debug.Log("I have entered the corroutine and i'm waiting");
+        yield return new WaitForSeconds(0.32f);
+        UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
+        disk.transform.position = newnewPos;
+        UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
+        enemyPlayer.transform.position = newnewPos2;
+        Debug.Log("I've finished the coroutine");
     }
     IEnumerator SendInfo()
     {

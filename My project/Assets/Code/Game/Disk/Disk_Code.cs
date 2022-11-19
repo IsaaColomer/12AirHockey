@@ -9,12 +9,14 @@ public class Disk_Code : MonoBehaviour
     [SerializeField] private GameObject pi_p1;
     [SerializeField] private GameObject pi_p2;
     [SerializeField] private Color startColor;
+    public float maxDiskVel = 3;
     public string lastPlayerName;
     // Start is called before the first frame update
     void Start()
     {
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
+        //rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         pi_p1 = GameObject.FindGameObjectWithTag("PI_Player1");
         pi_p2 = GameObject.FindGameObjectWithTag("PI_Player2");
         startColor = pi_p1.GetComponent<Renderer>().material.color;
@@ -54,6 +56,17 @@ public class Disk_Code : MonoBehaviour
         {
             // Here we detect which is the last player that has touched the disk
             lastPlayerName = collision.gameObject.name;
+        }
+    }
+    public void Update()
+    {
+        if(rb.velocity.x > maxDiskVel)
+        {
+            rb.velocity = new Vector3 (maxDiskVel,rb.velocity.y, rb.velocity.z);
+        }
+        if (rb.velocity.z > maxDiskVel)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, maxDiskVel);
         }
     }
 }
