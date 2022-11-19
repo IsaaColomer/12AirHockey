@@ -16,7 +16,7 @@ public class Disk_Code : MonoBehaviour
     {
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
-        //rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         pi_p1 = GameObject.FindGameObjectWithTag("PI_Player1");
         pi_p2 = GameObject.FindGameObjectWithTag("PI_Player2");
         startColor = pi_p1.GetComponent<Renderer>().material.color;
@@ -39,6 +39,14 @@ public class Disk_Code : MonoBehaviour
             rb.drag = 0f;
             rb.angularDrag = 0f;
             pi_p2.GetComponent<Renderer>().material.color = Color.yellow;
+            StartCoroutine(WaitToRestartDisk());
+        }
+        if(other.gameObject.layer == LayerMask.NameToLayer("Restart"))
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = new Vector3(0f, 0f, 0f);
+            rb.drag = 0f;
+            rb.angularDrag = 0f;
             StartCoroutine(WaitToRestartDisk());
         }
     }

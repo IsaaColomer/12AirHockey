@@ -85,22 +85,9 @@ public class Client_UDP : MonoBehaviour
             disk.transform.position = newnewPos;
             UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
             enemyPlayer.transform.position = newnewPos2;
-            //StartCoroutine(UpdateDisAndEnemykPos());
             posChanged = false;
         }
-        
         disk.GetComponent<Rigidbody>().velocity = diskRbVel;
-
-    }
-    IEnumerator UpdateDisAndEnemykPos()
-    {
-        Debug.Log("I have entered the corroutine and i'm waiting");
-        yield return new WaitForSeconds(0.32f);
-        UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
-        disk.transform.position = newnewPos;
-        UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
-        enemyPlayer.transform.position = newnewPos2;
-        Debug.Log("I've finished the coroutine");
     }
     IEnumerator SendInfo()
     {
@@ -158,11 +145,13 @@ public class Client_UDP : MonoBehaviour
         float rx = reader.ReadSingle();
         float ry = reader.ReadSingle();
         float rz = reader.ReadSingle();
-        newPosDisk = new Vector3((float)rx, (float)ry, (float)rz);
+        if (rx != 0 && rz != 0)
+            newPosDisk = new Vector3((float)rx, (float)ry, (float)rz);
         float px = reader.ReadSingle();
         float py = reader.ReadSingle();
         float pz = reader.ReadSingle();
-        newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
+        if(px != 0 && pz != 0)
+            newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
         posChanged = true;
     }
 

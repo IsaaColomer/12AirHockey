@@ -34,6 +34,7 @@ public class Server_UDP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Screen.SetResolution(480,320,false);
         Thread myThread = new Thread(Connection);
 
         ipep = new IPEndPoint(IPAddress.Any, 9050);

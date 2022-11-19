@@ -16,7 +16,7 @@ public class playerScript : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponentInChildren<Rigidbody>();
-        //rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        rb.interpolation = RigidbodyInterpolation.None;
         cam = GetComponent<Camera>();
         client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
     }
@@ -43,7 +43,7 @@ public class playerScript : MonoBehaviour
                     if(this.gameObject.name != "Player_1")
                     {
                         dir = hit.point - rb.transform.position;
-                        rb.velocity = dir * 10f;
+                        rb.velocity = dir * 1500f * Time.deltaTime;
                     }
                     
                     Debug.DrawRay(transform.position, mousePos-transform.position, Color.green);
@@ -51,7 +51,7 @@ public class playerScript : MonoBehaviour
             }
             else
             {
-            rb.velocity = dir * 10f;
+                rb.velocity = UnityEngine.Vector3.zero;
             }
     }
 }
