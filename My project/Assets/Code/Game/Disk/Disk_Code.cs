@@ -6,8 +6,8 @@ public class Disk_Code : MonoBehaviour
 {
     [SerializeField] private Vector3 startPos;
     [SerializeField] private Rigidbody rb;
-    [SerializeField] private GameObject pi_p1;
-    [SerializeField] private GameObject pi_p2;
+    [SerializeField] private GameObject piPlayer1;
+    [SerializeField] private GameObject piPlayer2;
     [SerializeField] private Color startColor;
     public float maxDiskVel = 3;
     public string lastPlayerName;
@@ -17,9 +17,9 @@ public class Disk_Code : MonoBehaviour
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        pi_p1 = GameObject.FindGameObjectWithTag("PI_Player1");
-        pi_p2 = GameObject.FindGameObjectWithTag("PI_Player2");
-        startColor = pi_p1.GetComponent<Renderer>().material.color;
+        piPlayer1 = GameObject.FindGameObjectWithTag("PI_Player1");
+        piPlayer2 = GameObject.FindGameObjectWithTag("PI_Player2");
+        startColor = piPlayer1.GetComponent<Renderer>().material.color;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -29,7 +29,7 @@ public class Disk_Code : MonoBehaviour
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
             rb.angularDrag = 0f;
-            pi_p1.GetComponent<Renderer>().material.color = Color.yellow;
+            piPlayer1.GetComponent<Renderer>().material.color = Color.yellow;
             StartCoroutine(WaitToRestartDisk());
         }
         if(other.gameObject.name == "Goal_p1")
@@ -38,7 +38,7 @@ public class Disk_Code : MonoBehaviour
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
             rb.angularDrag = 0f;
-            pi_p2.GetComponent<Renderer>().material.color = Color.yellow;
+            piPlayer2.GetComponent<Renderer>().material.color = Color.yellow;
             StartCoroutine(WaitToRestartDisk());
         }
         if(other.gameObject.layer == LayerMask.NameToLayer("Restart"))
@@ -54,8 +54,8 @@ public class Disk_Code : MonoBehaviour
     {
         // Just in case we wait a few moments to restart the disk
         yield return new WaitForSeconds(.7f);
-        pi_p1.GetComponent<Renderer>().material.color = startColor;        
-        pi_p2.GetComponent<Renderer>().material.color = startColor;        
+        piPlayer1.GetComponent<Renderer>().material.color = startColor;        
+        piPlayer2.GetComponent<Renderer>().material.color = startColor;        
         transform.position = startPos;
     }
     private void OnCollisionEnter(Collision collision)

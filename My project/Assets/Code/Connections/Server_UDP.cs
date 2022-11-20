@@ -22,12 +22,9 @@ public class Server_UDP : MonoBehaviour
     private Rigidbody playerRb;
     private Rigidbody diskRb;
     public GameObject enemyPlayer;
-    private Rigidbody enemyPlayerRb;
     public GameObject disk;
-    private Transform diskTransform;
     private Vector3 newPosEnemy;
     private Vector3 newEnemyHit;
-    private Vector3 newPosDisk;
     public bool connected = false;
     public bool posChanged = false;
     UnityEngine.Vector3 enemyDir;
@@ -40,10 +37,8 @@ public class Server_UDP : MonoBehaviour
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsocket.Bind(ipep);
-        enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
         playerRb = player.GetComponent<Rigidbody>();
         diskRb = disk.GetComponent<Rigidbody>();
-        diskTransform = disk.GetComponent<Transform>().transform;
         Debug.Log("Waiting for a client...");
 
         sender = new IPEndPoint(IPAddress.Any, 0);
@@ -57,12 +52,8 @@ public class Server_UDP : MonoBehaviour
             StartCoroutine(SendInfo());
         if (posChanged)
         {
-            
             enemyPlayer.GetComponent<Rigidbody>().velocity = (enemyDir*10);
             enemyPlayer.transform.position = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
-           
-            //Debug.Log("New Enemy Pos: " + newPosEnemy);
-            //Debug.Log(newPosDisk);
             posChanged = false;
         }       
     }
@@ -75,16 +66,18 @@ public class Server_UDP : MonoBehaviour
     }
     void Serialize()
     {
-        Debug.Log("Serializing");
+        Debug.Log("Serializing Info");
         stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
 
         writer.Write(playerRb.velocity.x);
         writer.Write(playerRb.velocity.y);
         writer.Write(playerRb.velocity.z);
+
         writer.Write(diskRb.velocity.x);
         writer.Write(diskRb.velocity.y);
         writer.Write(diskRb.velocity.z);
+
         writer.Write(diskRb.transform.position.x);
         writer.Write(diskRb.transform.position.y);
         writer.Write(diskRb.transform.position.z);
@@ -99,9 +92,7 @@ public class Server_UDP : MonoBehaviour
     }
     public void Info()
     {
-        Debug.Log("Sending");
         newsocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
-        Debug.Log("Sended");
     }
     public void Connection()
     {
@@ -109,13 +100,11 @@ public class Server_UDP : MonoBehaviour
         recv = newsocket.ReceiveFrom(data, ref remote);
         connected = true;
         nameUDP = Encoding.ASCII.GetString(data, 0, recv);
-        Debug.Log("Connected");
+        Debug.Log("First user connected");
         while (true)
         {
             data = new byte[1024];
-            Debug.Log("Reciving info");
             recv = newsocket.ReceiveFrom(data, ref remote);
-            Debug.Log("Info recived");
             stream = new MemoryStream(data);
             Deserialize();
         }

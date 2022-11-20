@@ -11,7 +11,6 @@ using System.IO;
 public class Client_UDP : MonoBehaviour
 {
     public playerScript clientPlayer;
-    // Start is called before the first frame update
     int recv;
     Socket newSocket;
     byte[] data;
@@ -30,9 +29,6 @@ public class Client_UDP : MonoBehaviour
     public bool posChanged = false;
     private GameObject enemyPlayer;
     private GameObject player;
-    private Rigidbody enemyPlayerRb;
-    private Rigidbody playerRb;
-    private Rigidbody diskRb;
     private Vector3 diskRbVel;
     private UnityEngine.Vector3 dir;
 
@@ -41,27 +37,24 @@ public class Client_UDP : MonoBehaviour
         myThread = new Thread(Receive);
         enemyPlayer = GameObject.Find("Player_2");
         player = GameObject.Find("Player_1");
-        enemyPlayerRb = enemyPlayer.GetComponent<Rigidbody>();
-        playerRb = player.GetComponent<Rigidbody>();
-        diskRb = disk.GetComponent<Rigidbody>();
     }
     void StartUDP(string name, string ip)
     {
         data = new byte[1024];
         ipep = new IPEndPoint(IPAddress.Parse(ip), 9050);
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        Debug.Log("Login 1");
+        Debug.Log("Login Started");
         sender = new IPEndPoint(IPAddress.Any, 0);
         remote = (EndPoint)sender;
-        Debug.Log("Login 2");
+        Debug.Log("IPEndopoint created");
 
         data = new byte[1024];
         data = Encoding.ASCII.GetBytes(name);
         newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
-        Debug.Log("Login 3");
+        Debug.Log("Fist messaje sended");
         myThread.Start();
 
-        Debug.Log("Login 4");
+        Debug.Log("Login Finished");
         inputName.gameObject.SetActive(false);
         inputIp.gameObject.SetActive(false);
         buttonLogin.SetActive(false);
@@ -80,15 +73,21 @@ public class Client_UDP : MonoBehaviour
         }
         if (posChanged)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(dir.x, 0.85f, dir.z);
-            UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
-            disk.transform.position = newnewPos;
-            UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
-            enemyPlayer.transform.position = newnewPos2;
+            FixEnemyPlayerAndDiskPosition();
             posChanged = false;
         }
         disk.GetComponent<Rigidbody>().velocity = diskRbVel;
     }
+
+    private void FixEnemyPlayerAndDiskPosition()
+    {
+        enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(dir.x, 0.85f, dir.z);
+        UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
+        disk.transform.position = newnewPos;
+        UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
+        enemyPlayer.transform.position = newnewPos2;
+    }
+
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
@@ -102,8 +101,6 @@ public class Client_UDP : MonoBehaviour
         writer.Write(clientPlayer.hit.point.x);
         writer.Write(clientPlayer.hit.point.y);
         writer.Write(clientPlayer.hit.point.z);
-
-        //
 
         writer.Write(player.transform.position.x);
         writer.Write(player.transform.position.y);
@@ -152,13 +149,7 @@ public class Client_UDP : MonoBehaviour
         float pz = reader.ReadSingle();
         if(px != 0 && pz != 0)
             newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
-        posChanged = true;
-    }
 
-    public void SendMessage()
-    {
-        //    data = new byte[1024];
-        //    data = Encoding.ASCII.GetBytes("dsa");
-        //    newSocket.SendTo(data, data.Length, SocketFlags.None, ipep);
+        posChanged = true;
     }
 }
