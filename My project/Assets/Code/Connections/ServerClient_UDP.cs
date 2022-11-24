@@ -33,11 +33,14 @@ public class ServerClient_UDP : MonoBehaviour
     private Rigidbody diskRb;
     private Transform diskTransform;
 
+    //ISAAC STUFFFF
+
     MemoryStream streamSerialize;
     MemoryStream streamDeserilize;
     private Vector3 vector1;
     private Vector3 vector2;//newPosEnemy//newPosDisk
     private Vector3 newPosDisk;
+    private Vector3 newPosEnemy;
     private Vector3 enemyDir;
 
     //Cliente
@@ -48,7 +51,7 @@ public class ServerClient_UDP : MonoBehaviour
     void Start()
     {
         scenesManager = GameObject.Find("Manager").GetComponent<ScenesManager>();
-        if (scenesManager.type == ScenesManager.UserType.HOST)
+        if(scenesManager.type == ScenesManager.UserType.HOST)
         {
             player = Instantiate(playerPrefab1).gameObject;
             enemyPlayer = Instantiate(enemyPrefab).gameObject;
@@ -63,7 +66,7 @@ public class ServerClient_UDP : MonoBehaviour
             playerRb = player.GetComponentInChildren<Rigidbody>();
             diskTransform = disk.GetComponent<Transform>().transform;
             Debug.Log("Waiting for a client...");
-
+            diskRb = disk.GetComponent<Rigidbody>();
             sender = new IPEndPoint(IPAddress.Any, 0);
             remote = (EndPoint)(sender);
             myThread.Start();
@@ -136,81 +139,114 @@ public class ServerClient_UDP : MonoBehaviour
         }
         if (connected)
             StartCoroutine(SendInfo());
-        if (posChanged && scenesManager.type == ScenesManager.UserType.CLIENT)
+        if(posChanged && scenesManager.type == ScenesManager.UserType.CLIENT)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -vector1;
+            enemyPlayer.GetComponent<Rigidbody>().velocity = vector1;
             posChanged = false;
             Debug.Log("velocity change client");
+
         }
-        if (posChanged && scenesManager.type == ScenesManager.UserType.HOST)
+        if (scenesManager.type == ScenesManager.UserType.CLIENT)
+        {
+            disk.GetComponent<Rigidbody>().velocity = vector2;
+            UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
+            Vector3.Lerp(disk.transform.position, newnewPos, 0.16f);
+            UnityEngine.Vector3 newnewPos2 = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
+            Vector3.Lerp(disk.transform.position, newnewPos2, 0.16f);
+        }
+        if(posChanged && scenesManager.type == ScenesManager.UserType.HOST)
         {
             Debug.Log("velocity change host");
-            enemyDir = vector1 - vector2;
-            enemyPlayer.GetComponent<Rigidbody>().velocity = -(enemyDir * 10);
+            enemyPlayer.GetComponent<Rigidbody>().velocity = (enemyDir * 10);
+            enemyPlayer.transform.position = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
             posChanged = false;
-        {
-                Debug.Log(1);
-                Serialize(playerRb.velocity, diskTransform.transform.position);
-            }
-
-        else
-            {
-                Debug.Log(2);
-                Serialize(clientPlayer.hit.point, clientPlayer.rb.transform.position);
-            }
-        }
-        void Serialize(Vector3 firstInfo, Vector3 secondInfo)
-        {
-            Debug.Log("Serializing");
-            streamSerialize = new MemoryStream();
-            BinaryWriter writer = new BinaryWriter(streamSerialize);
-
-            //Server: playerRb.Velocity
-            //Client: clientPlayer.hit.point
-            writer.Write("Hola");
-            writer.Write(firstInfo.x);
-            writer.Write(firstInfo.y);
-            writer.Write(firstInfo.z);
-            Debug.Log(firstInfo);
-            //Debug.Log(firstInfo);
-
-            //Server: diskTransform.transform.position
-            //Client: clientPlayer.rb.transform.position
-            writer.Write(secondInfo.x);
-            writer.Write(secondInfo.y);
-            writer.Write(secondInfo.z);
-
-            //Debug.Log(playerRb.velocity);
-
-            Debug.Log("serialized!");
-            Info();
-        }
-        void Deserialize()
-        {
-            BinaryReader reader = new BinaryReader(streamDeserilize);
-            streamDeserilize.Seek(0, SeekOrigin.Begin);
-            string a = reader.ReadString();
-            Debug.Log(a);
-            float x = reader.ReadSingle();
-            float y = reader.ReadSingle();
-            float z = reader.ReadSingle();
-            //Debug.Log(new Vector3(x, y, z));
-            Debug.Log(new Vector3(x, y, z));
-            vector1 = new Vector3((float)x, (float)y, (float)z);
-            float dx = reader.ReadSingle();
-            float dy = reader.ReadSingle();
-            float dz = reader.ReadSingle();
-            vector2 = new Vector3((float)dx, (float)dy, (float)dz);
-            posChanged = true;
-        }
-
-        public void Info()
-        {
-            //Debug.Log("Sending");
-            if (scenesManager.type == ScenesManager.UserType.HOST)
-                newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, remote);
-            else if (scenesManager.type == ScenesManager.UserType.CLIENT)
-                newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, ipep);
-            //Debug.Log("Sended");
         }
     }
+    IEnumerator SendInfo()
+    {
+        yield return new WaitForSeconds(0.16f);
+        if (scenesManager.type == ScenesManager.UserType.HOST)
+        {
+            // SERVER
+            Serialize(playerRb.velocity, diskRb.velocity, diskRb.transform.position, player.transform.position);
+        }
+
+        else
+        {
+            // CLIENT 
+            Serialize(clientPlayer.hit.point, clientPlayer.transform.position, Vector3.zero, Vector3.zero);
+        }
+    }
+    void Serialize(Vector3 firstInfo, Vector3 secondInfo, Vector3 thirdInfo, Vector3 fourthInfo)
+    {
+        Debug.Log("Serializing");
+        streamSerialize = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(streamSerialize);
+
+        //Server: playerRb.Velocity
+        //Client: clientPlayer.hit.point
+        writer.Write("Hola");
+        writer.Write(firstInfo.x);
+        writer.Write(firstInfo.y);
+        writer.Write(firstInfo.z);
+        //Debug.Log(firstInfo);
+
+        //Server: diskRb
+        //Client: clientPlayer.transform.position
+        writer.Write(secondInfo.x);
+        writer.Write(secondInfo.y);
+        writer.Write(secondInfo.z);
+
+        if(scenesManager.type == ScenesManager.UserType.HOST)
+        {
+            writer.Write(thirdInfo.x);
+            writer.Write(thirdInfo.y);
+            writer.Write(thirdInfo.z);
+
+            writer.Write(fourthInfo.x);
+            writer.Write(fourthInfo.y);
+            writer.Write(fourthInfo.z);
+        }
+
+        Debug.Log("serialized!");
+        Info();
+    }
+    void Deserialize()
+    {
+        BinaryReader reader = new BinaryReader(streamDeserilize);
+        streamDeserilize.Seek(0, SeekOrigin.Begin);
+        string a = reader.ReadString();
+        Debug.Log(a);
+        float x = reader.ReadSingle();
+        float y = reader.ReadSingle();
+        float z = reader.ReadSingle();
+        Debug.Log(new Vector3(x, y, z));
+        vector1 = new Vector3((float)x, (float)y, (float)z);
+        float dx = reader.ReadSingle();
+        float dy = reader.ReadSingle();
+        float dz = reader.ReadSingle();
+        vector2 = new Vector3((float)dx, (float)dy, (float)dz);
+        if (scenesManager.type == ScenesManager.UserType.HOST)
+        {
+            float rx = reader.ReadSingle();
+            float ry = reader.ReadSingle();
+            float rz = reader.ReadSingle();
+            newPosDisk = new Vector3((float)rx, (float)ry, (float)rz);
+            float px = reader.ReadSingle();
+            float py = reader.ReadSingle();
+            float pz = reader.ReadSingle();
+            newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
+        }
+        posChanged = true;
+    }
+
+    public void Info()
+    {
+        //Debug.Log("Sending");
+        if (scenesManager.type == ScenesManager.UserType.HOST)
+            newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, remote);
+        else if (scenesManager.type == ScenesManager.UserType.CLIENT)
+            newSocket.SendTo(streamSerialize.ToArray(), streamSerialize.ToArray().Length, SocketFlags.None, ipep);
+        //Debug.Log("Sended");
+    }
+}
