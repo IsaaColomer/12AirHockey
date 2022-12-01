@@ -9,6 +9,7 @@ public class Disk_Code : MonoBehaviour
     [SerializeField] private GameObject piPlayer1;
     [SerializeField] private GameObject piPlayer2;
     [SerializeField] private Color startColor;
+    [SerializeField] private Vector3 vel;
     public float maxDiskVel = 3;
     public string lastPlayerName;
     // Start is called before the first frame update
@@ -16,7 +17,6 @@ public class Disk_Code : MonoBehaviour
     {
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
-        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         piPlayer1 = GameObject.FindGameObjectWithTag("PI_Player1");
         piPlayer2 = GameObject.FindGameObjectWithTag("PI_Player2");
         startColor = piPlayer1.GetComponent<Renderer>().material.color;
@@ -76,5 +76,6 @@ public class Disk_Code : MonoBehaviour
         {
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, maxDiskVel);
         }
+        vel = rb.velocity;
     }
 }
