@@ -3627,6 +3627,7 @@ GameObject:
   - component: {fileID: 3006281631272430309}
   - component: {fileID: 1662195602364402449}
   - component: {fileID: 9007468820455938428}
+  - component: {fileID: 9007468820455938429}
   m_Layer: 3
   m_Name: Disk
   m_TagString: Untagged
@@ -4511,8 +4512,22 @@ Rigidbody:
   m_Mass: 0.2
   m_Drag: 0
   m_AngularDrag: 0
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 84
   m_CollisionDetection: 2
+--- !u!64 &9007468820455938429
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2482782428904443630}
+  m_Material: {fileID: 13400000, guid: d3cfb28e9cf5ed345aa397ce80191c5e, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -4310772693987043908, guid: eda6cecd26a44574db3216c7abfffee4, type: 3}
