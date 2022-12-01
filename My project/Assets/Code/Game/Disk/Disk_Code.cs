@@ -17,7 +17,6 @@ public class Disk_Code : MonoBehaviour
     {
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
-        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         piPlayer1 = GameObject.FindGameObjectWithTag("PI_Player1");
         piPlayer2 = GameObject.FindGameObjectWithTag("PI_Player2");
         startColor = piPlayer1.GetComponent<Renderer>().material.color;
