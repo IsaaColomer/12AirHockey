@@ -95,14 +95,8 @@ public class Client_UDP : MonoBehaviour
     }
     void Serialize()
     {
-        EventData data = new EventData();
-        //data.ID = 1;
-        //data.EventType = EventType.UPDATE;
-        //data.trans = new Vector3(1, 0, 1);
-        //string json = JsonUtility.ToJson(data);
         streamSerialize = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(streamSerialize);
-        //writer.Write(json);
         writer.Write(clientPlayer.hit.point.x);
         writer.Write(clientPlayer.hit.point.y);
         writer.Write(clientPlayer.hit.point.z);
@@ -132,11 +126,10 @@ public class Client_UDP : MonoBehaviour
     }
     void Deserialize()
     {
-        //EventData data = new EventData();
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
-        //string json = reader.ReadString();
-        //Debug.Log(json);
+        int type = reader.ReadInt32();
+        Debug.Log(type);
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
@@ -155,7 +148,7 @@ public class Client_UDP : MonoBehaviour
         float px = reader.ReadSingle();
         float py = reader.ReadSingle();
         float pz = reader.ReadSingle();
-        if (px != 0 && pz != 0)
+        if(px != 0 && pz != 0)
             newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
 
         posChanged = true;

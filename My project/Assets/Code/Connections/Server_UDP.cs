@@ -61,10 +61,10 @@ public class Server_UDP : MonoBehaviour
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
-        Serialize();
+        Serialize(EventType.UPDATE);
 
     }
-    void Serialize()
+    void Serialize(EventType eventType)
     {
         Debug.Log("Serializing Info");
         //EventData data = new EventData();
@@ -72,27 +72,46 @@ public class Server_UDP : MonoBehaviour
         //data.EventType = EventType.UPDATE;
         //data.trans = new Vector3(0, 0, 0);
         //string json = JsonUtility.ToJson(data);
+        int type;
         stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
-        //writer.Write(json);
-        writer.Write(playerRb.velocity.x);
-        writer.Write(playerRb.velocity.y);
-        writer.Write(playerRb.velocity.z);
+        switch (eventType)
+        {
+            case EventType.UPDATE:
+                type = 0;
+                writer.Write(type);
+                Debug.Log(type);
+                writer.Write(playerRb.velocity.x);
+                writer.Write(playerRb.velocity.y);
+                writer.Write(playerRb.velocity.z);
 
-        writer.Write(diskRb.velocity.x);
-        writer.Write(diskRb.velocity.y);
-        writer.Write(diskRb.velocity.z);
+                writer.Write(diskRb.velocity.x);
+                writer.Write(diskRb.velocity.y);
+                writer.Write(diskRb.velocity.z);
 
-        writer.Write(diskRb.transform.position.x);
-        writer.Write(diskRb.transform.position.y);
-        writer.Write(diskRb.transform.position.z);
+                writer.Write(diskRb.transform.position.x);
+                writer.Write(diskRb.transform.position.y);
+                writer.Write(diskRb.transform.position.z);
 
-        writer.Write(player.transform.position.x);
-        writer.Write(player.transform.position.y);
-        writer.Write(player.transform.position.z);
-        Debug.Log(playerRb.velocity);
-
+                writer.Write(player.transform.position.x);
+                writer.Write(player.transform.position.y);
+                writer.Write(player.transform.position.z);
+                break;
+            case EventType.CREATE:
+                type = 1;
+                break;
+            case EventType.DESTROY:
+                type = 2;
+                break;
+            default:
+                type = -1;
+                break;
+        }
+        Info();
         Debug.Log("serialized!");
+
+
+
         Info();
     }
     public void Info()
