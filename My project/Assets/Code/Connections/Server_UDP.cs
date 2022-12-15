@@ -67,9 +67,14 @@ public class Server_UDP : MonoBehaviour
     void Serialize()
     {
         Debug.Log("Serializing Info");
+        //EventData data = new EventData();
+        //data.ID = 0;
+        //data.EventType = EventType.UPDATE;
+        //data.trans = new Vector3(0, 0, 0);
+        //string json = JsonUtility.ToJson(data);
         stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
-
+        //writer.Write(json);
         writer.Write(playerRb.velocity.x);
         writer.Write(playerRb.velocity.y);
         writer.Write(playerRb.velocity.z);
@@ -111,8 +116,11 @@ public class Server_UDP : MonoBehaviour
     }
     void Deserialize()
     {
+        //EventData data = new EventData();
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
+        //string json = reader.ReadString();
+        //Debug.Log(json);
         float x = reader.ReadSingle();
         float y = reader.ReadSingle();
         float z = reader.ReadSingle();
