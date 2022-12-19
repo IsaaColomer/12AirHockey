@@ -2447,6 +2447,9 @@ MonoBehaviour:
     m_Bits: 712
   cam: {fileID: 0}
   client: {fileID: 0}
+  server: {fileID: 0}
+  currentScene:
+    m_Handle: 0
   dir: {x: 0, y: 0, z: 0}
 --- !u!81 &2042817813
 AudioListener:
@@ -3517,7 +3520,6 @@ GameObject:
   - component: {fileID: 1250111706644207095}
   - component: {fileID: 8897579360579591616}
   - component: {fileID: 8897579360579591618}
-  - component: {fileID: 8897579360579591617}
   - component: {fileID: 8897579360579591619}
   m_Layer: 6
   m_Name: Player_1
@@ -5045,20 +5047,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8897579360579591617
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5621158113882447145}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -8733189612071745853, guid: eda6cecd26a44574db3216c7abfffee4, type: 3}
 --- !u!54 &8897579360579591618
 Rigidbody:
   m_ObjectHideFlags: 0
