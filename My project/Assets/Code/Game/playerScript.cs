@@ -76,7 +76,7 @@ public class playerScript : MonoBehaviour
         }
         else
         {
-            rb.velocity = UnityEngine.Vector3.zero;
+            rb.velocity = UnityEngine.Vector3.Lerp(rb.velocity, UnityEngine.Vector3.zero, Time.deltaTime);
         }
     }
 }
