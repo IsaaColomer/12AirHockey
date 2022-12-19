@@ -15,6 +15,7 @@ public class playerScript : MonoBehaviour
     public Scene currentScene;
     public UnityEngine.Vector3 dir;
     public RaycastHit hit;
+    private float fraction;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +49,7 @@ public class playerScript : MonoBehaviour
                 PlayerMovement();
             }
         }
+        Debug.Log("Player velocity" + rb.velocity);
     }
 
     private void PlayerMovement()
@@ -76,7 +78,8 @@ public class playerScript : MonoBehaviour
         }
         else
         {
-            rb.velocity = UnityEngine.Vector3.Lerp(rb.velocity, UnityEngine.Vector3.zero, Time.deltaTime);
+            fraction += Time.deltaTime * 1500f;
+            rb.velocity = UnityEngine.Vector3.Lerp(rb.velocity, UnityEngine.Vector3.zero, fraction);
         }
     }
 }
