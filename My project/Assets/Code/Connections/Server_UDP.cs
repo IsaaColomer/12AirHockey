@@ -72,7 +72,7 @@ public class Server_UDP : MonoBehaviour
         //data.EventType = EventType.UPDATE;
         //data.trans = new Vector3(0, 0, 0);
         //string json = JsonUtility.ToJson(data);
-        int type;
+        int type = 0;
         stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
         switch (eventType)
@@ -138,16 +138,29 @@ public class Server_UDP : MonoBehaviour
         //EventData data = new EventData();
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
-        //string json = reader.ReadString();
-        //Debug.Log(json);
-        float x = reader.ReadSingle();
-        float y = reader.ReadSingle();
-        float z = reader.ReadSingle();
-        newEnemyHit = new Vector3((float)x, (float)y, (float)z);
-        float dx = reader.ReadSingle();
-        float dy = reader.ReadSingle();
-        float dz = reader.ReadSingle();
-        newPosEnemy = new Vector3((float)dx, (float)dy, (float)dz);
-        posChanged = true;
+        int type = reader.ReadInt32();
+        Debug.Log(type);
+        switch (type)
+        {
+            case 0:
+                //string json = reader.ReadString();
+                //Debug.Log(json);
+                float x = reader.ReadSingle();
+                float y = reader.ReadSingle();
+                float z = reader.ReadSingle();
+                newEnemyHit = new Vector3((float)x, (float)y, (float)z);
+                float dx = reader.ReadSingle();
+                float dy = reader.ReadSingle();
+                float dz = reader.ReadSingle();
+                newPosEnemy = new Vector3((float)dx, (float)dy, (float)dz);
+                posChanged = true;
+                break;
+            case 1:
+                //Create powerup
+                break;
+            case 2:
+                //Destroy powerup
+                break;
+        }
     }
 }

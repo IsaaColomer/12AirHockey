@@ -91,19 +91,37 @@ public class Client_UDP : MonoBehaviour
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
-        Serialize();
+        Serialize(EventType.UPDATE);
     }
-    void Serialize()
+    void Serialize(EventType eventType)
     {
+        int type = 0;
         streamSerialize = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(streamSerialize);
-        writer.Write(clientPlayer.hit.point.x);
-        writer.Write(clientPlayer.hit.point.y);
-        writer.Write(clientPlayer.hit.point.z);
+        switch (eventType)
+        {
+            case EventType.UPDATE:
+                type = 0;
+                writer.Write(type);
+                Debug.Log(type);
+                writer.Write(clientPlayer.hit.point.x);
+                writer.Write(clientPlayer.hit.point.y);
+                writer.Write(clientPlayer.hit.point.z);
 
-        writer.Write(player.transform.position.x);
-        writer.Write(player.transform.position.y);
-        writer.Write(player.transform.position.z);
+                writer.Write(player.transform.position.x);
+                writer.Write(player.transform.position.y);
+                writer.Write(player.transform.position.z);
+                break;
+            case EventType.CREATE:
+                type = 1;
+                break;
+            case EventType.DESTROY:
+                type = 2;
+                break;
+            default:
+                type = -1;
+                break;
+        }
         Info();
     }
     public void Info()
@@ -130,27 +148,39 @@ public class Client_UDP : MonoBehaviour
         stream.Seek(0, SeekOrigin.Begin);
         int type = reader.ReadInt32();
         Debug.Log(type);
-        float x = reader.ReadSingle();
-        float y = reader.ReadSingle();
-        float z = reader.ReadSingle();
-        dir = new Vector3((float)x, (float)y, (float)z);
+        switch(type)
+        {
+            case 0:
+                float x = reader.ReadSingle();
+                float y = reader.ReadSingle();
+                float z = reader.ReadSingle();
+                dir = new Vector3((float)x, (float)y, (float)z);
 
-        float dx = reader.ReadSingle();
-        float dy = reader.ReadSingle();
-        float dz = reader.ReadSingle();
-        diskRbVel = new Vector3((float)dx, (float)dy, (float)dz);
+                float dx = reader.ReadSingle();
+                float dy = reader.ReadSingle();
+                float dz = reader.ReadSingle();
+                diskRbVel = new Vector3((float)dx, (float)dy, (float)dz);
 
-        float rx = reader.ReadSingle();
-        float ry = reader.ReadSingle();
-        float rz = reader.ReadSingle();
-        if (rx != 0 && rz != 0)
-            newPosDisk = new Vector3((float)rx, (float)ry, (float)rz);
-        float px = reader.ReadSingle();
-        float py = reader.ReadSingle();
-        float pz = reader.ReadSingle();
-        if(px != 0 && pz != 0)
-            newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
+                float rx = reader.ReadSingle();
+                float ry = reader.ReadSingle();
+                float rz = reader.ReadSingle();
+                if (rx != 0 && rz != 0)
+                    newPosDisk = new Vector3((float)rx, (float)ry, (float)rz);
+                float px = reader.ReadSingle();
+                float py = reader.ReadSingle();
+                float pz = reader.ReadSingle();
+                if (px != 0 && pz != 0)
+                    newPosEnemy = new Vector3((float)px, (float)py, (float)pz);
 
-        posChanged = true;
+                posChanged = true;
+                break;
+            case 1:
+                //Create powerup
+                break;
+            default:
+                //Destroy powerup
+                break;
+
+        }
     }
 }
