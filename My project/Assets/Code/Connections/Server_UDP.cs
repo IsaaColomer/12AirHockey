@@ -28,6 +28,16 @@ public class Server_UDP : MonoBehaviour
     public bool connected = false;
     public bool posChanged = false;
     UnityEngine.Vector3 enemyDir;
+
+
+    // ISAAC
+    private Vector3 clientPlayerPosition;
+    private Vector3 serverPlayerPosition;
+    private Vector3 clientPlayerVel;
+    private Vector3 serverPlayerVel;
+    private Vector3 diskVel;
+    private Vector3 diskPosition;
+    private Vector3 clientPlayerPositionFromPlayer;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,13 +57,27 @@ public class Server_UDP : MonoBehaviour
     }
     private void Update()
     {
-        enemyDir = newEnemyHit - newPosEnemy;
+        enemyDir = newEnemyHit - enemyPlayer.transform.position;
+
+
+
+        // ISAAC
+
+        clientPlayerVel = enemyPlayer.GetComponent<Rigidbody>().velocity;
+        serverPlayerVel = player.GetComponent<Rigidbody>().velocity;
+        diskVel = disk.GetComponent<Rigidbody>().velocity;
+        diskPosition = disk.GetComponent<Transform>().position;
+
+        // ISAAC
+
+
+
         if (connected)
             StartCoroutine(SendInfo());
         if (posChanged)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = (enemyDir*10);
-            enemyPlayer.transform.position = new Vector3(newPosEnemy.x, 0.85f, newPosEnemy.z);
+            enemyPlayer.GetComponent<Rigidbody>().velocity = (enemyDir*10f);
+            enemyPlayer.transform.position = new Vector3(clientPlayerPositionFromPlayer.x, 0.85f, clientPlayerPositionFromPlayer.z);
             posChanged = false;
         }       
     }
@@ -81,6 +105,7 @@ public class Server_UDP : MonoBehaviour
                 type = 0;
                 writer.Write(type);
                 Debug.Log(type);
+                /*
                 writer.Write(playerRb.velocity.x);
                 writer.Write(playerRb.velocity.y);
                 writer.Write(playerRb.velocity.z);
@@ -96,6 +121,45 @@ public class Server_UDP : MonoBehaviour
                 writer.Write(player.transform.position.x);
                 writer.Write(player.transform.position.y);
                 writer.Write(player.transform.position.z);
+
+                // ENEMY PLAYER POSITION
+                writer.Write(enemyPlayer.transform.position.x);
+                writer.Write(enemyPlayer.transform.position.y);
+                writer.Write(enemyPlayer.transform.position.z);
+                */
+
+                // ISAAC
+
+                // SEND CLIENT PLAYER POSITION
+                writer.Write(enemyPlayer.transform.position.x);
+                writer.Write(enemyPlayer.transform.position.y);
+                writer.Write(enemyPlayer.transform.position.z);
+
+                // SEND SERVER PLAYER POSITION
+                writer.Write(player.transform.position.x);
+                writer.Write(player.transform.position.y);
+                writer.Write(player.transform.position.z);
+
+                // SEND CLIENT PLAYER VEL
+                writer.Write(clientPlayerVel.x);
+                writer.Write(clientPlayerVel.y);
+                writer.Write(clientPlayerVel.z);
+
+                // SEND SERVER PLAYER VEL
+                writer.Write(serverPlayerVel.x);
+                writer.Write(serverPlayerVel.y);
+                writer.Write(serverPlayerVel.z);
+
+                // SEND DISK VEL
+                writer.Write(diskVel.x);
+                writer.Write(diskVel.y);
+                writer.Write(diskVel.z);
+
+                // SEND DISK POSITION
+                writer.Write(diskPosition.x);
+                writer.Write(diskPosition.y);
+                writer.Write(diskPosition.z);
+
                 break;
             case EventType.CREATE:
                 type = 1;
@@ -149,10 +213,12 @@ public class Server_UDP : MonoBehaviour
                 float y = reader.ReadSingle();
                 float z = reader.ReadSingle();
                 newEnemyHit = new Vector3((float)x, (float)y, (float)z);
-                float dx = reader.ReadSingle();
-                float dy = reader.ReadSingle();
-                float dz = reader.ReadSingle();
-                newPosEnemy = new Vector3((float)dx, (float)dy, (float)dz);
+
+                float px = reader.ReadSingle();
+                float py = reader.ReadSingle();
+                float pz = reader.ReadSingle();
+                clientPlayerPositionFromPlayer = new Vector3((float)px, (float)py, (float)pz);
+
                 posChanged = true;
                 break;
             case 1:

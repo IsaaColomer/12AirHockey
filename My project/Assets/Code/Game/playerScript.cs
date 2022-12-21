@@ -16,6 +16,7 @@ public class playerScript : MonoBehaviour
     public UnityEngine.Vector3 dir;
     public RaycastHit hit;
     private float fraction;
+    private UnityEngine.Vector3 previouslyStoredvelocity;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,12 +50,12 @@ public class playerScript : MonoBehaviour
                 PlayerMovement();
             }
         }
-        Debug.Log("Player velocity" + rb.velocity);
     }
 
     private void PlayerMovement()
     {
         UnityEngine.Vector3 mousePos = Input.mousePosition;
+
         mousePos.z = 100f;
         mousePos = cam.ScreenToWorldPoint(mousePos);
         Debug.DrawRay(transform.position, mousePos - transform.position, Color.red);
@@ -66,7 +67,8 @@ public class playerScript : MonoBehaviour
                 if (this.gameObject.name != "Player_1")
                 {
                     dir = hit.point - rb.transform.position;
-                    rb.velocity = dir * 1500f * Time.deltaTime;
+                    rb.velocity = dir * 10f;
+                    previouslyStoredvelocity= rb.velocity;
                 }
 
                 Debug.DrawRay(transform.position, mousePos - transform.position, Color.green);
@@ -78,8 +80,7 @@ public class playerScript : MonoBehaviour
         }
         else
         {
-            fraction += Time.deltaTime * 1500f;
-            rb.velocity = UnityEngine.Vector3.Lerp(rb.velocity, UnityEngine.Vector3.zero, fraction);
+            rb.velocity = previouslyStoredvelocity;
         }
     }
 }
