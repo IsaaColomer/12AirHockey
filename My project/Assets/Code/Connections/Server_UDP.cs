@@ -57,14 +57,16 @@ public class Server_UDP : MonoBehaviour
     }
     private void Update()
     {
-        enemyDir = newEnemyHit - enemyPlayer.transform.position;
+        enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
 
 
 
         // ISAAC
 
+        clientPlayerPosition = enemyPlayer.GetComponent<Transform>().position;
         clientPlayerVel = enemyPlayer.GetComponent<Rigidbody>().velocity;
         serverPlayerVel = player.GetComponent<Rigidbody>().velocity;
+        serverPlayerPosition = player.GetComponent<Transform>().position;
         diskVel = disk.GetComponent<Rigidbody>().velocity;
         diskPosition = disk.GetComponent<Transform>().position;
 
@@ -131,14 +133,14 @@ public class Server_UDP : MonoBehaviour
                 // ISAAC
 
                 // SEND CLIENT PLAYER POSITION
-                writer.Write(enemyPlayer.transform.position.x);
-                writer.Write(enemyPlayer.transform.position.y);
-                writer.Write(enemyPlayer.transform.position.z);
+                writer.Write(clientPlayerPosition.x);
+                writer.Write(clientPlayerPosition.y);
+                writer.Write(clientPlayerPosition.z);
 
                 // SEND SERVER PLAYER POSITION
-                writer.Write(player.transform.position.x);
-                writer.Write(player.transform.position.y);
-                writer.Write(player.transform.position.z);
+                writer.Write(serverPlayerPosition.x);
+                writer.Write(serverPlayerPosition.y);
+                writer.Write(serverPlayerPosition.z);
 
                 // SEND CLIENT PLAYER VEL
                 writer.Write(clientPlayerVel.x);
@@ -150,15 +152,17 @@ public class Server_UDP : MonoBehaviour
                 writer.Write(serverPlayerVel.y);
                 writer.Write(serverPlayerVel.z);
 
+                // SEND DISK POSITION
+                writer.Write(diskPosition.x);
+                writer.Write(diskPosition.y);
+                writer.Write(diskPosition.z);
+
                 // SEND DISK VEL
                 writer.Write(diskVel.x);
                 writer.Write(diskVel.y);
                 writer.Write(diskVel.z);
 
-                // SEND DISK POSITION
-                writer.Write(diskPosition.x);
-                writer.Write(diskPosition.y);
-                writer.Write(diskPosition.z);
+                
 
                 break;
             case EventType.CREATE:

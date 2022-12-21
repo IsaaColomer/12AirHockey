@@ -101,11 +101,11 @@ public class Client_UDP : MonoBehaviour
         //enemyPlayer.transform.position = newnewPos2;
 
         // SET THE CLIENT PLAYER VELOCITY
-        UnityEngine.Vector3 correctedClientPlayerVelocity = new Vector3(clientPlayerVel.x, clientPlayerVel.y, clientPlayerVel.z);
+        UnityEngine.Vector3 correctedClientPlayerVelocity = new Vector3(clientPlayerVel.x, 0.85f, clientPlayerVel.z);
         myClientPlayer.GetComponent<Rigidbody>().velocity = correctedClientPlayerVelocity;
 
         // CORRECT THE CLIENT PLAYER POSITION
-        UnityEngine.Vector3 correctedClientPlayerPosition = new Vector3(clientPlayerPosition.x, clientPlayerPosition.y, clientPlayerPosition.z);
+        UnityEngine.Vector3 correctedClientPlayerPosition = new Vector3(clientPlayerPosition.x, 0.85f, clientPlayerPosition.z);
         //myClientPlayer.transform.position = correctedClientPlayerPosition;
 
         // SET SERVER PLAYER VELOCITY
@@ -115,6 +115,7 @@ public class Client_UDP : MonoBehaviour
         // CORRECT THE SERVER PLAYER POSITION
         UnityEngine.Vector3 correctedServerPlayerPosition = new Vector3(serverPlayerPosition.x, 0.85f, serverPlayerPosition.z);
         myServerPlayer.transform.position = correctedServerPlayerPosition;
+        Debug.Log("Player position: " + myClientPlayer.transform.position + "Server position: " + correctedServerPlayerPosition);
 
         // SET THE DISK VELOCITY
         disk.GetComponent<Rigidbody>().velocity = new Vector3(diskVel.x, 0.85f, diskVel.z);
@@ -139,15 +140,14 @@ public class Client_UDP : MonoBehaviour
             case EventType.UPDATE:
                 type = 0;
                 writer.Write(type);
-                Debug.Log(type);
                 writer.Write(clientPlayer.hit.point.x);
                 writer.Write(clientPlayer.hit.point.y);
                 writer.Write(clientPlayer.hit.point.z);
 
                 // ISAAC
-                writer.Write(transform.position.x);
-                writer.Write(transform.position.y);
-                writer.Write(transform.position.z);
+                writer.Write(myClientPlayer.transform.position.x);
+                writer.Write(myClientPlayer.transform.position.y);
+                writer.Write(myClientPlayer.transform.position.z);
 
                 break;
             case EventType.CREATE:
@@ -161,6 +161,7 @@ public class Client_UDP : MonoBehaviour
                 break;
         }
         Info();
+        Debug.Log("Serializing!!");
     }
     public void Info()
     {
@@ -185,7 +186,6 @@ public class Client_UDP : MonoBehaviour
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
         int type = reader.ReadInt32();
-        Debug.Log(type);
         switch(type)
         {
             case 0:
@@ -226,13 +226,15 @@ public class Client_UDP : MonoBehaviour
                 float x = reader.ReadSingle();
                 float y = reader.ReadSingle();
                 float z = reader.ReadSingle();
-                clientPlayerPosition = new Vector3((float)x, (float)y, (float)z);
+                if (x != 0 && z != 0)
+                    clientPlayerPosition = new Vector3((float)x, (float)y, (float)z);
 
                 // RECEIVE SERVER PLAYER POSITION
                 float sx = reader.ReadSingle();
                 float sy = reader.ReadSingle();
                 float sz = reader.ReadSingle();
-                serverPlayerPosition = new Vector3((float)sx, (float)sy, (float)sz);
+                if (sx != 0 && sz != 0)
+                    serverPlayerPosition = new Vector3((float)sx, (float)sy, (float)sz);
 
                 // RECEIVE CLEINT PLAYER VEL
                 float vx = reader.ReadSingle();
@@ -250,7 +252,8 @@ public class Client_UDP : MonoBehaviour
                 float px = reader.ReadSingle();
                 float py = reader.ReadSingle();
                 float pz = reader.ReadSingle();
-                diskPosition = new Vector3((float)px, (float)py, (float)pz);
+                if (px != 0 && pz != 0)
+                    diskPosition = new Vector3((float)px, (float)py, (float)pz);
 
                 // RECEIVE DISK VEL
                 float dvx = reader.ReadSingle();

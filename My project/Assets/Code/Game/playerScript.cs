@@ -80,7 +80,8 @@ public class playerScript : MonoBehaviour
         }
         else
         {
-            rb.velocity = previouslyStoredvelocity;
+            //rb.velocity = previouslyStoredvelocity;
+            rb.velocity = UnityEngine.Vector3.zero;
         }
     }
 }
