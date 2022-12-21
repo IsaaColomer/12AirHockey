@@ -28,6 +28,7 @@ public class Server_UDP : MonoBehaviour
     public bool connected = false;
     public bool posChanged = false;
     UnityEngine.Vector3 enemyDir;
+    public Dictionary<GameObject, int> allGO;
 
 
     // ISAAC
@@ -41,6 +42,7 @@ public class Server_UDP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        allGO = new Dictionary<GameObject, int>();
         Screen.SetResolution(480,320,false);
         Thread myThread = new Thread(Connection);
 
@@ -54,6 +56,18 @@ public class Server_UDP : MonoBehaviour
         sender = new IPEndPoint(IPAddress.Any, 0);
         remote = (EndPoint)(sender);
         myThread.Start();
+
+        GameObject gameObjectTemp1 = GameObject.Find("Player_2").gameObject;
+        GameObject gameObjectTemp2 = GameObject.Find("Player_1").gameObject;
+        if (gameObjectTemp1 != null)
+        {
+            allGO.Add(gameObjectTemp1, 0);
+            allGO.Add(gameObjectTemp2, 1);
+        }
+        foreach (KeyValuePair<GameObject, int> go in allGO)
+        {
+            Debug.Log(go.Key + " " + go.Value);
+        }
     }
     private void Update()
     {

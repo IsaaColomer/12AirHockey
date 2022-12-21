@@ -32,6 +32,7 @@ public class Client_UDP : MonoBehaviour
     private Rigidbody rb;
     private Vector3 diskRbVel;
     private UnityEngine.Vector3 dir;
+    public Dictionary<GameObject, int> allGO;
 
 
     // ISAAC
@@ -46,6 +47,7 @@ public class Client_UDP : MonoBehaviour
 
     private void Start()
     {
+        allGO = new Dictionary<GameObject, int>();
         myThread = new Thread(Receive);
         enemyPlayer = GameObject.Find("Player_2");
         player = GameObject.Find("Player_1");
@@ -72,6 +74,17 @@ public class Client_UDP : MonoBehaviour
         inputIp.gameObject.SetActive(false);
         buttonLogin.SetActive(false);
         isLoged = true;
+        GameObject gameObjectTemp1 = GameObject.Find("Player_2").gameObject;
+        GameObject gameObjectTemp2 = GameObject.Find("Player_1").gameObject;
+        if (gameObjectTemp1 != null)
+        {
+            allGO.Add(gameObjectTemp1, 0);
+            allGO.Add(gameObjectTemp2, 1);
+        }
+        foreach (KeyValuePair<GameObject, int> go in allGO)
+        {
+            Debug.Log(go.Key + " " + go.Value);
+        }
     }
 
     // Update is called once per frame
