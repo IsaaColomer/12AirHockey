@@ -86,13 +86,13 @@ public class Client_UDP : MonoBehaviour
         }
         if (posChanged)
         {
-            FixEnemyPlayerAndDiskPosition();
+            FixEnemyPlayerAndDisk();
             posChanged = false;
         }
         //disk.GetComponent<Rigidbody>().velocity = diskRbVel;
     }
 
-    private void FixEnemyPlayerAndDiskPosition()
+    private void FixEnemyPlayerAndDisk()
     {
         //enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(dir.x, 0.85f, dir.z);
         //UnityEngine.Vector3 newnewPos = new Vector3(newPosDisk.x, 0.8529103f, newPosDisk.z);
@@ -115,7 +115,6 @@ public class Client_UDP : MonoBehaviour
         // CORRECT THE SERVER PLAYER POSITION
         UnityEngine.Vector3 correctedServerPlayerPosition = new Vector3(serverPlayerPosition.x, 0.85f, serverPlayerPosition.z);
         myServerPlayer.transform.position = correctedServerPlayerPosition;
-        Debug.Log("Player position: " + myClientPlayer.transform.position + "Server position: " + correctedServerPlayerPosition);
 
         // SET THE DISK VELOCITY
         disk.GetComponent<Rigidbody>().velocity = new Vector3(diskVel.x, 0.85f, diskVel.z);
@@ -124,7 +123,6 @@ public class Client_UDP : MonoBehaviour
         UnityEngine.Vector3 diskCorrectedPosition = new Vector3(diskPosition.x, 0.8529103f, diskPosition.z);
         disk.transform.position = diskCorrectedPosition;
     }
-
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
