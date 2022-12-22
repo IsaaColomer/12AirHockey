@@ -99,23 +99,19 @@ public class Client_UDP : MonoBehaviour
     private void FixEnemyPlayerAndDisk()
     {
         // SET THE CLIENT PLAYER VELOCITY
-        UnityEngine.Vector3 correctedClientPlayerVelocity = new Vector3(clientPlayerVel.x, 0.85f, clientPlayerVel.z);
-        myClientPlayer.GetComponent<Rigidbody>().velocity = correctedClientPlayerVelocity;
+        myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVel.x, 0.85f, clientPlayerVel.z);
 
         // SET SERVER PLAYER VELOCITY
-        UnityEngine.Vector3 correctedServerPlayerVelocity = new Vector3(serverPlayerVel.x, 0.85f, serverPlayerVel.z);
-        myServerPlayer.GetComponent<Rigidbody>().velocity = correctedServerPlayerVelocity;
+        myServerPlayer.GetComponent<Rigidbody>().velocity = new Vector3(serverPlayerVel.x, 0.85f, serverPlayerVel.z);
 
         // CORRECT THE SERVER PLAYER POSITION
-        UnityEngine.Vector3 correctedServerPlayerPosition = new Vector3(serverPlayerPosition.x, 0.85f, serverPlayerPosition.z);
-        myServerPlayer.transform.position = correctedServerPlayerPosition;
+        myServerPlayer.transform.position = new Vector3(serverPlayerPosition.x, 0.85f, serverPlayerPosition.z);
 
         // SET THE DISK VELOCITY
         disk.GetComponent<Rigidbody>().velocity = new Vector3(diskVel.x, 0.85f, diskVel.z);
 
         // CORRECT THE DISK POSITION
-        UnityEngine.Vector3 diskCorrectedPosition = new Vector3(diskPosition.x, 0.8529103f, diskPosition.z);
-        disk.transform.position = diskCorrectedPosition;
+        disk.transform.position = new Vector3(diskPosition.x, 0.8529103f, diskPosition.z); ;
     }
     IEnumerator SendInfo()
     {
@@ -182,7 +178,7 @@ public class Client_UDP : MonoBehaviour
                 // RECEIVE SERVER PLAYER POSITION
                 float sx = reader.ReadSingle();
                 float sz = reader.ReadSingle();
-                Debug.Log("This is the server player position X: " + sx + "This is the server player position X: " + sz);
+                Debug.Log("This is the server player position X: " + sx + "This is the server player position Z: " + sz);
                     serverPlayerPosition = new Vector3((float)sx, 0f, (float)sz);
 
                 // RECEIVE CLEINT PLAYER VEL
