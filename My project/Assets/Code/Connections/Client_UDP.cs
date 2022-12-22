@@ -10,6 +10,7 @@ using System.IO;
 
 public class Client_UDP : MonoBehaviour
 {
+    private playerScript playerscript;
     public playerScript clientPlayer;
     int recv;
     Socket newSocket;
@@ -41,6 +42,7 @@ public class Client_UDP : MonoBehaviour
     private void Start()
     {
         allGO = new Dictionary<GameObject, int>();
+        playerscript = GameObject.Find("Main Camera_Player2").GetComponent<playerScript>();
         Screen.SetResolution(1280, 720, false);
         myThread = new Thread(Receive);
         player = GameObject.Find("Player_1");
@@ -99,7 +101,14 @@ public class Client_UDP : MonoBehaviour
     private void FixEnemyPlayerAndDisk()
     {
         // SET THE CLIENT PLAYER VELOCITY
-        myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVel.x, 0f, clientPlayerVel.z);
+        if(!playerscript.canMove)
+        {
+            myClientPlayer.GetComponent<Rigidbody>().velocity = UnityEngine.Vector3.zero;
+        }
+        else
+        {
+            myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVel.x, 0f, clientPlayerVel.z);
+        }
 
         // SET SERVER PLAYER VELOCITY
         myServerPlayer.GetComponent<Rigidbody>().velocity = new Vector3(serverPlayerVel.x, 0f, serverPlayerVel.z);

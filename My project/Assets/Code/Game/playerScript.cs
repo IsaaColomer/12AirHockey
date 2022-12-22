@@ -7,9 +7,11 @@ using UnityEngine.SceneManagement;
 public class playerScript : MonoBehaviour
 {
     [SerializeField] public Rigidbody rb;
+    public bool canMove;
     public LayerMask ignore;
     [SerializeField] private Camera cam;
     private int powerType;
+    public UnityEngine.Vector3 lastRaycastInsideBounds;
     public Client_UDP client;
     public Server_UDP server;
     public Scene currentScene;
@@ -17,12 +19,15 @@ public class playerScript : MonoBehaviour
     public RaycastHit hit;
     private float fraction;
     private UnityEngine.Vector3 previouslyStoredvelocity;
+    public Transform playerTransform;
     // Start is called before the first frame update
     void Start()
     {
+        canMove = true;
         rb = gameObject.GetComponentInChildren<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.None;
         cam = GetComponent<Camera>();
+        playerTransform = rb.gameObject.GetComponentInChildren<Transform>().transform;
         client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
         server = GameObject.Find("OnlineGameObject").GetComponent<Server_UDP>();
         currentScene = SceneManager.GetActiveScene();
@@ -64,23 +69,30 @@ public class playerScript : MonoBehaviour
         {
             if (hit.transform.gameObject.tag == "Respawn")
             {
-                
                     dir = hit.point - rb.transform.position;
+                    lastRaycastInsideBounds = hit.point;
                     rb.velocity = dir * 10f;
                     previouslyStoredvelocity= rb.velocity;
-                
 
+                    canMove = true;
                 Debug.DrawRay(transform.position, mousePos - transform.position, Color.green);
             }
             else
             {
-                rb.velocity = UnityEngine.Vector3.zero;
+                playerTransform.position = UnityEngine.Vector3.Lerp(playerTransform.position, lastRaycastInsideBounds, 0.5f);
+                rb.velocity = UnityEngine.Vector3.Lerp(dir*10f, UnityEngine.Vector3.zero, 0.5f);
+                
+                canMove = false;
             }
         }
         else
         {
-            //rb.velocity = previouslyStoredvelocity;
-            rb.velocity = UnityEngine.Vector3.zero;
+            canMove = false;
+            
+            playerTransform.position = UnityEngine.Vector3.Lerp(playerTransform.position, lastRaycastInsideBounds, 0.5f);
+            rb.velocity = UnityEngine.Vector3.Lerp(dir*10f, UnityEngine.Vector3.zero, 0.5f);
+                   
+
         }
     }
 }
