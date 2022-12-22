@@ -48,7 +48,7 @@ public class Client_UDP : MonoBehaviour
     void StartUDP(string name, string ip)
     {
         data = new byte[1024];
-        ipep = new IPEndPoint(IPAddress.Parse(ip), 9050);
+        ipep = new IPEndPoint(IPAddress.Parse(ip), 5555);
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         Debug.Log("Login Started");
         sender = new IPEndPoint(IPAddress.Any, 0);
@@ -129,7 +129,6 @@ public class Client_UDP : MonoBehaviour
                 type = 0;
                 writer.Write(type);
                 writer.Write(clientPlayer.hit.point.x);
-                writer.Write(clientPlayer.hit.point.y);
                 writer.Write(clientPlayer.hit.point.z);
 
                 writer.Write(myClientPlayer.transform.position.x);

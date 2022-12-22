@@ -39,7 +39,7 @@ public class Server_UDP : MonoBehaviour
         Screen.SetResolution(1280,720,false);
         Thread myThread = new Thread(Connection);
 
-        ipep = new IPEndPoint(IPAddress.Any, 9050);
+        ipep = new IPEndPoint(IPAddress.Any, 5555);
         newsocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsocket.Bind(ipep);
         Debug.Log("Waiting for a client...");
@@ -166,9 +166,8 @@ public class Server_UDP : MonoBehaviour
         {
             case 0:
                 float x = reader.ReadSingle();
-                float y = reader.ReadSingle();
                 float z = reader.ReadSingle();
-                newEnemyHit = new Vector3((float)x, (float)y, (float)z);
+                newEnemyHit = new Vector3((float)x, 0.845f, (float)z);
 
                 float px = reader.ReadSingle();
                 float pz = reader.ReadSingle();
