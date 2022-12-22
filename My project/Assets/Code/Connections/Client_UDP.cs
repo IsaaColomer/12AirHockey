@@ -99,16 +99,16 @@ public class Client_UDP : MonoBehaviour
     private void FixEnemyPlayerAndDisk()
     {
         // SET THE CLIENT PLAYER VELOCITY
-        myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVel.x, 0.85f, clientPlayerVel.z);
+        myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVel.x, 0f, clientPlayerVel.z);
 
         // SET SERVER PLAYER VELOCITY
-        myServerPlayer.GetComponent<Rigidbody>().velocity = new Vector3(serverPlayerVel.x, 0.85f, serverPlayerVel.z);
+        myServerPlayer.GetComponent<Rigidbody>().velocity = new Vector3(serverPlayerVel.x, 0f, serverPlayerVel.z);
 
         // CORRECT THE SERVER PLAYER POSITION
         myServerPlayer.transform.position = new Vector3(serverPlayerPosition.x, 0.85f, serverPlayerPosition.z);
 
         // SET THE DISK VELOCITY
-        disk.GetComponent<Rigidbody>().velocity = new Vector3(diskVel.x, 0.85f, diskVel.z);
+        disk.GetComponent<Rigidbody>().velocity = new Vector3(diskVel.x, 0f, diskVel.z);
 
         // CORRECT THE DISK POSITION
         disk.transform.position = new Vector3(diskPosition.x, 0.8529103f, diskPosition.z); ;

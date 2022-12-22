@@ -27,7 +27,6 @@ public class Server_UDP : MonoBehaviour
     UnityEngine.Vector3 enemyDir;
     public Dictionary<GameObject, int> allGO;
 
-        private Vector3 clientPlayerPosition;
     private Vector3 serverPlayerPosition;
     private Vector3 clientPlayerVel;
     private Vector3 serverPlayerVel;
@@ -65,22 +64,23 @@ public class Server_UDP : MonoBehaviour
     {
         
 
-        if (connected)
-            StartCoroutine(SendInfo());
+        
         if (posChanged)
         {
-            enemyPlayer.GetComponent<Rigidbody>().velocity = (enemyDir*10f);
+            enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(enemyDir.x,0f,enemyDir.z) * 10f;
             enemyPlayer.transform.position = new Vector3(clientPlayerPositionFromPlayer.x, 0.85f, clientPlayerPositionFromPlayer.z);
             posChanged = false;
         }
         enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
 
-        clientPlayerPosition = enemyPlayer.GetComponent<Transform>().position;
         clientPlayerVel = enemyPlayer.GetComponent<Rigidbody>().velocity;
         serverPlayerVel = player.GetComponent<Rigidbody>().velocity;
         serverPlayerPosition = player.GetComponent<Transform>().position;
         diskVel = disk.GetComponent<Rigidbody>().velocity;
         diskPosition = disk.GetComponent<Transform>().position;
+
+        if (connected)
+            StartCoroutine(SendInfo());
     }
     
     IEnumerator SendInfo()
@@ -137,7 +137,8 @@ public class Server_UDP : MonoBehaviour
     }
     public void Info()
     {
-        newsocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
+        if(stream.ToArray().Length<= stream.ToArray().Length)
+            newsocket.SendTo(stream.ToArray(), stream.ToArray().Length, SocketFlags.None, remote);
     }
     public void Connection()
     {
