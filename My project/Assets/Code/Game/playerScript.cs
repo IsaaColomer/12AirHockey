@@ -64,12 +64,11 @@ public class playerScript : MonoBehaviour
         {
             if (hit.transform.gameObject.tag == "Respawn")
             {
-                if (this.gameObject.name != "Player_1")
-                {
+                
                     dir = hit.point - rb.transform.position;
                     rb.velocity = dir * 10f;
                     previouslyStoredvelocity= rb.velocity;
-                }
+                
 
                 Debug.DrawRay(transform.position, mousePos - transform.position, Color.green);
             }
