@@ -63,14 +63,7 @@ public class Server_UDP : MonoBehaviour
     }
     private void Update()
     {
-        enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
-
-        clientPlayerPosition = enemyPlayer.GetComponent<Transform>().position;
-        clientPlayerVel = enemyPlayer.GetComponent<Rigidbody>().velocity;
-        serverPlayerVel = player.GetComponent<Rigidbody>().velocity;
-        serverPlayerPosition = player.GetComponent<Transform>().position;
-        diskVel = disk.GetComponent<Rigidbody>().velocity;
-        diskPosition = disk.GetComponent<Transform>().position;
+        
 
         if (connected)
             StartCoroutine(SendInfo());
@@ -79,7 +72,15 @@ public class Server_UDP : MonoBehaviour
             enemyPlayer.GetComponent<Rigidbody>().velocity = (enemyDir*10f);
             enemyPlayer.transform.position = new Vector3(clientPlayerPositionFromPlayer.x, 0.85f, clientPlayerPositionFromPlayer.z);
             posChanged = false;
-        }       
+        }
+        enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
+
+        clientPlayerPosition = enemyPlayer.GetComponent<Transform>().position;
+        clientPlayerVel = enemyPlayer.GetComponent<Rigidbody>().velocity;
+        serverPlayerVel = player.GetComponent<Rigidbody>().velocity;
+        serverPlayerPosition = player.GetComponent<Transform>().position;
+        diskVel = disk.GetComponent<Rigidbody>().velocity;
+        diskPosition = disk.GetComponent<Transform>().position;
     }
     
     IEnumerator SendInfo()
@@ -100,10 +101,6 @@ public class Server_UDP : MonoBehaviour
                 type = 0;
                 writer.Write(type);
                 Debug.Log(type);
-
-                // SEND CLIENT PLAYER POSITION
-                writer.Write(clientPlayerPosition.x);
-                writer.Write(clientPlayerPosition.z);
 
                 // SEND SERVER PLAYER POSITION
                 writer.Write(serverPlayerPosition.x);
@@ -136,11 +133,6 @@ public class Server_UDP : MonoBehaviour
                 type = -1;
                 break;
         }
-        Info();
-        Debug.Log("serialized!");
-
-
-
         Info();
     }
     public void Info()
@@ -178,9 +170,8 @@ public class Server_UDP : MonoBehaviour
                 newEnemyHit = new Vector3((float)x, (float)y, (float)z);
 
                 float px = reader.ReadSingle();
-                float py = reader.ReadSingle();
                 float pz = reader.ReadSingle();
-                clientPlayerPositionFromPlayer = new Vector3((float)px, (float)py, (float)pz);
+                clientPlayerPositionFromPlayer = new Vector3((float)px, 0f, (float)pz);
 
                 posChanged = true;
                 break;

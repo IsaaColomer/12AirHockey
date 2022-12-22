@@ -30,7 +30,6 @@ public class Client_UDP : MonoBehaviour
     private GameObject player;
     public Dictionary<GameObject, int> allGO;
 
-    private Vector3 clientPlayerPosition;
     private Vector3 serverPlayerPosition;
     private Vector3 clientPlayerVel;
     private Vector3 serverPlayerVel;
@@ -103,9 +102,6 @@ public class Client_UDP : MonoBehaviour
         UnityEngine.Vector3 correctedClientPlayerVelocity = new Vector3(clientPlayerVel.x, 0.85f, clientPlayerVel.z);
         myClientPlayer.GetComponent<Rigidbody>().velocity = correctedClientPlayerVelocity;
 
-        // CORRECT THE CLIENT PLAYER POSITION
-        UnityEngine.Vector3 correctedClientPlayerPosition = new Vector3(clientPlayerPosition.x, 0.85f, clientPlayerPosition.z);
-
         // SET SERVER PLAYER VELOCITY
         UnityEngine.Vector3 correctedServerPlayerVelocity = new Vector3(serverPlayerVel.x, 0.85f, serverPlayerVel.z);
         myServerPlayer.GetComponent<Rigidbody>().velocity = correctedServerPlayerVelocity;
@@ -141,7 +137,6 @@ public class Client_UDP : MonoBehaviour
                 writer.Write(clientPlayer.hit.point.z);
 
                 writer.Write(myClientPlayer.transform.position.x);
-                writer.Write(myClientPlayer.transform.position.y);
                 writer.Write(myClientPlayer.transform.position.z);
 
                 break;
@@ -183,14 +178,11 @@ public class Client_UDP : MonoBehaviour
         switch(type)
         {
             case 0:
-                // RECEIVE CLIENT PLAYER POSITION
-                float x = reader.ReadSingle();
-                float z = reader.ReadSingle();
-                    clientPlayerPosition = new Vector3((float)x, 0f, (float)z);
-
+              
                 // RECEIVE SERVER PLAYER POSITION
                 float sx = reader.ReadSingle();
                 float sz = reader.ReadSingle();
+                Debug.Log("This is the server player position X: " + sx + "This is the server player position X: " + sz);
                     serverPlayerPosition = new Vector3((float)sx, 0f, (float)sz);
 
                 // RECEIVE CLEINT PLAYER VEL
@@ -221,7 +213,6 @@ public class Client_UDP : MonoBehaviour
                 break;
             default:
                 //Destroy powerup
-                Debug.Log("??????????????????????????????????????????????????????");
                 break;
 
         }
