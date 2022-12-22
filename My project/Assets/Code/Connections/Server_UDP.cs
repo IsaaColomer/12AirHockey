@@ -19,38 +19,30 @@ public class Server_UDP : MonoBehaviour
     EndPoint remote;
     MemoryStream stream;
     public GameObject player;
-    private Rigidbody playerRb;
-    private Rigidbody diskRb;
     public GameObject enemyPlayer;
     public GameObject disk;
-    private Vector3 newPosEnemy;
     private Vector3 newEnemyHit;
     public bool connected = false;
     public bool posChanged = false;
     UnityEngine.Vector3 enemyDir;
     public Dictionary<GameObject, int> allGO;
 
-
-    // ISAAC
-    private Vector3 clientPlayerPosition;
+        private Vector3 clientPlayerPosition;
     private Vector3 serverPlayerPosition;
     private Vector3 clientPlayerVel;
     private Vector3 serverPlayerVel;
     private Vector3 diskVel;
     private Vector3 diskPosition;
     private Vector3 clientPlayerPositionFromPlayer;
-    // Start is called before the first frame update
     void Start()
     {
         allGO = new Dictionary<GameObject, int>();
-        Screen.SetResolution(480,320,false);
+        Screen.SetResolution(1280,720,false);
         Thread myThread = new Thread(Connection);
 
         ipep = new IPEndPoint(IPAddress.Any, 9050);
         newsocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsocket.Bind(ipep);
-        playerRb = player.GetComponent<Rigidbody>();
-        diskRb = disk.GetComponent<Rigidbody>();
         Debug.Log("Waiting for a client...");
 
         sender = new IPEndPoint(IPAddress.Any, 0);
@@ -73,20 +65,12 @@ public class Server_UDP : MonoBehaviour
     {
         enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
 
-
-
-        // ISAAC
-
         clientPlayerPosition = enemyPlayer.GetComponent<Transform>().position;
         clientPlayerVel = enemyPlayer.GetComponent<Rigidbody>().velocity;
         serverPlayerVel = player.GetComponent<Rigidbody>().velocity;
         serverPlayerPosition = player.GetComponent<Transform>().position;
         diskVel = disk.GetComponent<Rigidbody>().velocity;
         diskPosition = disk.GetComponent<Transform>().position;
-
-        // ISAAC
-
-
 
         if (connected)
             StartCoroutine(SendInfo());
@@ -107,11 +91,6 @@ public class Server_UDP : MonoBehaviour
     void Serialize(EventType eventType)
     {
         Debug.Log("Serializing Info");
-        //EventData data = new EventData();
-        //data.ID = 0;
-        //data.EventType = EventType.UPDATE;
-        //data.trans = new Vector3(0, 0, 0);
-        //string json = JsonUtility.ToJson(data);
         int type = 0;
         stream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(stream);
@@ -121,62 +100,30 @@ public class Server_UDP : MonoBehaviour
                 type = 0;
                 writer.Write(type);
                 Debug.Log(type);
-                /*
-                writer.Write(playerRb.velocity.x);
-                writer.Write(playerRb.velocity.y);
-                writer.Write(playerRb.velocity.z);
-
-                writer.Write(diskRb.velocity.x);
-                writer.Write(diskRb.velocity.y);
-                writer.Write(diskRb.velocity.z);
-
-                writer.Write(diskRb.transform.position.x);
-                writer.Write(diskRb.transform.position.y);
-                writer.Write(diskRb.transform.position.z);
-
-                writer.Write(player.transform.position.x);
-                writer.Write(player.transform.position.y);
-                writer.Write(player.transform.position.z);
-
-                // ENEMY PLAYER POSITION
-                writer.Write(enemyPlayer.transform.position.x);
-                writer.Write(enemyPlayer.transform.position.y);
-                writer.Write(enemyPlayer.transform.position.z);
-                */
-
-                // ISAAC
 
                 // SEND CLIENT PLAYER POSITION
                 writer.Write(clientPlayerPosition.x);
-                writer.Write(clientPlayerPosition.y);
                 writer.Write(clientPlayerPosition.z);
 
                 // SEND SERVER PLAYER POSITION
                 writer.Write(serverPlayerPosition.x);
-                writer.Write(serverPlayerPosition.y);
                 writer.Write(serverPlayerPosition.z);
 
                 // SEND CLIENT PLAYER VEL
                 writer.Write(clientPlayerVel.x);
-                writer.Write(clientPlayerVel.y);
                 writer.Write(clientPlayerVel.z);
 
                 // SEND SERVER PLAYER VEL
                 writer.Write(serverPlayerVel.x);
-                writer.Write(serverPlayerVel.y);
                 writer.Write(serverPlayerVel.z);
 
                 // SEND DISK POSITION
                 writer.Write(diskPosition.x);
-                writer.Write(diskPosition.y);
                 writer.Write(diskPosition.z);
 
                 // SEND DISK VEL
                 writer.Write(diskVel.x);
-                writer.Write(diskVel.y);
                 writer.Write(diskVel.z);
-
-                
 
                 break;
             case EventType.CREATE:
@@ -225,8 +172,6 @@ public class Server_UDP : MonoBehaviour
         switch (type)
         {
             case 0:
-                //string json = reader.ReadString();
-                //Debug.Log(json);
                 float x = reader.ReadSingle();
                 float y = reader.ReadSingle();
                 float z = reader.ReadSingle();
