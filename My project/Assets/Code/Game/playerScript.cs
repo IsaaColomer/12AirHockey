@@ -80,8 +80,8 @@ public class playerScript : MonoBehaviour
             else
             {
                 playerTransform.position = UnityEngine.Vector3.Lerp(playerTransform.position, lastRaycastInsideBounds, 10.0f);
-                rb.velocity = UnityEngine.Vector3.Lerp(dir*10f, UnityEngine.Vector3.zero, 0.5f);
-                
+                //rb.velocity = UnityEngine.Vector3.Lerp(dir*10f, UnityEngine.Vector3.zero, 0.5f);
+                rb.velocity = UnityEngine.Vector3.zero;
                 canMove = false;
             }
         }
@@ -89,7 +89,8 @@ public class playerScript : MonoBehaviour
         {
             canMove = false;
             
-            rb.velocity = UnityEngine.Vector3.Lerp(dir*10f, UnityEngine.Vector3.zero, 0.5f);
+            //rb.velocity = UnityEngine.Vector3.Lerp(dir*10f, UnityEngine.Vector3.zero, 0.5f);
+            rb.velocity = UnityEngine.Vector3.zero;
 
         }
     }
