@@ -62,9 +62,6 @@ public class Server_UDP : MonoBehaviour
     }
     private void Update()
     {
-        
-
-        
         if (posChanged)
         {
             enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(enemyDir.x,0f,enemyDir.z) * 10f;
@@ -157,7 +154,6 @@ public class Server_UDP : MonoBehaviour
     }
     void Deserialize()
     {
-        //EventData data = new EventData();
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
         int type = reader.ReadInt32();
