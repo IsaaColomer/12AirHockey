@@ -18,7 +18,6 @@ public class playerScript : MonoBehaviour
     public UnityEngine.Vector3 dir;
     public RaycastHit hit;
     private float fraction;
-    private UnityEngine.Vector3 previouslyStoredvelocity;
     public Transform playerTransform;
     // Start is called before the first frame update
     void Start()
@@ -31,6 +30,8 @@ public class playerScript : MonoBehaviour
         client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
         server = GameObject.Find("OnlineGameObject").GetComponent<Server_UDP>();
         currentScene = SceneManager.GetActiveScene();
+
+        lastRaycastInsideBounds = rb.transform.position;
     }
 
     public void GetType(int type)
@@ -71,11 +72,10 @@ public class playerScript : MonoBehaviour
             {
                 dir = hit.point - rb.transform.position;
                 lastRaycastInsideBounds = hit.point;
+                lastRaycastInsideBounds.y = 0.85f;
                 rb.velocity = dir * 10f;
-                previouslyStoredvelocity= rb.velocity;
 
                 canMove = true;
-                Debug.DrawRay(transform.position, mousePos - transform.position, Color.green);
             }
             else
             {
