@@ -50,7 +50,7 @@ public class Client_UDP : MonoBehaviour
     void StartUDP(string name, string ip)
     {
         data = new byte[1024];
-        ipep = new IPEndPoint(IPAddress.Parse(ip), 5555);
+        ipep = new IPEndPoint(IPAddress.Parse(ip), 1234);
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         Debug.Log("Login Started");
         sender = new IPEndPoint(IPAddress.Any, 0);

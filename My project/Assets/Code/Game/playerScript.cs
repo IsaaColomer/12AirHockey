@@ -69,17 +69,17 @@ public class playerScript : MonoBehaviour
         {
             if (hit.transform.gameObject.tag == "Respawn")
             {
-                    dir = hit.point - rb.transform.position;
-                    lastRaycastInsideBounds = hit.point;
-                    rb.velocity = dir * 10f;
-                    previouslyStoredvelocity= rb.velocity;
+                dir = hit.point - rb.transform.position;
+                lastRaycastInsideBounds = hit.point;
+                rb.velocity = dir * 10f;
+                previouslyStoredvelocity= rb.velocity;
 
-                    canMove = true;
+                canMove = true;
                 Debug.DrawRay(transform.position, mousePos - transform.position, Color.green);
             }
             else
             {
-                playerTransform.position = UnityEngine.Vector3.Lerp(playerTransform.position, lastRaycastInsideBounds, 0.5f);
+                playerTransform.position = UnityEngine.Vector3.Lerp(playerTransform.position, lastRaycastInsideBounds, 10.0f);
                 rb.velocity = UnityEngine.Vector3.Lerp(dir*10f, UnityEngine.Vector3.zero, 0.5f);
                 
                 canMove = false;
@@ -89,9 +89,7 @@ public class playerScript : MonoBehaviour
         {
             canMove = false;
             
-            playerTransform.position = UnityEngine.Vector3.Lerp(playerTransform.position, lastRaycastInsideBounds, 0.5f);
             rb.velocity = UnityEngine.Vector3.Lerp(dir*10f, UnityEngine.Vector3.zero, 0.5f);
-                   
 
         }
     }

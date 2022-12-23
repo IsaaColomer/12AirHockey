@@ -39,7 +39,7 @@ public class Server_UDP : MonoBehaviour
         Screen.SetResolution(1280,720,false);
         Thread myThread = new Thread(Connection);
 
-        ipep = new IPEndPoint(IPAddress.Any, 5555);
+        ipep = new IPEndPoint(IPAddress.Any, 1234);
         newsocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         newsocket.Bind(ipep);
         Debug.Log("Waiting for a client...");
