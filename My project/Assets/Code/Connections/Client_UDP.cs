@@ -38,6 +38,7 @@ public class Client_UDP : MonoBehaviour
     private Vector3 diskPosition;
     public GameObject myClientPlayer;
     public GameObject myServerPlayer;
+    private bool hasClientScored;
 
     private void Start()
     {
@@ -95,6 +96,7 @@ public class Client_UDP : MonoBehaviour
         {
             FixEnemyPlayerAndDisk();
             posChanged = false;
+            Debug.Log("Has client scored_ " + hasClientScored);
         }
     }
 
@@ -186,7 +188,6 @@ public class Client_UDP : MonoBehaviour
                 // RECEIVE SERVER PLAYER POSITION
                 float sx = reader.ReadSingle();
                 float sz = reader.ReadSingle();
-                Debug.Log("This is the server player position X: " + sx + "This is the server player position Z: " + sz);
                     serverPlayerPosition = new Vector3((float)sx, 0f, (float)sz);
 
                 // RECEIVE CLEINT PLAYER VEL
@@ -209,6 +210,10 @@ public class Client_UDP : MonoBehaviour
                 float dvx = reader.ReadSingle();
                 float dvz = reader.ReadSingle();
                 diskVel = new Vector3((float)dvx, 0f, (float)dvz);
+
+                // RECEIVE IF CLIENT HAS SCORED
+                bool clientScored = reader.ReadBoolean();
+                hasClientScored = clientScored;
 
                 posChanged = true;
                 break;

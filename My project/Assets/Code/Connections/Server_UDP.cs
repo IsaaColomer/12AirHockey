@@ -27,12 +27,16 @@ public class Server_UDP : MonoBehaviour
     UnityEngine.Vector3 enemyDir;
     public Dictionary<GameObject, int> allGO;
 
+    // GET THE DISK
+    private Disk_Code diskCode;
+
     private Vector3 serverPlayerPosition;
     private Vector3 clientPlayerVel;
     private Vector3 serverPlayerVel;
     private Vector3 diskVel;
     private Vector3 diskPosition;
     private Vector3 clientPlayerPositionFromPlayer;
+    public bool didClientScore;
     void Start()
     {
         allGO = new Dictionary<GameObject, int>();
@@ -59,6 +63,8 @@ public class Server_UDP : MonoBehaviour
         {
             Debug.Log(go.Key + " " + go.Value);
         }
+
+        diskCode = GameObject.Find("Disk").GetComponent<Disk_Code>();
     }
     private void Update()
     {
@@ -75,6 +81,7 @@ public class Server_UDP : MonoBehaviour
         serverPlayerPosition = player.GetComponent<Transform>().position;
         diskVel = disk.GetComponent<Rigidbody>().velocity;
         diskPosition = disk.GetComponent<Transform>().position;
+        didClientScore = diskCode.clientGoal;
 
         if (connected)
             StartCoroutine(SendInfo());
@@ -118,6 +125,9 @@ public class Server_UDP : MonoBehaviour
                 // SEND DISK VEL
                 writer.Write(diskVel.x);
                 writer.Write(diskVel.z);
+
+                // SEND IF CLIENT HAS SCORED
+                writer.Write(didClientScore);
 
                 break;
             case EventType.CREATE:

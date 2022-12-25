@@ -12,6 +12,7 @@ public class Disk_Code : MonoBehaviour
     [SerializeField] private Vector3 vel;
     public float maxDiskVel = 3;
     public string lastPlayerName;
+    public bool clientGoal;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +26,7 @@ public class Disk_Code : MonoBehaviour
     {
         if(other.gameObject.name == "Goal_p2")
         {
+            clientGoal = true;
             rb.velocity = Vector3.zero;
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
@@ -53,7 +55,8 @@ public class Disk_Code : MonoBehaviour
     IEnumerator WaitToRestartDisk()
     {
         // Just in case we wait a few moments to restart the disk
-        yield return new WaitForSeconds(.7f);
+        yield return new WaitForSeconds(0.01f);
+        clientGoal = false;
         piPlayer1.GetComponent<Renderer>().material.color = startColor;        
         piPlayer2.GetComponent<Renderer>().material.color = startColor;        
         transform.position = startPos;
