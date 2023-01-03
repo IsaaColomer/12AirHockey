@@ -38,7 +38,13 @@ public class Client_UDP : MonoBehaviour
     private Vector3 diskPosition;
     public GameObject myClientPlayer;
     public GameObject myServerPlayer;
-    private bool hasClientScored;
+
+    // GOALS UI
+    public TextMeshProUGUI tmpServer;
+    public TextMeshProUGUI tmpClient;
+
+    private int serverGoalsAmmount;
+    private int clientGoalsAmmount;
 
     private void Start()
     {
@@ -47,6 +53,8 @@ public class Client_UDP : MonoBehaviour
         Screen.SetResolution(1280, 720, false);
         myThread = new Thread(Receive);
         player = GameObject.Find("Player_1");
+        tmpServer = GameObject.Find("ServerGoals").GetComponent<TextMeshProUGUI>();
+        tmpClient = GameObject.Find("ClientGoals").GetComponent<TextMeshProUGUI>();
     }
     void StartUDP(string name, string ip)
     {
@@ -96,7 +104,6 @@ public class Client_UDP : MonoBehaviour
         {
             FixEnemyPlayerAndDisk();
             posChanged = false;
-            Debug.Log("Has client scored_ " + hasClientScored);
         }
     }
 
@@ -122,7 +129,13 @@ public class Client_UDP : MonoBehaviour
         disk.GetComponent<Rigidbody>().velocity = new Vector3(diskVel.x, 0f, diskVel.z);
 
         // CORRECT THE DISK POSITION
-        disk.transform.position = new Vector3(diskPosition.x, 0.8529103f, diskPosition.z); ;
+        disk.transform.position = new Vector3(diskPosition.x, 0.8529103f, diskPosition.z);
+
+        //UPDATE CLIENT UI
+        tmpClient.text = "Client Goals: " + clientGoalsAmmount.ToString();
+
+        //UPDATE SERVER UI
+        tmpServer.text = "Server Goals: " + serverGoalsAmmount.ToString();
     }
     IEnumerator SendInfo()
     {
@@ -211,9 +224,13 @@ public class Client_UDP : MonoBehaviour
                 float dvz = reader.ReadSingle();
                 diskVel = new Vector3((float)dvx, 0f, (float)dvz);
 
-                // RECEIVE IF CLIENT HAS SCORED
-                bool clientScored = reader.ReadBoolean();
-                hasClientScored = clientScored;
+                //RECEIVE CLIENT GOALS
+                int cgoals = reader.ReadInt32();
+                clientGoalsAmmount = cgoals;
+
+                //RECEIVE SERVER GOALS
+                int sgoals = reader.ReadInt32();
+                serverGoalsAmmount = sgoals;
 
                 posChanged = true;
                 break;

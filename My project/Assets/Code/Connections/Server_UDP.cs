@@ -36,7 +36,11 @@ public class Server_UDP : MonoBehaviour
     private Vector3 diskVel;
     private Vector3 diskPosition;
     private Vector3 clientPlayerPositionFromPlayer;
-    public bool didClientScore;
+
+    public TextMeshProUGUI tmpServer;
+    public TextMeshProUGUI tmpClient;
+    private int serverGoalsAmmount;
+    private int clientGoalsAmmount;
     void Start()
     {
         allGO = new Dictionary<GameObject, int>();
@@ -65,6 +69,10 @@ public class Server_UDP : MonoBehaviour
         }
 
         diskCode = GameObject.Find("Disk").GetComponent<Disk_Code>();
+        tmpServer = GameObject.Find("ServerGoals").GetComponent<TextMeshProUGUI>();
+        tmpClient = GameObject.Find("ClientGoals").GetComponent<TextMeshProUGUI>();
+        serverGoalsAmmount = 0;
+        clientGoalsAmmount = 0;
     }
     private void Update()
     {
@@ -81,10 +89,19 @@ public class Server_UDP : MonoBehaviour
         serverPlayerPosition = player.GetComponent<Transform>().position;
         diskVel = disk.GetComponent<Rigidbody>().velocity;
         diskPosition = disk.GetComponent<Transform>().position;
-        didClientScore = diskCode.clientGoal;
 
         if (connected)
             StartCoroutine(SendInfo());
+    }
+    public void ServerScored()
+    {
+        serverGoalsAmmount++;
+        tmpServer.text = "Server Goals: " + serverGoalsAmmount.ToString();
+    }
+    public void ClientScored()
+    {
+        clientGoalsAmmount++;
+        tmpClient.text = "Client Goals: " + clientGoalsAmmount.ToString();
     }
     
     IEnumerator SendInfo()
@@ -126,8 +143,11 @@ public class Server_UDP : MonoBehaviour
                 writer.Write(diskVel.x);
                 writer.Write(diskVel.z);
 
-                // SEND IF CLIENT HAS SCORED
-                writer.Write(didClientScore);
+                //SEND CLIENT GOALS
+                writer.Write(clientGoalsAmmount);
+
+                //SEND SERVER GOALS
+                writer.Write(serverGoalsAmmount);
 
                 break;
             case EventType.CREATE:
