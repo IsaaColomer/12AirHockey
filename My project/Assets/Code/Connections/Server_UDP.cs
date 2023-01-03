@@ -37,8 +37,8 @@ public class Server_UDP : MonoBehaviour
     private Vector3 diskPosition;
     private Vector3 clientPlayerPositionFromPlayer;
 
-    public TextMeshProUGUI tmpServer;
-    public TextMeshProUGUI tmpClient;
+    public TextMeshPro tmpServer;
+    public TextMeshPro tmpClient;
     private int serverGoalsAmmount;
     private int clientGoalsAmmount;
     void Start()
@@ -69,8 +69,8 @@ public class Server_UDP : MonoBehaviour
         }
 
         diskCode = GameObject.Find("Disk").GetComponent<Disk_Code>();
-        tmpServer = GameObject.Find("ServerGoals").GetComponent<TextMeshProUGUI>();
-        tmpClient = GameObject.Find("ClientGoals").GetComponent<TextMeshProUGUI>();
+        tmpServer = GameObject.Find("ServerGoals").GetComponent<TextMeshPro>();
+        tmpClient = GameObject.Find("ClientGoals").GetComponent<TextMeshPro>();
         serverGoalsAmmount = 0;
         clientGoalsAmmount = 0;
     }
@@ -96,12 +96,12 @@ public class Server_UDP : MonoBehaviour
     public void ServerScored()
     {
         serverGoalsAmmount++;
-        tmpServer.text = "Server Goals: " + serverGoalsAmmount.ToString();
+        tmpServer.text = serverGoalsAmmount.ToString();
     }
     public void ClientScored()
     {
         clientGoalsAmmount++;
-        tmpClient.text = "Client Goals: " + clientGoalsAmmount.ToString();
+        tmpClient.text = clientGoalsAmmount.ToString();
     }
     
     IEnumerator SendInfo()

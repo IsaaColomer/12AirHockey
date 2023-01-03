@@ -40,8 +40,8 @@ public class Client_UDP : MonoBehaviour
     public GameObject myServerPlayer;
 
     // GOALS UI
-    public TextMeshProUGUI tmpServer;
-    public TextMeshProUGUI tmpClient;
+    public TextMeshPro tmpServer;
+    public TextMeshPro tmpClient;
 
     private int serverGoalsAmmount;
     private int clientGoalsAmmount;
@@ -53,8 +53,8 @@ public class Client_UDP : MonoBehaviour
         Screen.SetResolution(1280, 720, false);
         myThread = new Thread(Receive);
         player = GameObject.Find("Player_1");
-        tmpServer = GameObject.Find("ServerGoals").GetComponent<TextMeshProUGUI>();
-        tmpClient = GameObject.Find("ClientGoals").GetComponent<TextMeshProUGUI>();
+        tmpServer = GameObject.Find("ServerGoals").GetComponent<TextMeshPro>();
+        tmpClient = GameObject.Find("ClientGoals").GetComponent<TextMeshPro>();
     }
     void StartUDP(string name, string ip)
     {
@@ -132,10 +132,10 @@ public class Client_UDP : MonoBehaviour
         disk.transform.position = new Vector3(diskPosition.x, 0.8529103f, diskPosition.z);
 
         //UPDATE CLIENT UI
-        tmpClient.text = "Client Goals: " + clientGoalsAmmount.ToString();
+        tmpClient.text = clientGoalsAmmount.ToString();
 
         //UPDATE SERVER UI
-        tmpServer.text = "Server Goals: " + serverGoalsAmmount.ToString();
+        tmpServer.text = serverGoalsAmmount.ToString();
     }
     IEnumerator SendInfo()
     {
