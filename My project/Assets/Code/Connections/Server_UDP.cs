@@ -25,7 +25,7 @@ public class Server_UDP : MonoBehaviour
     public bool connected = false;
     public bool posChanged = false;
     UnityEngine.Vector3 enemyDir;
-    public Dictionary<GameObject, int> allGO;
+    public Dictionary<int, GameObject> allGO;
 
     // GET THE DISK
     private Disk_Code diskCode;
@@ -39,7 +39,7 @@ public class Server_UDP : MonoBehaviour
     public bool didClientScore;
     void Start()
     {
-        allGO = new Dictionary<GameObject, int>();
+        allGO = new Dictionary<int, GameObject>();
         Screen.SetResolution(1280,720,false);
         Thread myThread = new Thread(Connection);
 
@@ -54,12 +54,14 @@ public class Server_UDP : MonoBehaviour
 
         GameObject gameObjectTemp1 = GameObject.Find("Player_2").gameObject;
         GameObject gameObjectTemp2 = GameObject.Find("Player_1").gameObject;
+        GameObject gameObjectTemp3 = GameObject.Find("Disk").gameObject;
         if (gameObjectTemp1 != null)
         {
-            allGO.Add(gameObjectTemp1, 0);
-            allGO.Add(gameObjectTemp2, 1);
+            allGO.Add(0, gameObjectTemp1);
+            allGO.Add(1, gameObjectTemp2);
+            allGO.Add(2, gameObjectTemp3);
         }
-        foreach (KeyValuePair<GameObject, int> go in allGO)
+        foreach (KeyValuePair<int, GameObject> go in allGO)
         {
             Debug.Log(go.Key + " " + go.Value);
         }
@@ -68,13 +70,13 @@ public class Server_UDP : MonoBehaviour
     }
     private void Update()
     {
+        enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
         if (posChanged)
         {
             enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(enemyDir.x,0f,enemyDir.z) * 10f;
             enemyPlayer.transform.position = new Vector3(clientPlayerPositionFromPlayer.x, 0.85f, clientPlayerPositionFromPlayer.z);
             posChanged = false;
         }
-        enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
 
         clientPlayerVel = enemyPlayer.GetComponent<Rigidbody>().velocity;
         serverPlayerVel = player.GetComponent<Rigidbody>().velocity;
@@ -90,10 +92,15 @@ public class Server_UDP : MonoBehaviour
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
-        Serialize(EventType.UPDATE);
+        Serialize(EventType.UPDATE_POS_GO, serverPlayerPosition, didClientScore,0);
+        Serialize(EventType.UPDATE_VEL_GO, clientPlayerVel, didClientScore,1);
+        Serialize(EventType.UPDATE_VEL_GO, serverPlayerVel, didClientScore,0);
+        Serialize(EventType.UPDATE_POS_GO, diskPosition, didClientScore,2);
+        Serialize(EventType.UPDATE_VEL_GO, diskVel, didClientScore,2);
+        Serialize(EventType.UPDATE_SCORE, Vector3.zero,didClientScore,-1);
 
     }
-    void Serialize(EventType eventType)
+    void Serialize(EventType eventType,Vector3 info, bool hasClientScore, int id)
     {
         Debug.Log("Serializing Info");
         int type = 0;
@@ -101,45 +108,38 @@ public class Server_UDP : MonoBehaviour
         BinaryWriter writer = new BinaryWriter(stream);
         switch (eventType)
         {
-            case EventType.UPDATE:
+            case EventType.UPDATE_POS_GO:
                 type = 0;
                 writer.Write(type);
-                Debug.Log(type);
-
-                // SEND SERVER PLAYER POSITION
-                writer.Write(serverPlayerPosition.x);
-                writer.Write(serverPlayerPosition.z);
-
-                // SEND CLIENT PLAYER VEL
-                writer.Write(clientPlayerVel.x);
-                writer.Write(clientPlayerVel.z);
-
-                // SEND SERVER PLAYER VEL
-                writer.Write(serverPlayerVel.x);
-                writer.Write(serverPlayerVel.z);
-
-                // SEND DISK POSITION
-                writer.Write(diskPosition.x);
-                writer.Write(diskPosition.z);
-
-                // SEND DISK VEL
-                writer.Write(diskVel.x);
-                writer.Write(diskVel.z);
-
-                // SEND IF CLIENT HAS SCORED
-                writer.Write(didClientScore);
-
                 break;
-            case EventType.CREATE:
-                type = 1;
-                break;
-            case EventType.DESTROY:
+            case EventType.UPDATE_VEL_GO:
                 type = 2;
+                writer.Write(type);
+                break;
+            case EventType.CREATE_GO:
+                type = 1;
+                writer.Write(type);
+                break;
+            case EventType.DESTROY_GO:
+                type = 3;
+                writer.Write(type);
+                break;
+            case EventType.UPDATE_SCORE:
+                type = 4;
+                writer.Write(type);
+                writer.Write(hasClientScore);
                 break;
             default:
                 type = -1;
                 break;
         }
+        if(type != 4)
+        {
+            writer.Write(id);
+            writer.Write(info.x);
+            writer.Write(info.z);
+        }
+        
         Info();
     }
     public void Info()
@@ -167,25 +167,31 @@ public class Server_UDP : MonoBehaviour
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
         int type = reader.ReadInt32();
+        int id = reader.ReadInt32();
         Debug.Log(type);
-        switch (type)
-        {
-            case 0:
-                float x = reader.ReadSingle();
-                float z = reader.ReadSingle();
-                newEnemyHit = new Vector3((float)x, 0.845f, (float)z);
-
-                float px = reader.ReadSingle();
-                float pz = reader.ReadSingle();
-                clientPlayerPositionFromPlayer = new Vector3((float)px, 0f, (float)pz);
-
-                posChanged = true;
-                break;
+        switch (id)
+        { 
             case 1:
-                //Create powerup
+                //Client Player
+                switch(type)
+                {
+                    case 0:
+                        //Update pos
+                        float px = reader.ReadSingle();
+                        float pz = reader.ReadSingle();
+                        clientPlayerPositionFromPlayer = new Vector3((float)px, 0f, (float)pz);
+                        posChanged = true;
+                        break;
+                    case 5:
+                        //Hitpoint
+                        float x = reader.ReadSingle();
+                        float z = reader.ReadSingle();
+                        newEnemyHit = new Vector3((float)x, 0.845f, (float)z);
+                        break;
+                }
                 break;
-            case 2:
-                //Destroy powerup
+            default:
+                //PowerUps
                 break;
         }
     }

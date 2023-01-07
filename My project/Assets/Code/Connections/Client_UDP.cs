@@ -27,22 +27,26 @@ public class Client_UDP : MonoBehaviour
     public GameObject disk;
     private Vector3 newPosDisk;
     public bool isLoged = false;
-    public bool posChanged = false;
+    public bool posChangedServer = false;
+    private bool posChangedDisk = false;
+    private bool velChangedServer = false;
+    private bool velChangedClient = false;
+    private bool velChangedDisk = false;
     private GameObject player;
-    public Dictionary<GameObject, int> allGO;
+    public Dictionary<int,GameObject> allGO;
 
-    private Vector3 serverPlayerPosition;
-    private Vector3 clientPlayerVel;
-    private Vector3 serverPlayerVel;
-    private Vector3 diskVel;
-    private Vector3 diskPosition;
+    private Vector3 serverPlayerVector;
+    private Vector3 clientPlayerVector;
+    private Vector3 diskVector;
     public GameObject myClientPlayer;
     public GameObject myServerPlayer;
     private bool hasClientScored;
 
+    GameObject selectedGO;
+
     private void Start()
     {
-        allGO = new Dictionary<GameObject, int>();
+        allGO = new Dictionary<int, GameObject>();
         playerscript = GameObject.Find("Main Camera_Player2").GetComponent<playerScript>();
         Screen.SetResolution(1280, 720, false);
         myThread = new Thread(Receive);
@@ -71,12 +75,14 @@ public class Client_UDP : MonoBehaviour
         isLoged = true;
         GameObject gameObjectTemp1 = GameObject.Find("Player_2").gameObject;
         GameObject gameObjectTemp2 = GameObject.Find("Player_1").gameObject;
+        GameObject gameObjectTemp3 = GameObject.Find("Disk").gameObject;
         if (gameObjectTemp1 != null)
         {
-            allGO.Add(gameObjectTemp1, 0);
-            allGO.Add(gameObjectTemp2, 1);
+            allGO.Add(0, gameObjectTemp1);
+            allGO.Add(1, gameObjectTemp2);
+            allGO.Add(2, gameObjectTemp3);
         }
-        foreach (KeyValuePair<GameObject, int> go in allGO)
+        foreach (KeyValuePair<int, GameObject> go in allGO)
         {
             Debug.Log(go.Key + " " + go.Value);
         }
@@ -92,14 +98,14 @@ public class Client_UDP : MonoBehaviour
             newSocket.Close();
             Application.Quit();
         }
-        if (posChanged)
+        if (posChangedDisk || posChangedServer || velChangedClient || velChangedDisk || velChangedServer)
         {
             FixEnemyPlayerAndDisk();
-            posChanged = false;
+            Debug.Log(selectedGO);
+
             Debug.Log("Has client scored_ " + hasClientScored);
         }
     }
-
     private void FixEnemyPlayerAndDisk()
     {
         // SET THE CLIENT PLAYER VELOCITY
@@ -107,54 +113,73 @@ public class Client_UDP : MonoBehaviour
         {
             myClientPlayer.GetComponent<Rigidbody>().velocity = UnityEngine.Vector3.zero;
         }
-        else
+        else if(velChangedClient)
         {
-            myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVel.x, 0f, clientPlayerVel.z);
+            //myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVector.x, 0f, clientPlayerVector.z);
+            velChangedClient = false;
+        }
+        
+        // SET SERVER PLAYER VELOCITY
+        if(velChangedServer)
+        {
+            myServerPlayer.GetComponent<Rigidbody>().velocity = new Vector3(serverPlayerVector.x, 0f, serverPlayerVector.z);
+            velChangedServer = false;
         }
 
-        // SET SERVER PLAYER VELOCITY
-        myServerPlayer.GetComponent<Rigidbody>().velocity = new Vector3(serverPlayerVel.x, 0f, serverPlayerVel.z);
-
         // CORRECT THE SERVER PLAYER POSITION
-        myServerPlayer.transform.position = new Vector3(serverPlayerPosition.x, 0.85f, serverPlayerPosition.z);
+        if(posChangedServer)
+        {
+            myServerPlayer.transform.position = new Vector3(serverPlayerVector.x, 0.85f, serverPlayerVector.z);
+            posChangedServer = false;
+        }
 
         // SET THE DISK VELOCITY
-        disk.GetComponent<Rigidbody>().velocity = new Vector3(diskVel.x, 0f, diskVel.z);
+        if(velChangedDisk)
+        {
+            disk.GetComponent<Rigidbody>().velocity = new Vector3(diskVector.x, 0f, diskVector.z);
+            velChangedDisk=false;
+        }
 
         // CORRECT THE DISK POSITION
-        disk.transform.position = new Vector3(diskPosition.x, 0.8529103f, diskPosition.z); ;
+        if(posChangedDisk) 
+        {
+            disk.transform.position = new Vector3(diskVector.x, 0.8529103f, diskVector.z);
+            posChangedDisk = false;
+        }
     }
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
-        Serialize(EventType.UPDATE);
+        Serialize(EventType.HITPOINT, clientPlayer.hit.point, 1);
+        Serialize(EventType.UPDATE_POS_GO, myClientPlayer.transform.position, 1);
     }
-    void Serialize(EventType eventType)
+    void Serialize(EventType eventType, Vector3 info, int id)
     {
         int type = 0;
         streamSerialize = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(streamSerialize);
         switch (eventType)
         {
-            case EventType.UPDATE:
+            case EventType.UPDATE_POS_GO:
                 type = 0;
                 writer.Write(type);
-                writer.Write(clientPlayer.hit.point.x);
-                writer.Write(clientPlayer.hit.point.z);
-
-                writer.Write(myClientPlayer.transform.position.x);
-                writer.Write(myClientPlayer.transform.position.z);
-
                 break;
-            case EventType.CREATE:
-                type = 1;
-                break;
-            case EventType.DESTROY:
+            case EventType.DESTROY_GO:
                 type = 2;
+                break;
+            case EventType.HITPOINT:
+                type = 5;
+                writer.Write(type);
                 break;
             default:
                 type = -1;
                 break;
+        }
+        if(type != 2)
+        {
+            writer.Write(id);
+            writer.Write(info.x);
+            writer.Write(info.z);
         }
         Info();
     }
@@ -181,49 +206,93 @@ public class Client_UDP : MonoBehaviour
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
         int type = reader.ReadInt32();
-        switch(type)
+        int id = reader.ReadInt32();
+        if(id == 0 || id == 1 || id == 2)
         {
-            case 0:
-              
-                // RECEIVE SERVER PLAYER POSITION
-                float sx = reader.ReadSingle();
-                float sz = reader.ReadSingle();
-                    serverPlayerPosition = new Vector3((float)sx, 0f, (float)sz);
+            switch (id)
+            {
+                case 0:
+                    //Server Player (Player_2)
+                    Debug.Log(1);
+                    selectedGO = allGO[0];
+                    switch (type)
+                    {
+                        case 0:
+                            //Update server pos
+                            float spx = reader.ReadSingle();
+                            float spz = reader.ReadSingle();
+                            serverPlayerVector = new Vector3((float)spx, 0f, (float)spz);
+                            posChangedServer = true;
+                            break;
+                        case 1:
+                            //Update server vel
+                            float svx = reader.ReadSingle();
+                            float svz = reader.ReadSingle();
+                            serverPlayerVector = new Vector3((float)svx, 0f, (float)svz);
+                            velChangedServer = true;
+                            break;
+                    }
+                    break;
+                case 1:
+                    //Client Player (Player_1)
+                    selectedGO = allGO[1];
+                    float cvx = reader.ReadSingle();
+                    float cvz = reader.ReadSingle();
+                    clientPlayerVector = new Vector3((float)cvx, 0f, (float)cvz);
+                    velChangedClient = true;
+                    break;
+                case 2:
+                    //Disk
+                    selectedGO = allGO[2];
+                    switch (type)
+                    {
+                        case 0:
+                            //Update server pos
+                            float spx = reader.ReadSingle();
+                            float spz = reader.ReadSingle();
+                            diskVector = new Vector3((float)spx, 0f, (float)spz);
+                            posChangedDisk = true;
+                            break;
+                        case 1:
+                            //Update server vel
+                            float svx = reader.ReadSingle();
+                            float svz = reader.ReadSingle();
+                            diskVector = new Vector3((float)svx, 0f, (float)svz);
+                            velChangedDisk = true;
+                            break;
+                    }
+                    break;
+                default:
+                    //PowerUps
+                    break;
 
-                // RECEIVE CLEINT PLAYER VEL
-                float vx = reader.ReadSingle();
-                float vz = reader.ReadSingle();
-                clientPlayerVel = new Vector3((float)vx, 0f, (float)vz);
-
-                // RECEIVE SERVER PLAYER VEL
-                float svx = reader.ReadSingle();
-                float svz = reader.ReadSingle();
-                serverPlayerVel = new Vector3((float)svx, 0f, (float)svz);
-
-                // RECEIVE DISK POSITION
-                float px = reader.ReadSingle();
-                float pz = reader.ReadSingle();
-                if (px != 0 && pz != 0)
-                    diskPosition = new Vector3((float)px, 0f, (float)pz);
-
-                // RECEIVE DISK VEL
-                float dvx = reader.ReadSingle();
-                float dvz = reader.ReadSingle();
-                diskVel = new Vector3((float)dvx, 0f, (float)dvz);
-
-                // RECEIVE IF CLIENT HAS SCORED
-                bool clientScored = reader.ReadBoolean();
-                hasClientScored = clientScored;
-
-                posChanged = true;
-                break;
-            case 1:
-                //Create powerup
-                break;
-            default:
-                //Destroy powerup
-                break;
-
+            }
         }
+        
     }
+    /*
+        float vx = reader.ReadSingle();
+        float vz = reader.ReadSingle();
+        clientPlayerVel = new Vector3((float)vx, 0f, (float)vz);
+
+        // RECEIVE SERVER PLAYER VEL
+        float svx = reader.ReadSingle();
+        float svz = reader.ReadSingle();
+        serverPlayerVel = new Vector3((float)svx, 0f, (float)svz);
+
+        // RECEIVE DISK POSITION
+        float px = reader.ReadSingle();
+        float pz = reader.ReadSingle();
+        if (px != 0 && pz != 0)
+            diskPosition = new Vector3((float)px, 0f, (float)pz);
+
+        // RECEIVE DISK VEL
+        float dvx = reader.ReadSingle();
+        float dvz = reader.ReadSingle();
+        diskVel = new Vector3((float)dvx, 0f, (float)dvz);
+
+        // RECEIVE IF CLIENT HAS SCORED
+        bool clientScored = reader.ReadBoolean();
+        hasClientScored = clientScored;
+     */
 }
