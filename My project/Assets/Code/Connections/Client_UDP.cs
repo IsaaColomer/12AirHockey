@@ -32,7 +32,7 @@ public class Client_UDP : MonoBehaviour
     private bool velChangedServer = false;
     private bool velChangedClient = false;
     private bool velChangedDisk = false;
-    private GameObject player;
+    [SerializeField]private GameObject player;
     public Dictionary<int,GameObject> allGO;
 
     private Vector3 serverPlayerVector;
@@ -150,7 +150,8 @@ public class Client_UDP : MonoBehaviour
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
-        Serialize(EventType.HITPOINT, clientPlayer.hit.point, 1);
+        if(playerscript.canMove)
+            Serialize(EventType.HITPOINT, clientPlayer.hit.point, 1);
         Serialize(EventType.UPDATE_POS_GO, myClientPlayer.transform.position, 1);
     }
     void Serialize(EventType eventType, Vector3 info, int id)
