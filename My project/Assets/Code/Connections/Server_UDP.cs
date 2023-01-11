@@ -36,7 +36,10 @@ public class Server_UDP : MonoBehaviour
     private Vector3 diskVel;
     private Vector3 diskPosition;
     private Vector3 clientPlayerPositionFromPlayer;
-    public bool didClientScore;
+    private int serverGoals = 0;
+    private int clientGoals = 0;
+    private TextMeshPro serverTextMesh;
+    private TextMeshPro clientTextMesh;
     void Start()
     {
         allGO = new Dictionary<int, GameObject>();
@@ -67,10 +70,13 @@ public class Server_UDP : MonoBehaviour
         }
 
         diskCode = GameObject.Find("Disk").GetComponent<Disk_Code>();
+        serverTextMesh = GameObject.Find("ServerGoals").GetComponent<TextMeshPro>();
+        clientTextMesh = GameObject.Find("ClientGoals").GetComponent<TextMeshPro>();
     }
     private void Update()
     {
         enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
+
         if (posChanged)
         {
             enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(enemyDir.x,0f,enemyDir.z) * 10f;
@@ -83,7 +89,6 @@ public class Server_UDP : MonoBehaviour
         serverPlayerPosition = player.GetComponent<Transform>().position;
         diskVel = disk.GetComponent<Rigidbody>().velocity;
         diskPosition = disk.GetComponent<Transform>().position;
-        didClientScore = diskCode.clientGoal;
 
         if (connected)
             StartCoroutine(SendInfo());
@@ -92,15 +97,15 @@ public class Server_UDP : MonoBehaviour
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
-        Serialize(EventType.UPDATE_POS_GO, serverPlayerPosition, didClientScore,0);
-        Serialize(EventType.UPDATE_VEL_GO, clientPlayerVel, didClientScore,1);
-        Serialize(EventType.UPDATE_VEL_GO, serverPlayerVel, didClientScore,0);
-        Serialize(EventType.UPDATE_POS_GO, diskPosition, didClientScore,2);
-        Serialize(EventType.UPDATE_VEL_GO, diskVel, didClientScore,2);
-        Serialize(EventType.UPDATE_SCORE, Vector3.zero,didClientScore,-1);
+        Serialize(EventType.UPDATE_POS_GO, serverPlayerPosition, 0);
+        Serialize(EventType.UPDATE_VEL_GO, clientPlayerVel, 1);
+        Serialize(EventType.UPDATE_VEL_GO, serverPlayerVel, 0);
+        Serialize(EventType.UPDATE_POS_GO, diskPosition, 2);
+        Serialize(EventType.UPDATE_VEL_GO, diskVel, 2);
+        Serialize(EventType.UPDATE_SCORE, Vector3.zero,5);
 
     }
-    void Serialize(EventType eventType,Vector3 info, bool hasClientScore, int id)
+    void Serialize(EventType eventType,Vector3 info, int id)
     {
         Debug.Log("Serializing Info");
         int type = 0;
@@ -127,7 +132,9 @@ public class Server_UDP : MonoBehaviour
             case EventType.UPDATE_SCORE:
                 type = 4;
                 writer.Write(type);
-                writer.Write(hasClientScore);
+                writer.Write(id);
+                writer.Write(serverGoals);
+                writer.Write(clientGoals);
                 break;
             default:
                 type = -1;
@@ -194,5 +201,15 @@ public class Server_UDP : MonoBehaviour
                 //PowerUps
                 break;
         }
+    }
+    public void ServerScoredGoal()
+    {
+        serverGoals++;
+        serverTextMesh.text = serverGoals.ToString();
+    }
+    public void ClientScoredGoal()
+    {
+        clientGoals++;
+        clientTextMesh.text = clientGoals.ToString();
     }
 }

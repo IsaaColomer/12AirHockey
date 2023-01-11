@@ -43,6 +43,12 @@ public class Client_UDP : MonoBehaviour
     private bool hasClientScored;
 
     GameObject selectedGO;
+    
+    private TextMeshPro serverTextMesh;
+    private TextMeshPro clientTextMesh;
+
+    private int serverGoals = 0;
+    private int clientGoals = 0;
 
     private void Start()
     {
@@ -51,6 +57,12 @@ public class Client_UDP : MonoBehaviour
         Screen.SetResolution(1280, 720, false);
         myThread = new Thread(Receive);
         player = GameObject.Find("Player_1");
+        serverTextMesh = GameObject.Find("ServerGoals").GetComponent<TextMeshPro>();
+        clientTextMesh = GameObject.Find("ClientGoals").GetComponent<TextMeshPro>();
+        if(serverTextMesh != null && clientTextMesh != null)
+        {
+            Debug.Log("Oriol fes debugs del codi pq sino no entenem res quan els altres volem treballar");
+        }
     }
     void StartUDP(string name, string ip)
     {
@@ -102,7 +114,8 @@ public class Client_UDP : MonoBehaviour
         {
             FixEnemyPlayerAndDisk();
             Debug.Log(selectedGO);
-
+            serverTextMesh.text = serverGoals.ToString();
+            clientTextMesh.text = clientGoals.ToString();
             Debug.Log("Has client scored_ " + hasClientScored);
         }
     }
@@ -208,7 +221,7 @@ public class Client_UDP : MonoBehaviour
         stream.Seek(0, SeekOrigin.Begin);
         int type = reader.ReadInt32();
         int id = reader.ReadInt32();
-        if(id == 0 || id == 1 || id == 2)
+        if(id == 0 || id == 1 || id == 2 || id == 5)
         {
             switch (id)
             {
@@ -262,6 +275,13 @@ public class Client_UDP : MonoBehaviour
                             velChangedDisk = true;
                             break;
                     }
+                    break;
+                case 3:
+                    //
+                    break;
+                case 5:
+                    serverGoals = reader.ReadInt32();
+                    clientGoals = reader.ReadInt32();
                     break;
                 default:
                     //PowerUps

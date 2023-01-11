@@ -13,6 +13,7 @@ public class Disk_Code : MonoBehaviour
     public float maxDiskVel = 3;
     public string lastPlayerName;
     public bool clientGoal;
+    private Server_UDP server;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,12 +22,13 @@ public class Disk_Code : MonoBehaviour
         piPlayer1 = GameObject.FindGameObjectWithTag("PI_Player1");
         piPlayer2 = GameObject.FindGameObjectWithTag("PI_Player2");
         startColor = piPlayer1.GetComponent<Renderer>().material.color;
+        server = GameObject.Find("OnlineGameObject").GetComponent<Server_UDP>();
     }
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.name == "Goal_p2")
         {
-            clientGoal = true;
+            server.ClientScoredGoal();
             rb.velocity = Vector3.zero;
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
@@ -36,6 +38,7 @@ public class Disk_Code : MonoBehaviour
         }
         if(other.gameObject.name == "Goal_p1")
         {
+            server.ServerScoredGoal();
             rb.velocity = Vector3.zero;
             rb.angularVelocity = new Vector3(0f,0f,0f);
             rb.drag = 0f;
