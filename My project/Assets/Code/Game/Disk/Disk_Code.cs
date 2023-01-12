@@ -14,6 +14,8 @@ public class Disk_Code : MonoBehaviour
     public string lastPlayerName;
     public bool clientGoal;
     private Server_UDP server;
+    public float angle = 0;
+    public float increment = 18f;
     // Start is called before the first frame update
     void Start()
     {
@@ -70,6 +72,7 @@ public class Disk_Code : MonoBehaviour
         {
             // Here we detect which is the last player that has touched the disk
             lastPlayerName = collision.gameObject.name;
+            //rb.velocity += (-collision.contacts[0].normal);            
         }
     }
     public void Update()
@@ -83,5 +86,48 @@ public class Disk_Code : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, maxDiskVel);
         }
         vel = rb.velocity;
+        RaycastDream();
+    }
+    private void RaycastDream()
+    {
+        for (int i = 0; i < 20; i++)
+    {
+        // Create a vector for the direction of the raycast in the x,z plane
+        Vector3 direction = Quaternion.Euler(0, angle, 0) * new Vector3(transform.forward.x, 0, transform.forward.z);
+
+        // Perform the raycast
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, direction, out hit, 0.1f))
+        {
+            if(hit.transform.gameObject.layer == LayerMask.NameToLayer("Players") || hit.transform.gameObject.tag == "MainCamera")
+            {
+                if(hit.transform.gameObject.name == "Player_1")
+                {
+                    rb.AddForce(hit.normal*10f);
+                }
+                if(hit.transform.gameObject.name == "Player_2")
+                {
+                    rb.AddForce(hit.normal*10f);
+                }
+                
+                Debug.DrawLine(transform.position, transform.position + direction * 0.3f, Color.green);
+            }
+            else
+            {
+                Debug.DrawLine(transform.position, transform.position + direction * 0.3f, Color.blue);
+            }
+        }
+        else
+        {
+            Debug.DrawLine(transform.position, transform.position + direction * 0.3f, Color.blue);
+        }  
+
+        // Increase the angle for the next raycast
+        angle += increment;
+        if(angle >= 360f)
+        {
+            angle = 0f;
+        }
+    }
     }
 }

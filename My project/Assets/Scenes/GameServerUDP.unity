@@ -4542,7 +4542,7 @@ Rigidbody:
   m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 2
 --- !u!114 &9007468820455938430
@@ -4566,6 +4566,8 @@ MonoBehaviour:
   maxDiskVel: 1
   lastPlayerName: 
   clientGoal: 0
+  angle: 0
+  increment: 18
 --- !u!1 &9108417906975773048
 GameObject:
   m_ObjectHideFlags: 0
