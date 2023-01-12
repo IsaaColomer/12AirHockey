@@ -116,6 +116,15 @@ public class Disk_Code : MonoBehaviour
             {
                 Debug.DrawLine(transform.position, transform.position + direction * 0.3f, Color.blue);
             }
+            if(hit.transform.gameObject.layer == LayerMask.NameToLayer("Triggers"))
+            {
+                if(!hit.transform.gameObject.GetComponent<BoxCollider>().isTrigger)
+                {
+                    Debug.DrawLine(transform.position, transform.position + direction * 0.3f, Color.cyan);
+                    rb.AddForce(hit.normal*5f);
+                }
+                    
+            }
         }
         else
         {
