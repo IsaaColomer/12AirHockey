@@ -76,7 +76,7 @@ public class Server_UDP : MonoBehaviour
     private void Update()
     {
         enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
-
+        CheckRestartGame();
         if (connected)
             StartCoroutine(SendInfo());
     }
@@ -202,6 +202,16 @@ public class Server_UDP : MonoBehaviour
             default:
                 //PowerUps
                 break;
+        }
+    }
+    public void CheckRestartGame()
+    {
+        if(serverGoals >= 3 || clientGoals >= 3)
+        {
+            serverGoals = 0;
+            clientGoals = 0;
+            serverTextMesh.text = serverGoals.ToString();
+            clientTextMesh.text = clientGoals.ToString();
         }
     }
     public void ServerScoredGoal()
