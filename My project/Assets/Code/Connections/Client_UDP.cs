@@ -110,6 +110,9 @@ public class Client_UDP : MonoBehaviour
             newSocket.Close();
             Application.Quit();
         }
+    }
+    void FixedUpdate()
+    {
         if (posChangedDisk || posChangedServer || velChangedClient || velChangedDisk || velChangedServer)
         {
             FixEnemyPlayerAndDisk();
@@ -128,7 +131,7 @@ public class Client_UDP : MonoBehaviour
         }
         else if(velChangedClient)
         {
-            //myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVector.x, 0f, clientPlayerVector.z);
+            myClientPlayer.GetComponent<Rigidbody>().velocity = new Vector3(clientPlayerVector.x, 0f, clientPlayerVector.z);
             velChangedClient = false;
         }
         
@@ -288,32 +291,6 @@ public class Client_UDP : MonoBehaviour
                     break;
 
             }
-        }
-        
+        }        
     }
-    /*
-        float vx = reader.ReadSingle();
-        float vz = reader.ReadSingle();
-        clientPlayerVel = new Vector3((float)vx, 0f, (float)vz);
-
-        // RECEIVE SERVER PLAYER VEL
-        float svx = reader.ReadSingle();
-        float svz = reader.ReadSingle();
-        serverPlayerVel = new Vector3((float)svx, 0f, (float)svz);
-
-        // RECEIVE DISK POSITION
-        float px = reader.ReadSingle();
-        float pz = reader.ReadSingle();
-        if (px != 0 && pz != 0)
-            diskPosition = new Vector3((float)px, 0f, (float)pz);
-
-        // RECEIVE DISK VEL
-        float dvx = reader.ReadSingle();
-        float dvz = reader.ReadSingle();
-        diskVel = new Vector3((float)dvx, 0f, (float)dvz);
-
-        // RECEIVE IF CLIENT HAS SCORED
-        bool clientScored = reader.ReadBoolean();
-        hasClientScored = clientScored;
-     */
 }

@@ -4315,7 +4315,6 @@ MonoBehaviour:
   disk: {fileID: 2482782428904443630}
   connected: 0
   posChanged: 0
-  didClientScore: 0
 --- !u!33 &8551854060813096478
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4485,7 +4484,7 @@ Rigidbody:
   m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 2
 --- !u!114 &8897579360579591619

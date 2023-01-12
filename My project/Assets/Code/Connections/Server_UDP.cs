@@ -77,6 +77,11 @@ public class Server_UDP : MonoBehaviour
     {
         enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
 
+        if (connected)
+            StartCoroutine(SendInfo());
+    }
+    void FixedUpdate()
+    {
         if (posChanged)
         {
             enemyPlayer.GetComponent<Rigidbody>().velocity = new Vector3(enemyDir.x,0f,enemyDir.z) * 10f;
@@ -90,10 +95,7 @@ public class Server_UDP : MonoBehaviour
         diskVel = disk.GetComponent<Rigidbody>().velocity;
         diskPosition = disk.GetComponent<Transform>().position;
 
-        if (connected)
-            StartCoroutine(SendInfo());
     }
-    
     IEnumerator SendInfo()
     {
         yield return new WaitForSeconds(0.16f);
