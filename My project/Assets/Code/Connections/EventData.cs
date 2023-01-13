@@ -4,11 +4,12 @@ using UnityEngine;
  public enum EventType
 {
     UPDATE_POS_GO,
+    CREATE_POWERUP,
     UPDATE_VEL_GO,
-    CREATE_GO,
-    DESTROY_GO,
+    DESTROY_POWERUP,
     UPDATE_SCORE,
     HITPOINT,
+    UPDATE_POWERUP,
     NONE
 }
 public class EventData

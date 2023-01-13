@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using System.Threading;
 using TMPro;
 using System.IO;
+using System;
+using UnityEngine.Rendering;
 
 public class Client_UDP : MonoBehaviour
 {
@@ -40,6 +42,13 @@ public class Client_UDP : MonoBehaviour
     private Vector3 diskVector;
     public GameObject myClientPlayer;
     public GameObject myServerPlayer;
+    public GameObject powerUpPrefab;
+    private bool spawnPower = false;
+    private bool destroyPower = false;
+    private Vector3 posPowUp;
+    public bool sendBool;
+    public string sendString;
+    private int powerupId = -5;
     private bool hasClientScored;
 
     GameObject selectedGO;
@@ -104,13 +113,33 @@ public class Client_UDP : MonoBehaviour
     void Update()
     {
         if (isLoged)
+        {
             StartCoroutine(SendInfo());
+            Powerup();
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             newSocket.Close();
             Application.Quit();
         }
     }
+
+    private void Powerup()
+    {
+        if(spawnPower)
+        {
+            GameObject go = Instantiate(powerUpPrefab, posPowUp, Quaternion.identity);
+            allGO.Add(powerupId, go);
+            spawnPower= false;
+        }
+        if(destroyPower)
+        {
+            //allGO.Add(powerupId, go);
+            spawnPower= false;
+        }
+
+    }
+
     void FixedUpdate()
     {
         if (posChangedDisk || posChangedServer || velChangedClient || velChangedDisk || velChangedServer)
@@ -119,7 +148,6 @@ public class Client_UDP : MonoBehaviour
             Debug.Log(selectedGO);
             serverTextMesh.text = serverGoals.ToString();
             clientTextMesh.text = clientGoals.ToString();
-            Debug.Log("Has client scored_ " + hasClientScored);
         }
     }
     private void FixEnemyPlayerAndDisk()
@@ -181,9 +209,6 @@ public class Client_UDP : MonoBehaviour
                 type = 0;
                 writer.Write(type);
                 break;
-            case EventType.DESTROY_GO:
-                type = 2;
-                break;
             case EventType.HITPOINT:
                 type = 5;
                 writer.Write(type);
@@ -224,73 +249,87 @@ public class Client_UDP : MonoBehaviour
         stream.Seek(0, SeekOrigin.Begin);
         int type = reader.ReadInt32();
         int id = reader.ReadInt32();
-        if(id == 0 || id == 1 || id == 2 || id == 5)
+        switch (id)
         {
-            switch (id)
-            {
-                case 0:
-                    //Server Player (Player_2)
-                    Debug.Log(1);
-                    selectedGO = allGO[0];
-                    switch (type)
-                    {
-                        case 0:
-                            //Update server pos
-                            float spx = reader.ReadSingle();
-                            float spz = reader.ReadSingle();
-                            serverPlayerVector = new Vector3((float)spx, 0f, (float)spz);
-                            posChangedServer = true;
-                            break;
-                        case 1:
-                            //Update server vel
-                            float svx = reader.ReadSingle();
-                            float svz = reader.ReadSingle();
-                            serverPlayerVector = new Vector3((float)svx, 0f, (float)svz);
-                            velChangedServer = true;
-                            break;
-                    }
-                    break;
-                case 1:
-                    //Client Player (Player_1)
-                    selectedGO = allGO[1];
-                    float cvx = reader.ReadSingle();
-                    float cvz = reader.ReadSingle();
-                    clientPlayerVector = new Vector3((float)cvx, 0f, (float)cvz);
-                    velChangedClient = true;
-                    break;
-                case 2:
-                    //Disk
-                    selectedGO = allGO[2];
-                    switch (type)
-                    {
-                        case 0:
-                            //Update server pos
-                            float spx = reader.ReadSingle();
-                            float spz = reader.ReadSingle();
-                            diskVector = new Vector3((float)spx, 0f, (float)spz);
-                            posChangedDisk = true;
-                            break;
-                        case 1:
-                            //Update server vel
-                            float svx = reader.ReadSingle();
-                            float svz = reader.ReadSingle();
-                            diskVector = new Vector3((float)svx, 0f, (float)svz);
-                            velChangedDisk = true;
-                            break;
-                    }
-                    break;
-                case 3:
-                    //
-                    break;
-                case 5:
-                    serverGoals = reader.ReadInt32();
-                    clientGoals = reader.ReadInt32();
-                    break;
-                default:
-                    //PowerUps
-                    break;
+            case 0:
+                //Server Player (Player_2)
+                selectedGO = allGO[0];
+                switch (type)
+                {
+                    case 0:
+                        //Update server pos
+                        float spx = reader.ReadSingle();
+                        float spz = reader.ReadSingle();
+                        serverPlayerVector = new Vector3((float)spx, 0f, (float)spz);
+                        posChangedServer = true;
+                        break;
+                    case 1:
+                        //Update server vel
+                        float svx = reader.ReadSingle();
+                        float svz = reader.ReadSingle();
+                        serverPlayerVector = new Vector3((float)svx, 0f, (float)svz);
+                        velChangedServer = true;
+                        break;
+                }
+                break;
+            case 1:
+                //Client Player (Player_1)
+                selectedGO = allGO[1];
+                float cvx = reader.ReadSingle();
+                float cvz = reader.ReadSingle();
+                clientPlayerVector = new Vector3((float)cvx, 0f, (float)cvz);
+                velChangedClient = true;
+                break;
+            case 2:
+                //Disk
+                selectedGO = allGO[2];
+                switch (type)
+                {
+                    case 0:
+                        //Update server pos
+                        float spx = reader.ReadSingle();
+                        float spz = reader.ReadSingle();
+                        diskVector = new Vector3((float)spx, 0f, (float)spz);
+                        posChangedDisk = true;
+                        break;
+                    case 1:
+                        //Update server vel
+                        float svx = reader.ReadSingle();
+                        float svz = reader.ReadSingle();
+                        diskVector = new Vector3((float)svx, 0f, (float)svz);
+                        velChangedDisk = true;
+                        break;
+                }
+                break;
+            case 3:
+                //
+                break;
+            case 5:
+                serverGoals = reader.ReadInt32();
+                clientGoals = reader.ReadInt32();
+                break;
+            case 401:
+                sendBool = reader.ReadBoolean();
+                sendString = reader.ReadString();
+                break;
+            default:
+                //PowerUps
+                switch(type)
+                {
+                    case 1:
+                        //Create
+                        float pux = reader.ReadSingle();
+                        float puz = reader.ReadSingle();
+                        posPowUp = new Vector3(pux, 0.8801f, puz);
+                        powerupId = id;
+                        spawnPower = true;
+                        break;
+                    case 3:
+                        //Destroy
+                        break;
+                }
+                break;
 
-            }
-        }        
+        }       
     }
 }

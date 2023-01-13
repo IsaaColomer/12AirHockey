@@ -2445,7 +2445,7 @@ MonoBehaviour:
   canMove: 0
   ignore:
     serializedVersion: 2
-    m_Bits: 712
+    m_Bits: 4808
   cam: {fileID: 0}
   lastRaycastInsideBounds: {x: 0, y: 0, z: 0}
   client: {fileID: 0}
@@ -2454,6 +2454,11 @@ MonoBehaviour:
     m_Handle: 0
   dir: {x: 0, y: 0, z: 0}
   playerTransform: {fileID: 0}
+  canApplyPowerUp: 0
+  applyPowerTime: 3
+  diskCode: {fileID: 0}
+  other: {fileID: 0}
+  otherName: 
 --- !u!81 &2042817813
 AudioListener:
   m_ObjectHideFlags: 0
@@ -3809,6 +3814,9 @@ MonoBehaviour:
   player: {fileID: 0}
   myClientPlayer: {fileID: 5621158113882447145}
   myServerPlayer: {fileID: 1876040331020520973}
+  powerUpPrefab: {fileID: 2573021158414459896, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
+  sendBool: 0
+  sendString: 
 --- !u!65 &7994310566524254994
 BoxCollider:
   m_ObjectHideFlags: 0

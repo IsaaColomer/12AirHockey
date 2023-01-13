@@ -19,6 +19,7 @@ public class Server_UDP : MonoBehaviour
     EndPoint remote;
     MemoryStream stream;
     public GameObject player;
+    public playerScript ps;
     public GameObject enemyPlayer;
     public GameObject disk;
     private Vector3 newEnemyHit;
@@ -46,12 +47,12 @@ public class Server_UDP : MonoBehaviour
     public float offsetY;
     public float offsetZ;
     //private bool
-    public UnityEngine.Vector3 pwrUpSpawnLocation; // YES
-    [SerializeField] private bool canSpawn = false; // YES
-    public float timeToSpawn = 5f; // YES
-    private float restartTimeToSpawn; // YES
+    public UnityEngine.Vector3 pwrUpSpawnLocation;
+    public float timeToSpawn = 5f;
+    [SerializeField] private float restartTimeToSpawn;
     void Start()
     {
+        restartTimeToSpawn = timeToSpawn;
         allGO = new Dictionary<int, GameObject>();
         Screen.SetResolution(1280,720,false);
         Thread myThread = new Thread(Connection);
@@ -82,13 +83,17 @@ public class Server_UDP : MonoBehaviour
         diskCode = GameObject.Find("Disk").GetComponent<Disk_Code>();
         serverTextMesh = GameObject.Find("ServerGoals").GetComponent<TextMeshPro>();
         clientTextMesh = GameObject.Find("ClientGoals").GetComponent<TextMeshPro>();
+        ps = GameObject.Find("Main Camera_Player2").GetComponent<playerScript>();
     }
     private void Update()
     {
         enemyDir = newEnemyHit - clientPlayerPositionFromPlayer;
         CheckRestartGame();
         if (connected)
+        {
             StartCoroutine(SendInfo());
+            SpawnPowerUp();
+        }
     }
     void FixedUpdate()
     {
@@ -115,9 +120,10 @@ public class Server_UDP : MonoBehaviour
         Serialize(EventType.UPDATE_POS_GO, diskPosition, 2);
         Serialize(EventType.UPDATE_VEL_GO, diskVel, 2);
         Serialize(EventType.UPDATE_SCORE, Vector3.zero,5);
+        Serialize(EventType.UPDATE_POWERUP, Vector3.zero,401);
 
     }
-    void Serialize(EventType eventType,Vector3 info, int id)
+    public void Serialize(EventType eventType,Vector3 info, int id)
     {
         Debug.Log("Serializing Info");
         int type = 0;
@@ -128,18 +134,29 @@ public class Server_UDP : MonoBehaviour
             case EventType.UPDATE_POS_GO:
                 type = 0;
                 writer.Write(type);
+
+                writer.Write(id);
+                writer.Write(info.x);
+                writer.Write(info.z);
                 break;
             case EventType.UPDATE_VEL_GO:
                 type = 2;
                 writer.Write(type);
+                writer.Write(id);
+                writer.Write(info.x);
+                writer.Write(info.z);
                 break;
-            case EventType.CREATE_GO:
+            case EventType.CREATE_POWERUP:
                 type = 1;
                 writer.Write(type);
+                writer.Write(id);
+                writer.Write(info.x);
+                writer.Write(info.z);
                 break;
-            case EventType.DESTROY_GO:
+            case EventType.DESTROY_POWERUP:
                 type = 3;
                 writer.Write(type);
+                writer.Write(id);
                 break;
             case EventType.UPDATE_SCORE:
                 type = 4;
@@ -148,15 +165,16 @@ public class Server_UDP : MonoBehaviour
                 writer.Write(serverGoals);
                 writer.Write(clientGoals);
                 break;
+            case EventType.UPDATE_POWERUP:
+                type = 5;
+                writer.Write(type);
+                writer.Write(id);
+                writer.Write(ps.canApplyPowerUp);
+                writer.Write(lastPlayerName);
+                break;
             default:
                 type = -1;
                 break;
-        }
-        if(type != 4)
-        {
-            writer.Write(id);
-            writer.Write(info.x);
-            writer.Write(info.z);
         }
         
         Info();
@@ -247,8 +265,11 @@ public class Server_UDP : MonoBehaviour
         }
         else
         {
-            Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.identity);
+            timeToSpawn = restartTimeToSpawn;
             // CALL TO SERIALIZE THE POSITION
+            GameObject pwu = Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.identity);
+            pwu.GetComponent<PowerUps>().SendInfo(pwrUpSpawnLocation);
+            allGO.Add(pwu.GetComponent<PowerUps>().GetId(), pwu);
         }
     }
 }

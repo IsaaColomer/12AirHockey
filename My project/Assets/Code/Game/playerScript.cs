@@ -21,7 +21,7 @@ public class playerScript : MonoBehaviour
     public Transform playerTransform;
 
     // ----------------------------- POWER UPS INFO ----------------------------- 
-    private bool canApplyPowerUp; // YES
+    public bool canApplyPowerUp; // YES
     public float applyPowerTime = 3f; // NO
     private float initApplyPowerTime; // NO
     private UnityEngine.Vector3 reducedScale; // NO
@@ -31,7 +31,7 @@ public class playerScript : MonoBehaviour
     private UnityEngine.Vector3 slowedDiskVel; // NO
     private UnityEngine.Vector3 initDiskVel; // NO
     [SerializeField] private GameObject other; // NO
-    [SerializeField] private string otherName; // YES
+    public string otherName; // YES
     // ----------------------------- POWER UPS INFO ----------------------------- 
     // Start is called before the first frame update
     void Start()
@@ -68,7 +68,7 @@ public class playerScript : MonoBehaviour
         }
     }
 
-    public void GetType(int type)
+    public void SetPowerupType(int type)
     {
         powerType = type;
         canApplyPowerUp = true;
@@ -77,7 +77,12 @@ public class playerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(currentScene.name == "GameClientUDP")
+        if (server == null)
+        {
+            otherName = client.sendString;
+            canApplyPowerUp = client;
+        }
+        if (currentScene.name == "GameClientUDP")
         {
             if(client.isLoged)
             {

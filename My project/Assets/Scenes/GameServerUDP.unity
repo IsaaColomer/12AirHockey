@@ -2660,7 +2660,7 @@ MonoBehaviour:
   canMove: 0
   ignore:
     serializedVersion: 2
-    m_Bits: 456
+    m_Bits: 4552
   cam: {fileID: 0}
   lastRaycastInsideBounds: {x: 0, y: 0, z: 0}
   client: {fileID: 0}
@@ -2669,13 +2669,11 @@ MonoBehaviour:
     m_Handle: 0
   dir: {x: 0, y: 0, z: 0}
   playerTransform: {fileID: 0}
+  canApplyPowerUp: 0
   applyPowerTime: 3
   diskCode: {fileID: 0}
-  startApply: 0
   other: {fileID: 0}
   otherName: 
-  lastPlayerName: 
-  powerUpInstance: {fileID: 0}
 --- !u!20 &2042817814
 Camera:
   m_ObjectHideFlags: 0
@@ -2902,63 +2900,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1001 &2573021158251090040
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2573021158414459896, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_Name
-      value: PowerUp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_RootOrder
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.148
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.8799
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2573021158414459902, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
 --- !u!4 &2590810400656952291
 Transform:
   m_ObjectHideFlags: 0
@@ -4412,11 +4353,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1876040331020520973}
+  ps: {fileID: 0}
   enemyPlayer: {fileID: 5621158113882447145}
   disk: {fileID: 2482782428904443630}
   connected: 0
   posChanged: 0
   lastPlayerName: 
+  powerUpPrefab: {fileID: 2573021158414459896, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
+  offsetX: 0
+  offsetY: 0
+  offsetZ: 0
+  pwrUpSpawnLocation: {x: 0, y: 0, z: 0}
+  timeToSpawn: 5
+  restartTimeToSpawn: 0
 --- !u!33 &8551854060813096478
 MeshFilter:
   m_ObjectHideFlags: 0
