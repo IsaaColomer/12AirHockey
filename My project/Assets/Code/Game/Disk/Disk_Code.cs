@@ -71,8 +71,8 @@ public class Disk_Code : MonoBehaviour
         if(collision.gameObject.tag == "Players")
         {
             // Here we detect which is the last player that has touched the disk
-            lastPlayerName = collision.gameObject.name;
-            //rb.velocity += (-collision.contacts[0].normal);            
+            lastPlayerName = collision.gameObject.name; 
+            server.lastPlayerName = lastPlayerName;
         }
     }
     public void Update()
@@ -104,10 +104,14 @@ public class Disk_Code : MonoBehaviour
                 if(hit.transform.gameObject.name == "Player_1")
                 {
                     rb.AddForce(hit.normal*10f);
+                    lastPlayerName = "Player_1";
+                    server.lastPlayerName = lastPlayerName;
                 }
                 if(hit.transform.gameObject.name == "Player_2")
                 {
                     rb.AddForce(hit.normal*10f);
+                    lastPlayerName = "Player_2";
+                    server.lastPlayerName = lastPlayerName;
                 }
                 
                 Debug.DrawLine(transform.position, transform.position + direction * 0.3f, Color.green);

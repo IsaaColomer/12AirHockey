@@ -40,6 +40,16 @@ public class Server_UDP : MonoBehaviour
     private int clientGoals = 0;
     private TextMeshPro serverTextMesh;
     private TextMeshPro clientTextMesh;
+    public string lastPlayerName;
+    public GameObject powerUpPrefab;
+    public float offsetX;
+    public float offsetY;
+    public float offsetZ;
+    //private bool
+    public UnityEngine.Vector3 pwrUpSpawnLocation; // YES
+    [SerializeField] private bool canSpawn = false; // YES
+    public float timeToSpawn = 5f; // YES
+    private float restartTimeToSpawn; // YES
     void Start()
     {
         allGO = new Dictionary<int, GameObject>();
@@ -223,5 +233,22 @@ public class Server_UDP : MonoBehaviour
     {
         clientGoals++;
         clientTextMesh.text = clientGoals.ToString();
+    }
+    public void SpawnPowerUp()
+    {
+        Bounds bounds = GameObject.Find("PowerUps_Spawn").GetComponent<BoxCollider>().bounds;
+        offsetX = Random.Range(-bounds.extents.x, bounds.extents.x);
+        offsetY = 0.8801f;
+        offsetZ = Random.Range(-bounds.extents.z, bounds.extents.z);
+        pwrUpSpawnLocation = new Vector3(offsetX, offsetY, offsetZ);
+        if(timeToSpawn > 0)
+        {
+            timeToSpawn-=Time.deltaTime;
+        }
+        else
+        {
+            Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.identity);
+            // CALL TO SERIALIZE THE POSITION
+        }
     }
 }
