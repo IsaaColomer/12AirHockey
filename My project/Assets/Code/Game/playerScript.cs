@@ -81,7 +81,6 @@ public class playerScript : MonoBehaviour
         if (server == null)
         {
             receivedName = client.sendString;
-            Debug.Log("This is the received name ->" + receivedName);
             canApplyPowerUp = client.sendBool;
         }
         if (currentScene.name == "GameClientUDP")
@@ -102,7 +101,6 @@ public class playerScript : MonoBehaviour
     }
     void ApplyPowerUp()
     {
-        Debug.Log("This player [" + receivedName + "] can apply power up? |" + canApplyPowerUp);
         if(client == null)
         {
             if(canApplyPowerUp)

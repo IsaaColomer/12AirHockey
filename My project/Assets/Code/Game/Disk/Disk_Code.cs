@@ -16,9 +16,11 @@ public class Disk_Code : MonoBehaviour
     private Server_UDP server;
     public float angle = 0;
     public float increment = 18f;
+    private playerScript ps;
     // Start is called before the first frame update
     void Start()
     {
+        ps = GameObject.Find("Main Camera_Player2").GetComponent<playerScript>();
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
         piPlayer1 = GameObject.FindGameObjectWithTag("PI_Player1");
@@ -72,7 +74,8 @@ public class Disk_Code : MonoBehaviour
         {
             // Here we detect which is the last player that has touched the disk
             lastPlayerName = collision.gameObject.name; 
-            server.lastPlayerName = lastPlayerName;
+            if(ps.canApplyPowerUp)
+                server.lastPlayerName = lastPlayerName;
         }
     }
     public void Update()
@@ -105,13 +108,15 @@ public class Disk_Code : MonoBehaviour
                 {
                     rb.AddForce(hit.normal*10f);
                     lastPlayerName = "Player_1";
-                    server.lastPlayerName = lastPlayerName;
+                    if(ps.canApplyPowerUp)
+                        server.lastPlayerName = lastPlayerName;
                 }
                 if(hit.transform.gameObject.name == "Player_2")
                 {
                     rb.AddForce(hit.normal*10f);
                     lastPlayerName = "Player_2";
-                    server.lastPlayerName = lastPlayerName;
+                    if(ps.canApplyPowerUp)
+                        server.lastPlayerName = lastPlayerName;
                 }
                 
                 Debug.DrawLine(transform.position, transform.position + direction * 0.3f, Color.green);
