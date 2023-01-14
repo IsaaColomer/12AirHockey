@@ -3815,6 +3815,7 @@ MonoBehaviour:
   myClientPlayer: {fileID: 5621158113882447145}
   myServerPlayer: {fileID: 1876040331020520973}
   powerUpPrefab: {fileID: 2573021158414459896, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
+  powerUp: {fileID: 2573021158414459896, guid: 7441be0ad701c214b98cdfb49fed4862, type: 3}
   sendBool: 0
   sendString: 
 --- !u!65 &7994310566524254994

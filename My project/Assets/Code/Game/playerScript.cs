@@ -106,74 +106,36 @@ public class playerScript : MonoBehaviour
         if(client == null)
         {
             if(canApplyPowerUp)
-        {
-            switch(powerType)
             {
-            case 0:
-                if(applyPowerTime > 0)
+                switch(powerType)
                 {
-                    if(diskCode != null)
-                    {
-                        applyPowerTime -= Time.deltaTime;                    
-                        GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = reducedScale;                        
-                        
-                        Debug.Log(applyPowerTime);
-                    }
-                    else
-                    {
-                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = reducedScale;
-                    }
-                }
-                
-                else
-                {
-                    if(diskCode != null)
-                    {
-                        applyPowerTime = initApplyPowerTime;
-                        GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = initScale;
-                        canApplyPowerUp = false;
-                    }
-                    else
-                    {
-                        applyPowerTime = initApplyPowerTime;
-                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
-                        canApplyPowerUp = false;
-                    }
-                }
-                break;
-            case 1:
-                if (applyPowerTime > 0)
-                {
-                    if(diskCode != null)
-                    {
-                        applyPowerTime -= Time.deltaTime;
-                        GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = growedScale;
-                        Debug.Log(applyPowerTime);
-                    }
-                    else
-                    {
-                        applyPowerTime -= Time.deltaTime;
-                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = growedScale;
-                    }        
-                }
-                else
-                {
-                    if(diskCode != null)
-                    {
-                        applyPowerTime = initApplyPowerTime;
-                        GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = initScale;
-                        canApplyPowerUp = false;
-                    }
-                    else
-                    {
-                        applyPowerTime = initApplyPowerTime;
-                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
-                        canApplyPowerUp = false;
-                    }                  
-                }
-                break;
-            default:
-                break;
+                    case 0:
+                        if(applyPowerTime > 0)
+                        {
+                            applyPowerTime -= Time.deltaTime;                    
+                            GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = reducedScale;   
+                        }
+                        else
+                        {
+                            applyPowerTime = initApplyPowerTime;
+                            GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = initScale;
+                            canApplyPowerUp = false;                    
+                        }
+                        break;
+                    case 1:
+                        if (applyPowerTime > 0)
+                        {
+                            GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = growedScale;
+                        }
+                        else
+                        {       
+                            applyPowerTime = initApplyPowerTime;
+                            GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = initScale;
+                            canApplyPowerUp = false;              
+                        }
+                        break;
+                    default:
+                        break;
             }
         }
         }
@@ -186,63 +148,30 @@ public class playerScript : MonoBehaviour
                     case 0:
                         if(applyPowerTime > 0)
                         {
-                            if(diskCode != null)
-                            {
-                                applyPowerTime -= Time.deltaTime;                    
-                                GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = reducedScale;
-                            }
-                            else
-                            {
-                                applyPowerTime -= Time.deltaTime;
-                                GameObject.Find(receivedName).GetComponent<Transform>().localScale = reducedScale;
-                            }
-                    }                
-                    else
-                    {
-                        if(diskCode != null)
-                        {
+                            
+                            applyPowerTime -= Time.deltaTime;
+                            GameObject.Find(receivedName).GetComponent<Transform>().localScale = reducedScale;
+                            
+                        }                
+                        else
+                        {                        
                             applyPowerTime = initApplyPowerTime;
-                            GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = initScale;
-                            canApplyPowerUp = false;
+                            GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
+                            client.sendBool = false;                        
+                        }
+                        break;
+                    case 1:
+                        if (applyPowerTime > 0)
+                        {
+                            applyPowerTime -= Time.deltaTime;
+                            GameObject.Find(receivedName).GetComponent<Transform>().localScale = growedScale;                           
                         }
                         else
                         {
                             applyPowerTime = initApplyPowerTime;
                             GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
-                            client.sendBool = false;
+                            client.sendBool = false;              
                         }
-                    }
-                    break;
-                    case 1:
-                if (applyPowerTime > 0)
-                {
-                    if(diskCode != null)
-                    {
-                        applyPowerTime -= Time.deltaTime;
-                        GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = growedScale;
-                        Debug.Log(applyPowerTime);
-                    }
-                    else
-                    {
-                        applyPowerTime -= Time.deltaTime;
-                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = growedScale;
-                    }        
-                }
-                else
-                {
-                    if(diskCode != null)
-                    {
-                        applyPowerTime = initApplyPowerTime;
-                        GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = initScale;
-                        canApplyPowerUp = false;
-                    }
-                    else
-                    {
-                        applyPowerTime = initApplyPowerTime;
-                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
-                        client.sendBool = false;
-                    }                  
-                }
                 break;
                     default:
                     break;
