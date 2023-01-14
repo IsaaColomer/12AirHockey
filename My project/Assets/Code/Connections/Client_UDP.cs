@@ -68,10 +68,6 @@ public class Client_UDP : MonoBehaviour
         player = GameObject.Find("Player_1");
         serverTextMesh = GameObject.Find("ServerGoals").GetComponent<TextMeshPro>();
         clientTextMesh = GameObject.Find("ClientGoals").GetComponent<TextMeshPro>();
-        if(serverTextMesh != null && clientTextMesh != null)
-        {
-            Debug.Log("Oriol fes debugs del codi pq sino no entenem res quan els altres volem treballar");
-        }
     }
     void StartUDP(string name, string ip)
     {

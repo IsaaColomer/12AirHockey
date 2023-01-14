@@ -32,6 +32,7 @@ public class playerScript : MonoBehaviour
     private UnityEngine.Vector3 initDiskVel; // NO
     [SerializeField] private GameObject other; // NO
     public string otherName; // YES
+    private string receivedName;
     // ----------------------------- POWER UPS INFO ----------------------------- 
     // Start is called before the first frame update
     void Start()
@@ -79,8 +80,9 @@ public class playerScript : MonoBehaviour
     {
         if (server == null)
         {
-            otherName = client.sendString;
-            canApplyPowerUp = client;
+            receivedName = client.sendString;
+            Debug.Log("This is the received name ->" + receivedName);
+            canApplyPowerUp = client.sendBool;
         }
         if (currentScene.name == "GameClientUDP")
         {
@@ -100,6 +102,7 @@ public class playerScript : MonoBehaviour
     }
     void ApplyPowerUp()
     {
+        Debug.Log("This player [" + receivedName + "] can apply power up? |" + canApplyPowerUp);
         if(canApplyPowerUp)
         {
             switch(powerType)
@@ -116,7 +119,7 @@ public class playerScript : MonoBehaviour
                     }
                     else
                     {
-                        GameObject.Find(otherName).GetComponent<Transform>().localScale = reducedScale;
+                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = reducedScale;
                     }
                 }
                 
@@ -131,7 +134,7 @@ public class playerScript : MonoBehaviour
                     else
                     {
                         applyPowerTime = initApplyPowerTime;
-                        GameObject.Find(otherName).GetComponent<Transform>().localScale = initScale;
+                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
                         canApplyPowerUp = false;
                     }
                 }
@@ -148,7 +151,7 @@ public class playerScript : MonoBehaviour
                     else
                     {
                         applyPowerTime -= Time.deltaTime;
-                        GameObject.Find(otherName).GetComponent<Transform>().localScale = growedScale;
+                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = growedScale;
                     }        
                 }
                 else
@@ -162,7 +165,7 @@ public class playerScript : MonoBehaviour
                     else
                     {
                         applyPowerTime = initApplyPowerTime;
-                        GameObject.Find(otherName).GetComponent<Transform>().localScale = initScale;
+                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
                         canApplyPowerUp = false;
                     }                  
                 }
@@ -183,8 +186,7 @@ public class playerScript : MonoBehaviour
                         applyPowerTime = initApplyPowerTime;
                         GameObject.Find("Disk").GetComponent<Rigidbody>().velocity = initDiskVel;
                         canApplyPowerUp = false;
-                    }
-                    
+                    }                    
                 }
                 break;
             case 3:

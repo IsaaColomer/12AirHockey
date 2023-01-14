@@ -16,14 +16,14 @@ public class PowerUps : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        type = UnityEngine.Random.Range(0, 3);
+
     }
-    public void SendInfo(Vector3 pos)
+    public void SendInfo(Vector3 pos, int sendType)
     {
         manager = GameObject.Find("OnlineGameObject").GetComponent<Server_UDP>();
         disk = GameObject.Find("Disk").GetComponent<Disk_Code>();
         id = UnityEngine.Random.Range(6, 400);
-
+        type = sendType;
         manager.Serialize(EventType.CREATE_POWERUP, pos, id);
     }
 
