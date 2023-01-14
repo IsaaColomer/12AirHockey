@@ -103,7 +103,9 @@ public class playerScript : MonoBehaviour
     void ApplyPowerUp()
     {
         Debug.Log("This player [" + receivedName + "] can apply power up? |" + canApplyPowerUp);
-        if(canApplyPowerUp)
+        if(client == null)
+        {
+            if(canApplyPowerUp)
         {
             switch(powerType)
             {
@@ -170,42 +172,84 @@ public class playerScript : MonoBehaviour
                     }                  
                 }
                 break;
-            case 2:
+            default:
+                break;
+            }
+        }
+        }
+        else
+        {
+            if(client.sendBool)
+            {
+                switch(powerType)
+                {
+                    case 0:
+                        if(applyPowerTime > 0)
+                        {
+                            if(diskCode != null)
+                            {
+                                applyPowerTime -= Time.deltaTime;                    
+                                GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = reducedScale;
+                            }
+                            else
+                            {
+                                applyPowerTime -= Time.deltaTime;
+                                GameObject.Find(receivedName).GetComponent<Transform>().localScale = reducedScale;
+                            }
+                    }                
+                    else
+                    {
+                        if(diskCode != null)
+                        {
+                            applyPowerTime = initApplyPowerTime;
+                            GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = initScale;
+                            canApplyPowerUp = false;
+                        }
+                        else
+                        {
+                            applyPowerTime = initApplyPowerTime;
+                            GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
+                            client.sendBool = false;
+                        }
+                    }
+                    break;
+                    case 1:
                 if (applyPowerTime > 0)
                 {
                     if(diskCode != null)
                     {
                         applyPowerTime -= Time.deltaTime;
-                        GameObject.Find("Disk").GetComponent<Rigidbody>().velocity = slowedDiskVel;
-                    }  
+                        GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = growedScale;
+                        Debug.Log(applyPowerTime);
+                    }
+                    else
+                    {
+                        applyPowerTime -= Time.deltaTime;
+                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = growedScale;
+                    }        
                 }
                 else
                 {
                     if(diskCode != null)
                     {
                         applyPowerTime = initApplyPowerTime;
-                        GameObject.Find("Disk").GetComponent<Rigidbody>().velocity = initDiskVel;
+                        GameObject.Find(diskCode.lastPlayerName).GetComponent<Transform>().localScale = initScale;
                         canApplyPowerUp = false;
-                    }                    
+                    }
+                    else
+                    {
+                        applyPowerTime = initApplyPowerTime;
+                        GameObject.Find(receivedName).GetComponent<Transform>().localScale = initScale;
+                        client.sendBool = false;
+                    }                  
                 }
                 break;
-            case 3:
-                if (applyPowerTime > 0)
-                {
-                    applyPowerTime -= Time.deltaTime;
-                    other.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+                    default:
+                    break;
                 }
-                else
-                {
-                    applyPowerTime = initApplyPowerTime; 
-                    other.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                    canApplyPowerUp = false;
-                }
-                break;
-            default:
-                break;
             }
         }
+        
     }
 
     private void PlayerMovement()
