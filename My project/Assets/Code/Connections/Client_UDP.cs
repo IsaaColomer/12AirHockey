@@ -51,7 +51,6 @@ public class Client_UDP : MonoBehaviour
     public string sendString;
     private int powerupId = -5;
     private bool hasClientScored;
-
     GameObject selectedGO;
     
     private TextMeshPro serverTextMesh;
@@ -59,6 +58,7 @@ public class Client_UDP : MonoBehaviour
 
     private int serverGoals = 0;
     private int clientGoals = 0;
+    public int receivedType;
 
     private void Start()
     {
@@ -131,10 +131,8 @@ public class Client_UDP : MonoBehaviour
         {
             powerUp = Instantiate(powerUpPrefab, posPowUp, Quaternion.identity);
             allGO.Add(powerupId, powerUp);
-            spawnPower= false;
+            spawnPower  = false;
         }
-        
-
     }
     public void DestroyPowerUp()
     {
@@ -314,6 +312,7 @@ public class Client_UDP : MonoBehaviour
             case 401:
                 sendBool = reader.ReadBoolean();
                 sendString = reader.ReadString();
+                receivedType = reader.ReadInt32();
                 break;
             default:
                 //PowerUps
@@ -321,6 +320,7 @@ public class Client_UDP : MonoBehaviour
                 {
                     case 1:
                         //Create
+                        receivedType = reader.ReadInt32();
                         float pux = reader.ReadSingle();
                         float puz = reader.ReadSingle();
                         posPowUp = new Vector3(pux, 0.8801f, puz);

@@ -17,7 +17,9 @@ public class PowerUps : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-
+        if(GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>() != null)
+            type = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>().receivedType;
+        
     }
     public void SendInfo(Vector3 pos, int sendType)
     {

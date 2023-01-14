@@ -26,6 +26,7 @@ public class Server_UDP : MonoBehaviour
     public bool connected = false;
     public bool posChanged = false;
     UnityEngine.Vector3 enemyDir;
+    public int clientSendType = 0;
     public Dictionary<int, GameObject> allGO;
 
     // GET THE DISK
@@ -149,7 +150,8 @@ public class Server_UDP : MonoBehaviour
             case EventType.CREATE_POWERUP:
                 type = 1;
                 writer.Write(type);
-                writer.Write(id);
+                writer.Write(id);                
+                writer.Write(clientSendType);
                 writer.Write(info.x);
                 writer.Write(info.z);
                 break;
@@ -171,6 +173,7 @@ public class Server_UDP : MonoBehaviour
                 writer.Write(id);
                 writer.Write(ps.canApplyPowerUp);
                 writer.Write(lastPlayerName);
+                writer.Write(clientSendType);
                 break;
             default:
                 type = -1;
@@ -269,6 +272,7 @@ public class Server_UDP : MonoBehaviour
             {
                 // CALL TO SERIALIZE THE POSITION
                 int sendType = Random.Range(0, 1);
+                clientSendType = sendType;
                 GameObject pwu = Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.identity);
                 pwu.GetComponent<PowerUps>().SendInfo(pwrUpSpawnLocation, sendType);
                 allGO.Add(pwu.GetComponent<PowerUps>().GetId(), pwu);
