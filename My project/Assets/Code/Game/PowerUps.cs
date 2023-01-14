@@ -13,6 +13,7 @@ public class PowerUps : MonoBehaviour
     private Disk_Code disk;
     public int id = -5414;
     public Server_UDP manager;
+    public Client_UDP client;
     // Start is called before the first frame update
     private void Start()
     {
@@ -21,6 +22,8 @@ public class PowerUps : MonoBehaviour
     public void SendInfo(Vector3 pos, int sendType)
     {
         manager = GameObject.Find("OnlineGameObject").GetComponent<Server_UDP>();
+        client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
+
         disk = GameObject.Find("Disk").GetComponent<Disk_Code>();
         id = UnityEngine.Random.Range(6, 400);
         type = sendType;
@@ -32,6 +35,8 @@ public class PowerUps : MonoBehaviour
         if(other.gameObject.name == "Disk" && manager != null)
         {
             GameObject.Find(disk.lastPlayerName).GetComponentInParent<playerScript>().SetPowerupType(type);
+            manager.Serialize(EventType.DESTROY_POWERUP,Vector3.zero, id);
+            manager.timeToSpawn = manager.restartTimeToSpawn;
             Destroy(this.gameObject);
         }
     }

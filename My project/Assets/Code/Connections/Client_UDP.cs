@@ -43,6 +43,7 @@ public class Client_UDP : MonoBehaviour
     public GameObject myClientPlayer;
     public GameObject myServerPlayer;
     public GameObject powerUpPrefab;
+    public GameObject powerUp;
     private bool spawnPower = false;
     private bool destroyPower = false;
     private Vector3 posPowUp;
@@ -112,6 +113,10 @@ public class Client_UDP : MonoBehaviour
         {
             StartCoroutine(SendInfo());
             Powerup();
+            if (destroyPower)
+            {
+                DestroyPowerUp();
+            }
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -124,16 +129,18 @@ public class Client_UDP : MonoBehaviour
     {
         if(spawnPower)
         {
-            GameObject go = Instantiate(powerUpPrefab, posPowUp, Quaternion.identity);
-            allGO.Add(powerupId, go);
+            powerUp = Instantiate(powerUpPrefab, posPowUp, Quaternion.identity);
+            allGO.Add(powerupId, powerUp);
             spawnPower= false;
         }
-        if(destroyPower)
-        {
-            //allGO.Add(powerupId, go);
-            spawnPower= false;
-        }
+        
 
+    }
+    public void DestroyPowerUp()
+    {
+        allGO.Remove(powerupId);
+        Destroy(powerUp);
+        destroyPower = false;
     }
 
     void FixedUpdate()
@@ -322,6 +329,7 @@ public class Client_UDP : MonoBehaviour
                         break;
                     case 3:
                         //Destroy
+                        destroyPower = true;
                         break;
                 }
                 break;

@@ -49,7 +49,7 @@ public class Server_UDP : MonoBehaviour
     //private bool
     public UnityEngine.Vector3 pwrUpSpawnLocation;
     public float timeToSpawn = 5f;
-    [SerializeField] private float restartTimeToSpawn;
+    [SerializeField] public float restartTimeToSpawn;
     void Start()
     {
         restartTimeToSpawn = timeToSpawn;
@@ -265,12 +265,14 @@ public class Server_UDP : MonoBehaviour
         }
         else
         {
-            timeToSpawn = restartTimeToSpawn;
-            // CALL TO SERIALIZE THE POSITION
-            int sendType = Random.Range(0,3);
-            GameObject pwu = Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.identity);
-            pwu.GetComponent<PowerUps>().SendInfo(pwrUpSpawnLocation, sendType);
-            allGO.Add(pwu.GetComponent<PowerUps>().GetId(), pwu);
+            if(!GameObject.FindGameObjectWithTag("PowerUps"))
+            {
+                // CALL TO SERIALIZE THE POSITION
+                int sendType = Random.Range(0, 3);
+                GameObject pwu = Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.identity);
+                pwu.GetComponent<PowerUps>().SendInfo(pwrUpSpawnLocation, sendType);
+                allGO.Add(pwu.GetComponent<PowerUps>().GetId(), pwu);
+            }
         }
     }
 }
