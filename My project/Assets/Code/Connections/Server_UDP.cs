@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using System.Threading;
 using TMPro;
 using System.IO;
+using System;
+using Unity.VisualScripting;
 
 public class Server_UDP : MonoBehaviour
 {
@@ -44,6 +46,7 @@ public class Server_UDP : MonoBehaviour
     private TextMeshPro clientTextMesh;
     public string lastPlayerName;
     public GameObject powerUpPrefab;
+    int sendTypePowerUp;
     public float offsetX;
     public float offsetY;
     public float offsetZ;
@@ -84,7 +87,7 @@ public class Server_UDP : MonoBehaviour
         diskCode = GameObject.Find("Disk").GetComponent<Disk_Code>();
         serverTextMesh = GameObject.Find("ServerGoals").GetComponent<TextMeshPro>();
         clientTextMesh = GameObject.Find("ClientGoals").GetComponent<TextMeshPro>();
-        ps = GameObject.Find("Main Camera_Player2").GetComponent<playerScript>();
+        ps = GameObject.Find("Main Camera").GetComponent<playerScript>();
     }
     private void Update()
     {
@@ -121,7 +124,6 @@ public class Server_UDP : MonoBehaviour
         Serialize(EventType.UPDATE_POS_GO, diskPosition, 2);
         Serialize(EventType.UPDATE_VEL_GO, diskVel, 2);
         Serialize(EventType.UPDATE_SCORE, Vector3.zero,5);
-        Serialize(EventType.UPDATE_POWERUP, Vector3.zero,401);
 
     }
     public void Serialize(EventType eventType,Vector3 info, int id)
@@ -172,7 +174,7 @@ public class Server_UDP : MonoBehaviour
                 writer.Write(type);
                 writer.Write(id);
                 writer.Write(ps.canApplyPowerUp);
-                writer.Write(lastPlayerName);
+                writer.Write(GameObject.Find("Disk").GetComponent<Disk_Code>().lastPlayerName);
                 writer.Write(clientSendType);
                 break;
             default:
@@ -201,14 +203,24 @@ public class Server_UDP : MonoBehaviour
             stream = new MemoryStream(data);
             Deserialize();
         }
+        Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
     void Deserialize()
     {
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
-        int type = reader.ReadInt32();
+        int type;
+        try
+        {
+            type = reader.ReadInt32();
+        }
+        catch (Exception e)
+        {
+            print(e);
+            return;
+        }
         int id = reader.ReadInt32();
-        Debug.Log(type);
+        Debug.Log(id + " " + " " + type);
         switch (id)
         { 
             case 1:
@@ -258,9 +270,9 @@ public class Server_UDP : MonoBehaviour
     public void SpawnPowerUp()
     {
         Bounds bounds = GameObject.Find("PowerUps_Spawn").GetComponent<BoxCollider>().bounds;
-        offsetX = Random.Range(-bounds.extents.x, bounds.extents.x);
+        offsetX = UnityEngine.Random.Range(-bounds.extents.x, bounds.extents.x);
         offsetY = 0.8801f;
-        offsetZ = Random.Range(-bounds.extents.z, bounds.extents.z);
+        offsetZ = UnityEngine.Random.Range(-bounds.extents.z, bounds.extents.z);
         pwrUpSpawnLocation = new Vector3(offsetX, offsetY, offsetZ);
         if(timeToSpawn > 0)
         {
@@ -271,10 +283,10 @@ public class Server_UDP : MonoBehaviour
             if(!GameObject.FindGameObjectWithTag("PowerUps"))
             {
                 // CALL TO SERIALIZE THE POSITION
-                int sendType = Random.Range(0, 1);
-                clientSendType = sendType;
+                int sendTypePowerUp = UnityEngine.Random.Range(0, 1);
+                clientSendType = sendTypePowerUp;
                 GameObject pwu = Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.identity);
-                pwu.GetComponent<PowerUps>().SendInfo(pwrUpSpawnLocation, sendType);
+                pwu.GetComponent<PowerUps>().SendInfo(pwrUpSpawnLocation, sendTypePowerUp);
                 allGO.Add(pwu.GetComponent<PowerUps>().GetId(), pwu);
             }
         }

@@ -11,7 +11,7 @@ public class Disk_Code : MonoBehaviour
     [SerializeField] private Color startColor;
     [SerializeField] private Vector3 vel;
     public float maxDiskVel = 3;
-    public string lastPlayerName;
+    public string lastPlayerName = "Default";
     public bool clientGoal;
     private Server_UDP server;
     public float angle = 0;
@@ -20,7 +20,7 @@ public class Disk_Code : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ps = GameObject.Find("Main Camera_Player2").GetComponent<playerScript>();
+        ps = GameObject.Find("Main Camera").GetComponent<playerScript>();
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
         piPlayer1 = GameObject.FindGameObjectWithTag("PI_Player1");
@@ -67,16 +67,6 @@ public class Disk_Code : MonoBehaviour
         piPlayer1.GetComponent<Renderer>().material.color = startColor;        
         piPlayer2.GetComponent<Renderer>().material.color = startColor;        
         transform.position = startPos;
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.tag == "Players")
-        {
-            // Here we detect which is the last player that has touched the disk
-            lastPlayerName = collision.gameObject.name; 
-            if(ps.canApplyPowerUp)
-                server.lastPlayerName = lastPlayerName;
-        }
     }
     public void Update()
     {

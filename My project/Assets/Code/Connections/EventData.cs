@@ -10,6 +10,7 @@ using UnityEngine;
     UPDATE_SCORE,
     HITPOINT,
     UPDATE_POWERUP,
+    ACTIVE_POWERUP,
     NONE
 }
 public class EventData

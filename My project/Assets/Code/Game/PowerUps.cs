@@ -14,17 +14,9 @@ public class PowerUps : MonoBehaviour
     public int id = -5414;
     public Server_UDP manager;
     public Client_UDP client;
-    // Start is called before the first frame update
-    private void Start()
-    {
-        if(GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>() != null)
-            type = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>().receivedType;
-        
-    }
     public void SendInfo(Vector3 pos, int sendType)
     {
         manager = GameObject.Find("OnlineGameObject").GetComponent<Server_UDP>();
-        client = GameObject.Find("OnlineGameObject").GetComponent<Client_UDP>();
 
         disk = GameObject.Find("Disk").GetComponent<Disk_Code>();
         id = UnityEngine.Random.Range(6, 400);
@@ -36,11 +28,26 @@ public class PowerUps : MonoBehaviour
     {
         if(other.gameObject.name == "Disk" && manager != null)
         {
-            GameObject.Find(disk.lastPlayerName).GetComponentInParent<playerScript>().SetPowerupType(type);
-            manager.Serialize(EventType.DESTROY_POWERUP,Vector3.zero, id);
-            manager.timeToSpawn = manager.restartTimeToSpawn;
-            Destroy(this.gameObject);
+            if(disk.lastPlayerName == "Player_2")
+                GameObject.Find(disk.lastPlayerName).GetComponentInParent<playerScript>().SetPowerupType(type);
+            else
+            {
+                //Player_1
+                GameObject.Find("Player_2").GetComponentInParent<playerScript>().SetPowerupType(type);
+            }
+            if(disk.lastPlayerName == "Player_2" || disk.lastPlayerName == "Player_1")
+            {
+                manager.Serialize(EventType.UPDATE_POWERUP, Vector3.zero, 401);
+                manager.Serialize(EventType.DESTROY_POWERUP, Vector3.zero, id);
+                manager.timeToSpawn = manager.restartTimeToSpawn;
+                Destroy(this.gameObject);
+            }
+            
         }
+    }
+    IEnumerator ClientFormServer()
+    {
+        yield return new WaitForSeconds(3f);
     }
     public int GetId()
     {

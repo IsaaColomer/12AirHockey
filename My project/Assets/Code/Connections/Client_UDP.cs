@@ -63,7 +63,7 @@ public class Client_UDP : MonoBehaviour
     private void Start()
     {
         allGO = new Dictionary<int, GameObject>();
-        playerscript = GameObject.Find("Main Camera_Player2").GetComponent<playerScript>();
+        playerscript = GameObject.Find("Main Camera").GetComponent<playerScript>();
         Screen.SetResolution(1280, 720, false);
         myThread = new Thread(Receive);
         player = GameObject.Find("Player_1");
@@ -112,7 +112,10 @@ public class Client_UDP : MonoBehaviour
         if (isLoged)
         {
             StartCoroutine(SendInfo());
-            Powerup();
+            if (spawnPower)
+            {
+                Powerup();
+            }
             if (destroyPower)
             {
                 DestroyPowerUp();
@@ -127,12 +130,9 @@ public class Client_UDP : MonoBehaviour
 
     private void Powerup()
     {
-        if(spawnPower)
-        {
-            powerUp = Instantiate(powerUpPrefab, posPowUp, Quaternion.identity);
-            allGO.Add(powerupId, powerUp);
-            spawnPower  = false;
-        }
+        powerUp = Instantiate(powerUpPrefab, posPowUp, Quaternion.identity);
+        allGO.Add(powerupId, powerUp);
+        spawnPower  = false;
     }
     public void DestroyPowerUp()
     {
@@ -215,7 +215,8 @@ public class Client_UDP : MonoBehaviour
                 writer.Write(type);
                 break;
             default:
-                type = -1;
+                type = 12345;
+                writer.Write(type);
                 break;
         }
         if(type != 2)
@@ -310,9 +311,16 @@ public class Client_UDP : MonoBehaviour
                 clientGoals = reader.ReadInt32();
                 break;
             case 401:
-                sendBool = reader.ReadBoolean();
-                sendString = reader.ReadString();
-                receivedType = reader.ReadInt32();
+                //PowerUps
+                switch (type)
+                {
+                    case 5:
+                        //Update PowerUp
+                        sendBool = reader.ReadBoolean();
+                        sendString = reader.ReadString();
+                        receivedType = reader.ReadInt32();
+                        break;
+                }
                 break;
             default:
                 //PowerUps

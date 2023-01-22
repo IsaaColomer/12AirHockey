@@ -2423,7 +2423,7 @@ GameObject:
   - component: {fileID: 2042817813}
   - component: {fileID: 2042817812}
   m_Layer: 0
-  m_Name: Main Camera_Player2
+  m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -3814,10 +3814,11 @@ MonoBehaviour:
   player: {fileID: 0}
   myClientPlayer: {fileID: 5621158113882447145}
   myServerPlayer: {fileID: 1876040331020520973}
-  powerUpPrefab: {fileID: 2573021158414459896, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
-  powerUp: {fileID: 2573021158414459896, guid: 7441be0ad701c214b98cdfb49fed4862, type: 3}
+  powerUpPrefab: {fileID: 2573021158414459896, guid: 7441be0ad701c214b98cdfb49fed4862, type: 3}
+  powerUp: {fileID: 1292531029291907176, guid: 97af453b9fefeb143aa1a17582d4fa81, type: 3}
   sendBool: 0
   sendString: 
+  receivedType: 0
 --- !u!65 &7994310566524254994
 BoxCollider:
   m_ObjectHideFlags: 0
