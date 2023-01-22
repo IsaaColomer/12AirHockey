@@ -285,7 +285,7 @@ public class Server_UDP : MonoBehaviour
                 // CALL TO SERIALIZE THE POSITION
                 int sendTypePowerUp = UnityEngine.Random.Range(0, 1);
                 clientSendType = sendTypePowerUp;
-                GameObject pwu = Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.identity);
+                GameObject pwu = Instantiate(powerUpPrefab, pwrUpSpawnLocation, Quaternion.Euler(-90, 0, 0));
                 pwu.GetComponent<PowerUps>().SendInfo(pwrUpSpawnLocation, sendTypePowerUp);
                 allGO.Add(pwu.GetComponent<PowerUps>().GetId(), pwu);
             }

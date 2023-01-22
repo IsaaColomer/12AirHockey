@@ -130,7 +130,7 @@ public class Client_UDP : MonoBehaviour
 
     private void Powerup()
     {
-        powerUp = Instantiate(powerUpPrefab, posPowUp, Quaternion.identity);
+        powerUp = Instantiate(powerUpPrefab, posPowUp, Quaternion.Euler(-90, 0, 0));
         allGO.Add(powerupId, powerUp);
         spawnPower  = false;
     }

@@ -4360,7 +4360,7 @@ MonoBehaviour:
   posChanged: 0
   clientSendType: 0
   lastPlayerName: 
-  powerUpPrefab: {fileID: 2573021158414459896, guid: 009f16231909232478bb8d09a2d05fa3, type: 3}
+  powerUpPrefab: {fileID: 4394082305879584236, guid: 538a6f0311c04354e8f741d509a979d7, type: 3}
   offsetX: 0
   offsetY: 0
   offsetZ: 0
