@@ -2445,7 +2445,7 @@ MonoBehaviour:
   canMove: 0
   ignore:
     serializedVersion: 2
-    m_Bits: 4808
+    m_Bits: 5832
   cam: {fileID: 0}
   lastRaycastInsideBounds: {x: 0, y: 0, z: 0}
   client: {fileID: 0}

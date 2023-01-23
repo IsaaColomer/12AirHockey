@@ -8,5 +8,9 @@ public class Rotation_Decoration : MonoBehaviour
     void Update()
     {
         transform.Rotate(_rotation * Time.deltaTime);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 }

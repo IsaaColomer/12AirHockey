@@ -9,6 +9,7 @@ using TMPro;
 using System.IO;
 using System;
 using Unity.VisualScripting;
+using System.Net.WebSockets;
 
 public class Server_UDP : MonoBehaviour
 {
@@ -97,6 +98,11 @@ public class Server_UDP : MonoBehaviour
         {
             StartCoroutine(SendInfo());
             SpawnPowerUp();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            newsocket.Close();
+            Application.Quit();
         }
     }
     void FixedUpdate()

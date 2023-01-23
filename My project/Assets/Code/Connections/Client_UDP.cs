@@ -109,6 +109,11 @@ public class Client_UDP : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            newSocket.Close();
+            Application.Quit();
+        }
         if (isLoged)
         {
             StartCoroutine(SendInfo());
@@ -120,11 +125,6 @@ public class Client_UDP : MonoBehaviour
             {
                 DestroyPowerUp();
             }
-        }
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            newSocket.Close();
-            Application.Quit();
         }
     }
 
